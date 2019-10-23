@@ -33,11 +33,13 @@
 
 # Folders
 Debug/
+Assets/
 Data/
 Dependencies/
 Log/
 ipch/
 x64/
+99_DynamicTextureUpdate
 
 # Misc
 *.sdf
