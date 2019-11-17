@@ -41,6 +41,9 @@ GLFWwindow* InitGLFW(Application* pApp)
 	// Window is created, now create context for the same window...
 	glfwMakeContextCurrent(window);
 
+	// Unlock 60FPS lock!
+	glfwSwapInterval(0);
+
 	return window;
 }
 

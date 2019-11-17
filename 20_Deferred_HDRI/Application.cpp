@@ -3,6 +3,8 @@
 #include "Application.h"
 #include "PostProcess.h"
 
+#include <iostream>
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 Application::Application()
 {
@@ -48,9 +50,24 @@ void Application::Initialize()
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void Application::Run(GLFWwindow* window, float dt)
 {
+	double prevTime = glfwGetTime();
+	int nFrames = 0;
+
 	// Message Loop!
 	while (!glfwWindowShouldClose(window))
 	{
+		double currTime = glfwGetTime();
+		++nFrames;
+
+		// check if one second has passed?
+		if (currTime - prevTime >= 1.0f)
+		{
+			std::cout << "ms : " << 1000.0f / double(nFrames) << std::endl;
+			std::cout << "FPS : " << nFrames << std::endl;
+			nFrames = 0;
+			prevTime += 1.0f;
+		}
+
 		glfwPollEvents();
 
 		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
