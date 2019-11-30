@@ -1,16 +1,19 @@
 
 #include "UIManager.h"
 #include "Scene.h"
-#include "PointLightObject.h"
+#include "LightsManager.h"
+#include "StaticObjectManager.h"
+#include "StaticObject.h"
 #include "PostProcess.h"
 #include "Material.h"
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 UIManager::UIManager()
 {
 	m_bShowConsoleUI = false;
 	m_bShowFPSUI = true;
-	m_bShowSceneUI = false;
+	m_bShowSceneUI = true;
 	m_bDrawBloom = true;
 }
 
@@ -142,14 +145,68 @@ void UIManager::RenderFPS()
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void UIManager::RenderSceneUI(Scene* ptrScene, PostProcess* ptrFX)
 {
-	if (!m_bShowSceneUI)
+	if (!m_bShowSceneUI || !ptrScene || !ptrFX)
 		return;
 
 	ImGui::Begin("Scene Properties");
 
 	if (ImGui::CollapsingHeader("Scene Objects"))
 	{
+		uint32_t objectCount = StaticObjectManager::getInstance().GetStaticObjectCount();
 
+		for (uint32_t i = 0; i < objectCount; ++i)
+		{
+			StaticObject* object = StaticObjectManager::getInstance().GetStaticObjectAt(i);
+
+			ImGui::PushID(i);
+			ImGui::AlignFirstTextHeightToWidgets();
+
+			if (ImGui::TreeNode(object->GetName().c_str()))
+			{
+				// File path
+				ImGui::Text("FilePath"); ImGui::SameLine();
+				ImGui::Text(object->GetPath().c_str());
+
+				// Shader Name
+				ImGui::Text("Shader"); ImGui::SameLine();
+				ImGui::Text(object->GetShaderName().c_str());
+
+				if (ImGui::TreeNode("Transform"))
+				{
+					// Position
+					glm::vec3 pos = object->GetPosition();
+					ImGui::SliderFloat3("Position", glm::value_ptr(pos), 0, 100);
+
+					// Rotation Axis
+					glm::vec3 rot = object->GetRotationAxis();
+					ImGui::InputFloat3("Rotation Axis", glm::value_ptr(rot), 1);
+
+					// Rotation Angle
+					float rotAngle = object->GetCurrentAngle();
+					ImGui::SliderAngle("Rotation Angle", &rotAngle);
+
+					// Scale
+					glm::vec3 scale = object->GetScale();
+					ImGui::InputFloat3("Scale", glm::value_ptr(scale));
+
+					// AutoUpdate
+					bool autoRotate = object->GetAutoRotateFlag();
+					ImGui::Checkbox("Auto Rotate", &autoRotate);
+
+					ImGui::TreePop();
+
+					object->SetPosition(pos);
+					object->SetRotationAxis(rot);
+					object->SetRotationAngle(rotAngle);
+					object->SetScale(scale);
+					object->SetAutoRotate(autoRotate);
+				}
+				
+				ImGui::TreePop();
+			}
+
+			ImGui::PopID();
+		}
 	}
 
 	if (ImGui::CollapsingHeader("Lighting"))

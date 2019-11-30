@@ -7,6 +7,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 StaticObject::StaticObject()
 {
+	m_strName.clear();
 	m_strShader.clear();
 	m_strPath.clear();
 
@@ -14,11 +15,17 @@ StaticObject::StaticObject()
 	m_pShadowPassShader = nullptr;
 	m_pModel = nullptr;
 	m_pMaterial = nullptr;
+
+	m_bAutoRotate = false;
+
+	m_fCurrentAngle = 0.0f;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
 StaticObject::StaticObject(const StaticObjectData& data)
-	: m_strPath(data.path),
+	:
+	m_strName(data.name),
+	m_strPath(data.path),
 	m_strShader(data.shader),
 	m_pShader(nullptr),
 	m_pShadowPassShader(nullptr),
@@ -27,7 +34,11 @@ StaticObject::StaticObject(const StaticObjectData& data)
 	m_vecPosition  = data.position;
 	m_fAngle = data.angle;
 	m_vecRotation = data.rotation;
-	m_vecScale = data.scale; 
+	m_vecScale = data.scale;
+
+	m_bAutoRotate = data.autoRotate;
+
+	m_fCurrentAngle = 0.0f;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -75,10 +86,12 @@ void StaticObject::Kill()
 //////////////////////////////////////////////////////////////////////////////////////////
 void StaticObject::Update( float dt )
 {
-	static float angle = 0;
-	angle += 0.2f * dt;
-
-	m_fAngle = angle;
+	if (m_bAutoRotate)
+	{
+		m_fCurrentAngle += 0.2f * dt;
+	}
+		
+	m_fAngle = m_fCurrentAngle;
 
 	glm::mat4 model = glm::mat4(1);
 	model = glm::translate(model, m_vecPosition); 
@@ -100,24 +113,6 @@ void StaticObject::RenderShadowMap()
 	m_pModel->RenderShadowMap(m_pShadowPassShader, m_matWorld);
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////
-void StaticObject::SetPosition( const glm::vec3& pos )
-{
-	m_vecPosition = pos;
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////
-void StaticObject::SetRotation( const glm::vec3& axis, float angle )
-{
-	m_vecRotation = axis;
-	m_fAngle = angle;
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////
-void StaticObject::SetScale( const glm::vec3& sc )
-{
-	m_vecScale = sc;
-}
 
 
 

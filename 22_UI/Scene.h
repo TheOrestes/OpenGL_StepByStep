@@ -2,7 +2,6 @@
 
 #include "VertexStructures.h"
 
-class StaticObject;
 class PointLightObject;
 class DirectionalLightObject;
 
@@ -18,8 +17,6 @@ public:
 	void	RenderShadowMap();
 
 private:
-	StaticObject*		m_pStaticObject1;
-	StaticObject*		m_pShadowObject;
 
 	DirectionalLightObject* m_pMainDirectionalLight;
 	PointLightObject*	m_pRedPointLight;

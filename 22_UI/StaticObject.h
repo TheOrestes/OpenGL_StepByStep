@@ -24,15 +24,30 @@ public:
 	void					Update(float dt);
 	void					Render();
 	void					RenderShadowMap();
+
+
+	//---- GETTER - SETTER!
+	inline std::string		GetName() { return m_strName; }
+	inline std::string		GetPath() { return m_strPath; }
+	inline std::string		GetShaderName() { return m_strShader; }
+	inline glm::vec3		GetPosition() { return m_vecPosition; }
+	inline glm::vec3		GetRotationAxis() { return m_vecRotation; }
+	inline glm::vec3		GetScale() { return m_vecScale; }
+	inline float			GetCurrentAngle() { return m_fAngle; }
+	inline bool				GetAutoRotateFlag() { return m_bAutoRotate; }
 	
-	void					SetPosition(const glm::vec3& pos);
-	void					SetRotation(const glm::vec3& axis, float angle);
-	void					SetScale(const glm::vec3& sc);
-	
+
+	inline void				SetName(const std::string& name) { m_strName = name; }
 	inline void				SetPath(const std::string& path){ m_strPath = path; }
 	inline void				SetShader(const std::string& shader){ m_strShader = shader; }
+	inline void				SetPosition(const glm::vec3& pos) { m_vecPosition = pos; }
+	inline void				SetRotationAxis(const glm::vec3& rotAxis) { m_vecRotation = rotAxis; }
+	inline void				SetRotationAngle(float angle) { m_fCurrentAngle = angle; }
+	inline void				SetScale(const glm::vec3& scale) { m_vecScale = scale; }
+	inline void				SetAutoRotate(bool _flag) { m_bAutoRotate = _flag; }
 
 private:
+	std::string				m_strName;
 	std::string				m_strPath;
 	std::string				m_strShader;
 
@@ -46,5 +61,8 @@ private:
 	float					m_fAngle;
 	glm::vec3				m_vecScale;
 	glm::mat4				m_matWorld;
+
+	bool					m_bAutoRotate;
+	float					m_fCurrentAngle;
 };
 

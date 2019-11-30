@@ -103,6 +103,7 @@ struct StaticObjectData
 {
 	StaticObjectData()
 	{
+		name.clear();
 		path.clear();
 		shader.clear();
 
@@ -112,8 +113,10 @@ struct StaticObjectData
 		scale     = glm::vec3(1);
 
 		showBBox  = false;
+		autoRotate = false;
 	}
 
+	std::string name;
 	std::string path;
 	std::string shader;
 
@@ -123,4 +126,5 @@ struct StaticObjectData
 	glm::vec3	scale;
 
 	bool		showBBox;
+	bool		autoRotate;
 };
