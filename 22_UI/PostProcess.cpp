@@ -44,6 +44,9 @@ PostProcess::PostProcess()
 	// properties
 	m_fExposure = 1.0f;
 	m_fGamma = 2.2f;
+
+	m_bDrawBloomEffect = true;
+	m_fBloomThreshold = 1.0f;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -529,7 +532,7 @@ void PostProcess::PointLightIlluminance(int shaderID)
 		PointLightObject* light = LightsManager::getInstance()->GetPointLight(i);
 
 		glm::vec3 position = light->GetLightPosition();
-		glm::vec4 color = light->GetLightColor();
+		glm::vec3 color = light->GetLightColor();
 		float intensity = light->GetLightIntensity();
 		float radius = light->GetLightRadius();
 
@@ -540,7 +543,7 @@ void PostProcess::PointLightIlluminance(int shaderID)
 		std::string pointLightRadStr = "pointLights[" + std::to_string(i) + "].radius";
 
 		glUniform3fv(glGetUniformLocation(shaderID, pointLightPosStr.c_str()), 1, glm::value_ptr(position));
-		glUniform4fv(glGetUniformLocation(shaderID, pointLightColStr.c_str()), 1, glm::value_ptr(color));
+		glUniform3fv(glGetUniformLocation(shaderID, pointLightColStr.c_str()), 1, glm::value_ptr(color));
 		glUniform1f(glGetUniformLocation(shaderID, pointLightIntStr.c_str()), intensity);
 		glUniform1f(glGetUniformLocation(shaderID, pointLightRadStr.c_str()), radius);
 	}
@@ -557,7 +560,7 @@ void PostProcess::DirectionalLightIlluminance(int shaderID)
 		DirectionalLightObject* light = LightsManager::getInstance()->GetDirectionalLight(i);
 
 		glm::vec3 direction = light->GetLightDirection();
-		glm::vec4 color = light->GetLightColor();
+		glm::vec3 color = light->GetLightColor();
 		float intensity = light->GetLightIntensity();
 
 		// form a string out of directional light IDs
@@ -566,7 +569,7 @@ void PostProcess::DirectionalLightIlluminance(int shaderID)
 		std::string dirLightIntensity	 = "dirLights[" + std::to_string(i) + "].intensity";
 
 		glUniform3fv(glGetUniformLocation(shaderID, dirLightDirectionStr.c_str()), 1, glm::value_ptr(direction));
-		glUniform4fv(glGetUniformLocation(shaderID, dirLightColStr.c_str()), 1, glm::value_ptr(color));
+		glUniform3fv(glGetUniformLocation(shaderID, dirLightColStr.c_str()), 1, glm::value_ptr(color));
 		glUniform1f(glGetUniformLocation(shaderID, dirLightIntensity.c_str()), intensity);
 	}
 }
@@ -597,6 +600,10 @@ void PostProcess::SetDeferredPassShaderVariables(int shaderID)
 	m_hEmissiveBuffer = glGetUniformLocation(shaderID, "emissiveBuffer");
 	
 	m_hShadowDepthBuffer = glGetUniformLocation(shaderID, "shadowDepthBuffer");
+
+	// Bloom
+	GLuint hBloomThreshold = glGetUniformLocation(shaderID, "fBloomThreshold");
+	glUniform1f(hBloomThreshold, m_fBloomThreshold);
 
 	// Skybox reflection
 	GLuint hCubeMap = glGetUniformLocation(shaderID, "texture_skybox");

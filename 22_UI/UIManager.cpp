@@ -2,6 +2,8 @@
 #include "UIManager.h"
 #include "Scene.h"
 #include "LightsManager.h"
+#include "DirectionalLightObject.h"
+#include "PointLightObject.h"
 #include "StaticObjectManager.h"
 #include "StaticObject.h"
 #include "PostProcess.h"
@@ -14,7 +16,6 @@ UIManager::UIManager()
 	m_bShowConsoleUI = false;
 	m_bShowFPSUI = true;
 	m_bShowSceneUI = true;
-	m_bDrawBloom = true;
 }
 
 
@@ -164,42 +165,62 @@ void UIManager::RenderSceneUI(Scene* ptrScene, PostProcess* ptrFX)
 			if (ImGui::TreeNode(object->GetName().c_str()))
 			{
 				// File path
-				ImGui::Text("FilePath"); ImGui::SameLine();
-				ImGui::Text(object->GetPath().c_str());
+				ImGui::BulletText("FilePath"); ImGui::SameLine();
+				ImGui::TextColored(ImVec4(0,1,0,1), object->GetPath().c_str());
 
 				// Shader Name
-				ImGui::Text("Shader"); ImGui::SameLine();
-				ImGui::Text(object->GetShaderName().c_str());
+				if (ImGui::TreeNode("Material"))
+				{
+					ImGui::BulletText("Shader"); ImGui::SameLine();
+					ImGui::TextColored(ImVec4(0, 1, 0, 1), object->GetShaderName().c_str());
+
+					Material* mat = object->GetMaterialPtr();
+					
+					float albedo[4] = { mat->m_colAlbedo.r, mat->m_colAlbedo.g, mat->m_colAlbedo.b, mat->m_colAlbedo.a };
+					if(ImGui::ColorEdit4("Albedo Color", albedo))
+						mat->m_colAlbedo = glm::vec4(albedo[0], albedo[1], albedo[2], albedo[3]);
+
+					float roughness[4] = { mat->m_colRoughness.r, mat->m_colRoughness.g, mat->m_colRoughness.b, mat->m_colRoughness.a };
+					if(ImGui::ColorEdit4("Roughness Color", roughness))
+						mat->m_colRoughness = glm::vec4(roughness[0], roughness[1], roughness[2], roughness[3]);
+
+					bool showWireframe = mat->m_bWireframe;
+					if(ImGui::Checkbox("Wireframe", &showWireframe))
+						mat->m_bWireframe = showWireframe;
+				
+					ImGui::TreePop();
+				}
+
 
 				if (ImGui::TreeNode("Transform"))
 				{
 					// Position
 					glm::vec3 pos = object->GetPosition();
-					ImGui::SliderFloat3("Position", glm::value_ptr(pos), 0, 100);
+					
+					if(ImGui::SliderFloat3("Position", glm::value_ptr(pos), -100, 100))
+						object->SetPosition(pos);
 
 					// Rotation Axis
 					glm::vec3 rot = object->GetRotationAxis();
-					ImGui::InputFloat3("Rotation Axis", glm::value_ptr(rot), 1);
+					if(ImGui::InputFloat3("Rotation Axis", glm::value_ptr(rot), 1))
+						object->SetRotationAxis(rot);
 
 					// Rotation Angle
 					float rotAngle = object->GetCurrentAngle();
-					ImGui::SliderAngle("Rotation Angle", &rotAngle);
+					if(ImGui::SliderAngle("Rotation Angle", &rotAngle))
+						object->SetRotationAngle(rotAngle);
 
 					// Scale
 					glm::vec3 scale = object->GetScale();
-					ImGui::InputFloat3("Scale", glm::value_ptr(scale));
+					if(ImGui::InputFloat3("Scale", glm::value_ptr(scale)))
+						object->SetScale(scale);
 
 					// AutoUpdate
 					bool autoRotate = object->GetAutoRotateFlag();
-					ImGui::Checkbox("Auto Rotate", &autoRotate);
+					if(ImGui::Checkbox("Auto Rotate", &autoRotate))
+						object->SetAutoRotate(autoRotate);
 
 					ImGui::TreePop();
-
-					object->SetPosition(pos);
-					object->SetRotationAxis(rot);
-					object->SetRotationAngle(rotAngle);
-					object->SetScale(scale);
-					object->SetAutoRotate(autoRotate);
 				}
 				
 				ImGui::TreePop();
@@ -211,24 +232,84 @@ void UIManager::RenderSceneUI(Scene* ptrScene, PostProcess* ptrFX)
 
 	if (ImGui::CollapsingHeader("Lighting"))
 	{
+		// Directional Lights!
+		uint32_t dirLightCount = LightsManager::getInstance()->GetDirectionalLightsCount();
+		for (uint32_t i = 0; i < dirLightCount; ++i)
+		{
+			ImGui::PushID(i);
+			ImGui::AlignFirstTextHeightToWidgets();
+		
+			DirectionalLightObject* dirLightObject = LightsManager::getInstance()->GetDirectionalLight(i);
+		
+			std::string lightName = "DirectionalLight" + std::to_string(i);
+			if (ImGui::TreeNode(lightName.c_str()))
+			{
+				glm::vec3	direction = dirLightObject->GetLightDirection();
+				if (ImGui::SliderFloat3("Direction", glm::value_ptr(direction), -1, 1))
+					dirLightObject->SetLightDirection(direction);
+		
+				glm::vec3	color = dirLightObject->GetLightColor();
+				if (ImGui::ColorEdit3("Color", glm::value_ptr(color)))
+					dirLightObject->SetLightColor(color);
+		
+				float		intensity = dirLightObject->GetLightIntensity();
+				if (ImGui::SliderFloat("Intensity", &intensity, 0, 10))
+					dirLightObject->SetLightIntensity(intensity);
+		
+				ImGui::TreePop();
+			}
 
-	}
+			ImGui::PopID();
+		}
+		
 
-	if (ImGui::CollapsingHeader("Shadows"))
-	{
+		// Point Lights!
+		uint32_t pointLightCount = LightsManager::getInstance()->GetPointlightsCount();
+		for (uint32_t j = 0; j < pointLightCount; ++j)
+		{
+			ImGui::PushID(j);
+			ImGui::AlignFirstTextHeightToWidgets();
+		
+			PointLightObject* pointLightObject = LightsManager::getInstance()->GetPointLight(j);
+		
+			std::string lightName = "PointLight" + std::to_string(j);
+			if (ImGui::TreeNode(lightName.c_str()))
+			{
+				glm::vec3	position = pointLightObject->GetLightPosition();
+				if (ImGui::SliderFloat3("Position", glm::value_ptr(position), -100, 100))
+					pointLightObject->SetLightPosition(position);
+		
+				glm::vec3	color = pointLightObject->GetLightColor();
+				if (ImGui::ColorEdit3("Color", glm::value_ptr(color)))
+					pointLightObject->SetLightColor(color);
+		
+				float		intensity = pointLightObject->GetLightIntensity();
+				if (ImGui::SliderFloat("Intensity", &intensity, 0, 10))
+					pointLightObject->SetLightIntensity(intensity);
+				
+				float		radius = pointLightObject->GetLightRadius();
+				if (ImGui::SliderFloat("Radius", &radius, 0, 50))
+					pointLightObject->SetLightRadius(radius);
+		
+				ImGui::TreePop();
+			}
 
+			ImGui::PopID();
+		}
 	}
 
 	if (ImGui::CollapsingHeader("Postprocess"))
 	{
-		if (ImGui::Checkbox("Bloom", &m_bDrawBloom))
+		bool bDrawBloom = ptrFX->GetBloomStatus();
+		if (ImGui::Checkbox("Bloom", &bDrawBloom))
 		{
-			ptrFX->SetBloomEffect(m_bDrawBloom);
+			ptrFX->SetBloomEffect(bDrawBloom);
 		}
 
-		if(ImGui::SliderFloat("Bloom Cutoff", &m_fBloomCutoff, 0.5f, 2.0f))
+		float bloomCutoff = ptrFX->GetBloomThreshold();
+		if(ImGui::SliderFloat("Bloom Cutoff", &bloomCutoff, 0.0f, 2.0f))
 		{
-			
+			ptrFX->SetBloomThreshold(bloomCutoff);
 		}
 	}
 

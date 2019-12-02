@@ -36,20 +36,22 @@ GLLight::GLLight()
 
 	indices[30] = 1;			indices[31] = 5;		indices[32] = 6;
 	indices[33] = 6;			indices[34] = 2;		indices[35] = 1;
+
+	color = glm::vec3(1);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-GLLight::GLLight(const glm::vec4& color)
+GLLight::GLLight(const glm::vec3& _color)
 {
 	// Vertex Data
-	vertices[0] = VertexPC(glm::vec3(-1,-1,1), color);
-	vertices[1] = VertexPC(glm::vec3(1,-1,1), color);
-	vertices[2] = VertexPC(glm::vec3(1,1,1), color);
-	vertices[3] = VertexPC(glm::vec3(-1,1,1), color);
-	vertices[4] = VertexPC(glm::vec3(-1,-1,-1), color);
-	vertices[5] = VertexPC(glm::vec3(1,-1,-1), color);
-	vertices[6] = VertexPC(glm::vec3(1,1,-1), color);
-	vertices[7] = VertexPC(glm::vec3(-1,1,-1), color);
+	vertices[0] = VertexPC(glm::vec3(-1,-1,1),  glm::vec4(color,1));
+	vertices[1] = VertexPC(glm::vec3(1,-1,1),   glm::vec4(color,1));
+	vertices[2] = VertexPC(glm::vec3(1,1,1),    glm::vec4(color,1));
+	vertices[3] = VertexPC(glm::vec3(-1,1,1),   glm::vec4(color,1));
+	vertices[4] = VertexPC(glm::vec3(-1,-1,-1), glm::vec4(color,1));
+	vertices[5] = VertexPC(glm::vec3(1,-1,-1),  glm::vec4(color,1));
+	vertices[6] = VertexPC(glm::vec3(1,1,-1),   glm::vec4(color,1));
+	vertices[7] = VertexPC(glm::vec3(-1,1,-1),  glm::vec4(color,1));
 
 	// Index data ( 6 faces = 12 triangles = 36 indices )
 
@@ -70,6 +72,8 @@ GLLight::GLLight(const glm::vec4& color)
 
 	indices[30] = 1;			indices[31] = 5;		indices[32] = 6;
 	indices[33] = 6;			indices[34] = 2;		indices[35] = 1;
+
+	color = _color;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -157,6 +161,8 @@ void GLLight::Render()
 	glUniformMatrix4fv(hWorld, 1, GL_FALSE, glm::value_ptr(matWorld));
 	glUniformMatrix4fv(hView, 1, GL_FALSE, glm::value_ptr(matView));
 	glUniformMatrix4fv(hProj, 1, GL_FALSE, glm::value_ptr(matProj));
+
+	glUniform3fv(glGetUniformLocation(m_pShader->GetShaderID(), "lightColor"), 1, glm::value_ptr(color));
 
 	// know more about the last element!
 	// http://stackoverflow.com/questions/17191258/no-display-from-gldrawelements

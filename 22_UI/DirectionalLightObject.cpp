@@ -6,7 +6,7 @@
 DirectionalLightObject::DirectionalLightObject()
 {
 	m_vecLightDirection = glm::vec3(0);
-	m_vecLightColor = glm::vec4(1);
+	m_vecLightColor = glm::vec3(1);
 	m_fIntensity = 1.0f;
 
 	m_matWorldToLightViewMatrix = glm::mat4(1.0f);
@@ -16,7 +16,7 @@ DirectionalLightObject::DirectionalLightObject()
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-DirectionalLightObject::DirectionalLightObject(const glm::vec4& color)
+DirectionalLightObject::DirectionalLightObject(const glm::vec3& color)
 {
 	m_vecLightDirection = glm::vec3(0);
 	m_vecLightColor = color;
@@ -74,7 +74,7 @@ void DirectionalLightObject::SetLightDirection(const glm::vec3& dir)
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-void DirectionalLightObject::SetLightColor(const glm::vec4& col)
+void DirectionalLightObject::SetLightColor(const glm::vec3& col)
 { 
 	m_vecLightColor = col; 
 

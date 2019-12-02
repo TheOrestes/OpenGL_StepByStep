@@ -11,13 +11,14 @@ out vec4 vs_outColor;
 uniform mat4 matWorld;
 uniform mat4 matView;
 uniform mat4 matProj;
+uniform vec3 lightColor;
 
 void main()
 {
 	// Output position in World Space
 	// position in world space
 	vs_outPosition = (matWorld * vec4(in_Position, 1)).xyz;
-	vs_outColor = in_Color;
+	vs_outColor = vec4(lightColor,1);
 	
 	mat4 WVP = matProj * matView * matWorld;
 

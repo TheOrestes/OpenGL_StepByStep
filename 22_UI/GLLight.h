@@ -9,7 +9,7 @@ class GLLight
 {
 public:
 	GLLight();
-	GLLight(const glm::vec4& color);
+	GLLight(const glm::vec3& _color);
 
 	virtual ~GLLight();
 
@@ -19,7 +19,10 @@ public:
 	virtual void		Kill();
 
 	inline  void		SetPosition(const glm::vec3& pos){ position = pos; }
+	inline	void		SetColor(const glm::vec3& col) { color = col; }
+
 	inline  glm::vec3	GetPosition(){ return position; }
+	inline	glm::vec3	GetColor() { return color; }
 	
 private:
 	GLLight(const GLLight&);
@@ -38,6 +41,7 @@ private:
 	GLuint		indices[36];		// indices of a cube
 
 	glm::vec3	position;			// light mesh position
+	glm::vec3	color;				// light color
 
 	GLint		hWorld;				// handle to World matrix
 	GLint		hView;				// handle to View matrix

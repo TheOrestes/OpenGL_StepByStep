@@ -36,6 +36,10 @@ public:
 	//--- GETTER-SETTER
 	inline	void		SetDebugDrawGBuffers(bool _flag) { m_bDrawDebugBuffers = _flag; }
 	inline	void		SetBloomEffect(bool _flag) { m_bDrawBloomEffect = _flag; }
+	inline	void		SetBloomThreshold(float _value) { m_fBloomThreshold = _value; }
+
+	inline	bool		GetBloomStatus() { return m_bDrawBloomEffect; }
+	inline	float		GetBloomThreshold() { return m_fBloomThreshold; }
 
 private:
 	PostProcess(const PostProcess&);
@@ -94,6 +98,7 @@ private:
 
 	bool				m_bDrawDebugBuffers;		// toggle debug G-Buffer rendering!
 	bool				m_bDrawBloomEffect;			// toggle Bloom effect!
+	float				m_fBloomThreshold;			// Bloom cutoff value!
 
 	GLSLShader*			m_pPostFXShader;			// Ptr to Postprocess shader
 	GLSLShader*			m_pDeferredShader;			// Ptr to Deferred shader

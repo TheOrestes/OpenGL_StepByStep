@@ -35,13 +35,13 @@ void Scene::InitScene()
 
 	// Initialize Static objects...
 	StaticObjectData data;
-	data.name = "Barbarian";
-	data.path = "../Assets/models/Barb.fbx";
+	data.name = "Spaceship";
+	data.path = "../Assets/models/Spaceship.fbx";
 	data.shader = "NormalMapWSDeferred";
 	data.position = glm::vec3(0, 5, 0);
 	data.angle = 0.0f;
 	data.rotation = glm::vec3(0, 1, 0);
-	data.scale = glm::vec3(1.5f);
+	data.scale = glm::vec3(0.5f);
 	StaticObject* objMesh = new StaticObject(data);
 
 	StaticObjectManager::getInstance().GatherStaticObject(objMesh);

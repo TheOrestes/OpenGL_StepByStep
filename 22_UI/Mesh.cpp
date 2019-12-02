@@ -75,6 +75,16 @@ void Mesh::SetMaterialProperties(int shaderID, Material * mat)
 {
 	glUniform4fv(glGetUniformLocation(shaderID, "material.Albedo"), 1, glm::value_ptr(mat->m_colAlbedo));
 	glUniform4fv(glGetUniformLocation(shaderID, "material.Roughness"), 1, glm::value_ptr(mat->m_colRoughness));
+
+	// toggle wireframe on/off...!
+	if (mat->m_bWireframe)
+	{
+		glUniform1f(glGetUniformLocation(shaderID, "wireframeWidth"), 0.75f);
+	}
+	else
+	{
+		glUniform1f(glGetUniformLocation(shaderID, "wireframeWidth"), 0.0f);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

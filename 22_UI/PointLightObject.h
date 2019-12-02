@@ -11,7 +11,7 @@ class PointLightObject
 {
 public:
 	PointLightObject();
-	PointLightObject(const glm::vec4& color);
+	PointLightObject(const glm::vec3& color);
 	~PointLightObject();
 
 	void		Init();
@@ -21,13 +21,13 @@ public:
 
 	// Getter
 	inline glm::vec3	GetLightPosition(){ return m_vecLightPosition; }
-	inline glm::vec4	GetLightColor(){ return m_vecLightColor; }
+	inline glm::vec3	GetLightColor(){ return m_vecLightColor; }
 	inline float		GetLightIntensity(){ return m_fIntensity; }
 	inline float		GetLightRadius(){ return m_fRadius; }
 
 	// Setter
 	void				SetLightPosition(const glm::vec3& pos);
-	void				SetLightColor(const glm::vec4& col);
+	void				SetLightColor(const glm::vec3& col);
 	void				SetLightIntensity(float intensity);
 	void				SetLightRadius(float radius);
 
@@ -35,7 +35,7 @@ private:
 	GLLight*			m_pLightMesh;
 
 	glm::vec3			m_vecLightPosition;
-	glm::vec4			m_vecLightColor;
+	glm::vec3			m_vecLightColor;
 	float				m_fIntensity;
 	float				m_fRadius;
 };

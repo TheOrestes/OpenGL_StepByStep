@@ -52,6 +52,7 @@ struct Material
 	{
 		m_colAlbedo = glm::vec4(0.8,0.8,0.8,1.0);
 		m_colRoughness = glm::vec4(glm::vec3(0.8f), 1);
+		m_bWireframe = false;
 	}
 
 	// Textures
@@ -65,5 +66,6 @@ struct Material
 	// Material properties
 	glm::vec4	m_colAlbedo;
 	glm::vec4	m_colRoughness;
+	bool		m_bWireframe;
 };
 

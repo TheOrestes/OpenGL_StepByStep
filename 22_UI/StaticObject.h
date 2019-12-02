@@ -33,6 +33,7 @@ public:
 	inline glm::vec3		GetPosition() { return m_vecPosition; }
 	inline glm::vec3		GetRotationAxis() { return m_vecRotation; }
 	inline glm::vec3		GetScale() { return m_vecScale; }
+	inline Material*		GetMaterialPtr() { return m_pMaterial; }
 	inline float			GetCurrentAngle() { return m_fAngle; }
 	inline bool				GetAutoRotateFlag() { return m_bAutoRotate; }
 	

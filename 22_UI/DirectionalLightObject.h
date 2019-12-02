@@ -11,7 +11,7 @@ class DirectionalLightObject
 {
 public:
 	DirectionalLightObject();
-	DirectionalLightObject(const glm::vec4& color);
+	DirectionalLightObject(const glm::vec3& color);
 	~DirectionalLightObject();
 
 	void		Init();
@@ -21,7 +21,7 @@ public:
 
 	// Getter
 	inline glm::vec3	GetLightDirection(){ return m_vecLightDirection; }
-	inline glm::vec4	GetLightColor(){ return m_vecLightColor; }
+	inline glm::vec3	GetLightColor(){ return m_vecLightColor; }
 	inline float		GetLightIntensity(){ return m_fIntensity; }
 
 	inline glm::mat4	GetWorldToLightViewMatrix() { return m_matWorldToLightViewMatrix; }
@@ -29,7 +29,7 @@ public:
 
 	// Setter
 	void				SetLightDirection(const glm::vec3& dir);
-	void				SetLightColor(const glm::vec4& col);
+	void				SetLightColor(const glm::vec3& col);
 	void				SetLightIntensity(float intensity);
 
 	void				SetWorldToLightViewMatrix(const glm::mat4& _lightViewMatrix);
@@ -37,7 +37,7 @@ public:
 
 private:
 	glm::vec3			m_vecLightDirection;
-	glm::vec4			m_vecLightColor;
+	glm::vec3			m_vecLightColor;
 	float				m_fIntensity;
 
 	glm::mat4			m_matWorldToLightViewMatrix;

@@ -36,14 +36,16 @@ uniform sampler2D	texture_specular;
 uniform sampler2D 	texture_normal;
 uniform sampler2D	texture_emissive;
 
-uniform vec3	cameraPosition;
-uniform float	fBloomCutoff;
+uniform vec3		cameraPosition;
+
+uniform vec3		wireframeColor = vec3(0.0f, 0.0f, 0.0f);
+uniform float		wireframeWidth = 0.75f;
 
 /////////////////////////////////////////////////////////////////////////////////////////
 float edgeFactor()
 {
 	vec3 d = fwidth(vs_outBarycentric);
-	vec3 f = smoothstep(vec3(0), d * 0.75f, vs_outBarycentric);
+	vec3 f = smoothstep(vec3(0), d * wireframeWidth, vs_outBarycentric);
 	return min(min(f.x, f.y), f.z);
 }
 
@@ -74,12 +76,8 @@ void main()
 	// Ambient
 	Ambient	= material.Albedo * baseColor;
 
-	float brightness = dot(Ambient.rgb, vec3(0.2126f, 0.7152f, 0.0722f));
-	if(brightness > fBloomCutoff)
-		gEmission = gAlbedo;
-
-	gAlbedo = mix(vec3(0,0.75f,0), Ambient.rgb, edgeFactor());
+	gAlbedo = mix(wireframeColor, Ambient.rgb, edgeFactor());
 
 	// ! Write into Emissive buffer
-	gEmission += emissiveColor.rgb;
+	gEmission = emissiveColor.rgb;
 }

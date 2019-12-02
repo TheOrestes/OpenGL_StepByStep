@@ -70,7 +70,4 @@ private:
 	bool	m_bShowSceneUI;
 
 	bool	m_bDrawGBuffers;
-	
-	bool	m_bDrawBloom;
-	float	m_fBloomCutoff;
 };

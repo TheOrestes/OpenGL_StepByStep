@@ -25,6 +25,9 @@ uniform mat4 cameraProjMat;
 uniform mat4 matWorldToLigthView;
 uniform mat4 matLightViewToProjection;
 
+// Bloom
+uniform float fBloomThreshold;
+
 //---------------------------------------------------------------------------------------
 // Point Lights
 //---------------------------------------------------------------------------------------
@@ -36,7 +39,7 @@ struct PointLight
 	float radius;
 	float intensity;
 	vec3 position;
-	vec4 color;
+	vec3 color;
 };
 
 uniform PointLight pointLights[MAX_POINT_LIGHTS];
@@ -50,7 +53,7 @@ uniform int			numDirectionalLights;		// number of point lights in the scene
 struct DirectionalLight
 {
 	vec3 direction;
-	vec4 color;
+	vec3 color;
 	float intensity;
 };
 
@@ -91,9 +94,9 @@ void main()
 	vec3 Position = texture2D(positionBuffer, vs_outTexcoord).rgb; 
 	vec4 NormalBufferColor = texture2D(normalBuffer, vs_outTexcoord);
 	vec3 Normal = NormalBufferColor.rgb;
-	float Specular = NormalBufferColor.a;
+	float SpecularMask = NormalBufferColor.a;
 	vec4 Emission = texture2D(emissiveBuffer, vs_outTexcoord);
-
+	vec4 Specular = vec4(vec3(0), 1);
 	vec4 Albedo = texture2D(albedoBuffer, vs_outTexcoord);
 
 	// ------------------------ Point Light Illuminance ------------------- 
@@ -110,13 +113,13 @@ void main()
 		float r = pointLights[i].radius;
 	
 		// ref : https://imdoingitwrong.wordpress.com/2011/01/31/light-attenuation/
-		atten = 1 / dist; //(1 + ((2/r)*dist) + ((1/r*r)*(dist*dist)));
+		atten = (1 + ((2/r)*dist) + ((1/r*r)*(dist*dist)));
 		
 		// diffuse
 		NdotLPoint = max(dot(Normal, -LightDir), 0);
 	
 		// accumulate...
-		DiffusePoint += pointLights[i].color * atten * NdotLPoint * pointLights[i].intensity;
+		DiffusePoint += vec4(pointLights[i].color,1) * atten * NdotLPoint * pointLights[i].intensity;
 	}
 	
 	// Specular
@@ -139,7 +142,7 @@ void main()
 		RdotVPoint = pow(clamp(dot(reflVectorPoint, viewDir), 0, 1), 32);
 	
 		// accumulate...
-		SpecularPoint += pointLights[i].color * atten * RdotVPoint;
+		SpecularPoint += vec4(pointLights[i].color,1) * atten * RdotVPoint;
 	}
 	// ------------------------ End of Point Light Illuminance ------------------- 
 
@@ -154,7 +157,7 @@ void main()
 		NdotLDir = max(dot(Normal, -dirLights[i].direction), 0);
 	
 		// accumulate...
-		DiffuseDirectional += dirLights[i].color * NdotLDir * dirLights[i].intensity;
+		DiffuseDirectional += vec4(dirLights[i].color,1) * NdotLDir * dirLights[i].intensity;
 	}
 	
 	// Specular
@@ -171,7 +174,7 @@ void main()
 		RdotVDir = pow(clamp(dot(reflVectorDir, viewDir), 0, 1), 32);
 	
 		// accumulate...
-		SpecularDirectional += dirLights[i].color * RdotVDir;
+		SpecularDirectional += vec4(dirLights[i].color,1) * RdotVDir;
 	}
 	// ------------------------ End of Point Light Illuminance ------------------- 
 
@@ -185,9 +188,15 @@ void main()
 	float Shadow = readShadowMap(Position, Normal, viewDir);
 	vec4 ShadowColor = vec4(vec3(1.0f - Shadow), 1.0f);
 
-	outColor = Albedo * ShadowColor + ShadowColor * ((DiffusePoint + DiffuseDirectional) + (SpecularPoint * Specular + SpecularDirectional * Specular)) + Reflection * Specular;
-	//outColor = Albedo + ((DiffusePoint + DiffuseDirectional) + (SpecularPoint * Specular + SpecularDirectional * Specular)) + Reflection * Specular;
+	// Specular
+	Specular += SpecularMask * (SpecularPoint + SpecularDirectional);
+
+	outColor = Albedo * ShadowColor + ShadowColor * ((DiffusePoint + DiffuseDirectional) + Specular) + Reflection * SpecularMask;
 
 	// Always add Emission color to bright buffer!
-	brightColor = Emission * 3.0f;
+	float brightness = dot(outColor.rgb, vec3(0.2126f, 0.7152f, 0.0722f));
+	if(brightness > fBloomThreshold)
+		Emission += Specular;
+
+	brightColor = Emission;
 }
