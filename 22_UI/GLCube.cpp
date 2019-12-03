@@ -131,7 +131,7 @@ void GLCube::Init()
 {
 	// Create shader object
 	// shader
-	m_pShader = new GLSLShader("Shaders/vs.glsl", "Shaders/ps.glsl");
+	m_pShader = new GLSLShader("Shaders/vs.vert", "Shaders/ps.frag");
 
 	// create vao
 	glGenVertexArrays(1, &vao);

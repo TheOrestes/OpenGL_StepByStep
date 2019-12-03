@@ -50,7 +50,7 @@ GLQuad::~GLQuad()
 void GLQuad::Init()
 {
 	// Create shader object
-	m_pShader = new GLSLShader("Shaders/vsTexture.glsl", "Shaders/psTexture.glsl");
+	m_pShader = new GLSLShader("Shaders/Texture.vert", "Shaders/Texture.frag");
 
 	// create vao
 	glGenVertexArrays(1, &vao);

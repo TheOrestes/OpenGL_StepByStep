@@ -51,14 +51,14 @@ StaticObject::~StaticObject()
 void StaticObject::Init()
 {
 	std::string vertShaderPath;
-	vertShaderPath = "Shaders/vs" + m_strShader + ".glsl";
+	vertShaderPath = "Shaders/" + m_strShader + ".vert";
 
 	std::string fragShaderPath;
-	fragShaderPath = "Shaders/ps" + m_strShader + ".glsl";
+	fragShaderPath = "Shaders/" + m_strShader + ".frag";
 
 	m_pShader = new GLSLShader(vertShaderPath, fragShaderPath);
 
-	m_pShadowPassShader = new GLSLShader("Shaders/vsShadowPass.glsl", "Shaders/psShadowPass.glsl");
+	m_pShadowPassShader = new GLSLShader("Shaders/ShadowPass.vert", "Shaders/ShadowPass.frag");
 
 	// initialize Material
 	m_pMaterial = new Material();

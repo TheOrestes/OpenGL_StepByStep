@@ -50,7 +50,7 @@ GLSkybox::~GLSkybox()
 void GLSkybox::Init()
 {
 	// create skybox instance...
-	m_pShader = new GLSLShader("Shaders/vsSkybox.glsl", "Shaders/psSkyboxDeferred.glsl");
+	m_pShader = new GLSLShader("Shaders/Skybox.vert", "Shaders/SkyboxDeferred.frag");
 
 	// Load cubemap and assign id ...
 	tbo = TextureManager::getInstannce().LoadCubemapFromFile("../Assets/cubemaps/Yokohama2");

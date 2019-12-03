@@ -90,10 +90,10 @@ void PostProcess::Initialize()
 	UIManager::getInstance().WriteToConsole(LOGTYPE::LOG_INFO, "PostProcess", "PostProcess initialization started...");
 
 	// Create shader & grab handles to all the uniform variables...
-	m_pDeferredShader = new GLSLShader("Shaders/vsDeferredLighting.glsl", "Shaders/psDeferredLighting.glsl");
-	m_pBloomShader = new GLSLShader("Shaders/vsBloom.glsl", "Shaders/psBloom.glsl");
-	m_pPostFXShader = new GLSLShader("Shaders/vsPostProcess.glsl", "Shaders/psPostProcess.glsl");
-	m_pDebugShader = new GLSLShader("Shaders/vsDeferredLighting.glsl", "Shaders/psDeferredDebug.glsl");
+	m_pDeferredShader = new GLSLShader("Shaders/DeferredLighting.vert", "Shaders/DeferredLighting.frag");
+	m_pBloomShader = new GLSLShader("Shaders/Bloom.vert", "Shaders/Bloom.frag");
+	m_pPostFXShader = new GLSLShader("Shaders/PostProcess.vert", "Shaders/PostProcess.frag");
+	m_pDebugShader = new GLSLShader("Shaders/DeferredLighting.vert", "Shaders/DeferredDebug.frag");
 
 	// Create screen aligned quad for final render
 	m_pScreenQuadFinal = new ScreenAlignedQuad();

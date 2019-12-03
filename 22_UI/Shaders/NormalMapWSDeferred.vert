@@ -11,6 +11,7 @@ layout(location=5) in vec3 in_Barycentric;
 out vec3 vs_outPosition;
 out vec2 vs_outUV;
 out mat3 vs_outTBN;
+out vec3 vs_outNormal;
 out vec3 vs_outBarycentric;
 
 // uniforms...
@@ -39,6 +40,9 @@ void main()
 	// pass this matrix to fragment shader. This will be used to transform
 	// vector from tangent space to world space.
 	vs_outTBN = mat3(T,B,N);
+
+	// pass on world normals to fragment shader!
+	vs_outNormal = N;
 
 	gl_Position = WVP * vec4(in_Position, 1.0);
 }

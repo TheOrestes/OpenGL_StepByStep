@@ -97,7 +97,7 @@ void GLLight::Init()
 {
 	// Create shader object
 	// shader
-	m_pShader = new GLSLShader("Shaders/vsLightDeferred.glsl", "Shaders/psLightDeferred.glsl");
+	m_pShader = new GLSLShader("Shaders/LightDeferred.vert", "Shaders/LightDeferred.frag");
 
 	// create vao
 	glGenVertexArrays(1, &vao);

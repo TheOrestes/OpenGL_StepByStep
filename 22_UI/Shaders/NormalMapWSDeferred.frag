@@ -9,6 +9,7 @@ layout (location = 3) out vec3 gEmission;
 in vec3 vs_outPosition;
 in vec2 vs_outUV;
 in mat3 vs_outTBN;
+in vec3 vs_outNormal;
 in vec3 vs_outBarycentric;
 
 //---------------------------------------------------------------------------------------
@@ -61,10 +62,12 @@ void main()
 	vec4 emissiveColor = hasEmissive ? texture(texture_emissive, vs_outUV) : vec4(0);
 
 	// Extract normals, get them from [0,1] to [-1,1] range
-	vec3 texNormal = hasNormal ? normalize(texture(texture_normal, vs_outUV) * 2.0 - 1.0).rgb : vec3(1);
+	vec3 texNormal = normalize(texture(texture_normal, vs_outUV) * 2.0 - 1.0).rgb;
 
 	// use TBN matrix to transform these Tangent space normals to World Space
-	vec3 Normal = normalize(vs_outTBN * texNormal);
+	// if object has normal map, then use tangent space texture normals by transforming then to 
+	// world space using TBN matrix. If not, then use already transformed world space normals!
+	vec3 Normal = hasNormal ? normalize(vs_outTBN * texNormal) : vs_outNormal;
 
 	// ! write World Space position into Position buffer
 	gPosition = vs_outPosition;
