@@ -154,7 +154,7 @@ void main()
 	for(int i = 0 ; i < numDirectionalLights ; ++i)
 	{
 		// diffuse
-		NdotLDir = max(dot(Normal, -dirLights[i].direction), 0);
+		NdotLDir = max(dot(Normal, dirLights[i].direction), 0);
 	
 		// accumulate...
 		DiffuseDirectional += vec4(dirLights[i].color,1) * NdotLDir * dirLights[i].intensity;

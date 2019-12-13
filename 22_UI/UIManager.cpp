@@ -244,9 +244,9 @@ void UIManager::RenderSceneUI(Scene* ptrScene, PostProcess* ptrFX)
 			std::string lightName = "DirectionalLight" + std::to_string(i);
 			if (ImGui::TreeNode(lightName.c_str()))
 			{
-				glm::vec3	direction = dirLightObject->GetLightDirection();
-				if (ImGui::SliderFloat3("Direction", glm::value_ptr(direction), -1, 1))
-					dirLightObject->SetLightDirection(direction);
+				glm::vec3	angleXYZ = dirLightObject->GetLightAngleXYZ();
+				if (ImGui::SliderFloat3("Rotation", glm::value_ptr(angleXYZ), -360, 360, "%0.1f"))
+					dirLightObject->SetLightAngleXYZ(angleXYZ);
 		
 				glm::vec3	color = dirLightObject->GetLightColor();
 				if (ImGui::ColorEdit3("Color", glm::value_ptr(color)))
@@ -255,7 +255,37 @@ void UIManager::RenderSceneUI(Scene* ptrScene, PostProcess* ptrFX)
 				float		intensity = dirLightObject->GetLightIntensity();
 				if (ImGui::SliderFloat("Intensity", &intensity, 0, 10))
 					dirLightObject->SetLightIntensity(intensity);
-		
+
+				ImGui::Separator();
+
+				bool bShowShadowBounds = dirLightObject->IsShowDebugShadowVolumeOn();
+				ImGui::Checkbox("Edit Shadow Bounds (Buggy, Crash!)", &bShowShadowBounds);
+				dirLightObject->SetShowDebugShadowVolume(bShowShadowBounds);
+				
+				if (ImGui::CollapsingHeader("Shadow Bound Properties", &bShowShadowBounds))
+				{
+					float bound = dirLightObject->GetShadowBound();
+					if (ImGui::SliderFloat("Bounds", &bound, 1.0f, 100.0f))
+					{
+						dirLightObject->SetShadowBound(bound);
+						dirLightObject->UpdateBounds();
+					}
+
+					float nearPlane = dirLightObject->GetShadowNearPlane();
+					if (ImGui::SliderFloat("Near Plane", &nearPlane, -50.0f, 100.0f))
+					{
+						dirLightObject->SetShadowNearPlane(nearPlane);
+						dirLightObject->UpdateBounds();
+					}
+
+					float farPlane = dirLightObject->GetShadowFarPlane();
+					if (ImGui::SliderFloat("Far Plane", &farPlane, 1.0f, 200.0f))
+					{
+						dirLightObject->SetShadowFarPlane(farPlane);
+						dirLightObject->UpdateBounds();
+					}
+				}
+					
 				ImGui::TreePop();
 			}
 

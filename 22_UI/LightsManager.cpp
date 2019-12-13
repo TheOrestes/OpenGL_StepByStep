@@ -46,7 +46,11 @@ void LightsManager::RenderLights()
 		(*iterPtLight)->Render();
 	}
 
-	//std::vector<DirectionalLightObject*>::iterator iterDirLight = m_vecDirLights.begin();
+	std::vector<DirectionalLightObject*>::iterator iterDirLight = m_vecDirLights.begin();
+	for (; iterDirLight != m_vecDirLights.end(); ++iterDirLight)
+	{
+		(*iterDirLight)->Render();
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

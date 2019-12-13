@@ -35,8 +35,8 @@ void Scene::InitScene()
 
 	// Initialize Static objects...
 	StaticObjectData data;
-	data.name = "Spaceship";
-	data.path = "../Assets/models/Spaceship.fbx";
+	data.name = "Barbarian";
+	data.path = "../Assets/models/Barb.fbx";
 	data.shader = "NormalMapWSDeferred";
 	data.position = glm::vec3(0, 5, 0);
 	data.angle = 0.0f;
@@ -77,7 +77,7 @@ void Scene::InitScene()
 
 	// Load directional lights
 	m_pMainDirectionalLight = new DirectionalLightObject(glm::vec4(1, 1, 1, 1));
-	m_pMainDirectionalLight->SetLightDirection(glm::vec3(1, -1, -1));
+	m_pMainDirectionalLight->SetLightAngleXYZ(glm::vec3(180.0f, 0, 0));
 	m_pMainDirectionalLight->SetLightIntensity(0.25f);
 	LightsManager::getInstance()->GatherDirectionalLights(m_pMainDirectionalLight);
 

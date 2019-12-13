@@ -166,6 +166,7 @@ xcopy $(SolutionDir)\Shaders $(SolutionDir)$(Platform)\$(Configuration)\Shaders 
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="BBoxCube.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DirectionalLightObject.cpp" />
     <ClCompile Include="GLCube.cpp" />
@@ -194,6 +195,7 @@ xcopy $(SolutionDir)\Shaders $(SolutionDir)$(Platform)\$(Configuration)\Shaders 
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="BBoxCube.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="DirectionalLightObject.h" />
     <ClInclude Include="GLCube.h" />
@@ -226,48 +228,48 @@ xcopy $(SolutionDir)\Shaders $(SolutionDir)$(Platform)\$(Configuration)\Shaders 
     <ClInclude Include="VertexStructures.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Shaders\BasicLighting.frag" />
+    <None Include="Shaders\BasicLighting.vert" />
+    <None Include="Shaders\Bloom.frag" />
+    <None Include="Shaders\Bloom.vert" />
+    <None Include="Shaders\Color.frag" />
+    <None Include="Shaders\Color.vert" />
+    <None Include="Shaders\DeferredDebug.frag" />
+    <None Include="Shaders\DeferredLighting.frag" />
+    <None Include="Shaders\DeferredLighting.vert" />
+    <None Include="Shaders\Diffuse.frag" />
+    <None Include="Shaders\Diffuse.vert" />
     <None Include="Shaders\HDRI2Cubemap.frag" />
     <None Include="Shaders\HDRI2Cubemap.vert" />
     <None Include="Shaders\HDRISkybox.frag" />
     <None Include="Shaders\HDRISkybox.vert" />
-    <None Include="Shaders\ps.glsl">
-      <FileType>Script</FileType>
-    </None>
-    <None Include="Shaders\psBasicLighting.glsl" />
-    <None Include="Shaders\psBloom.glsl" />
-    <None Include="Shaders\psDeferredDebug.glsl" />
-    <None Include="Shaders\psDeferredLighting.glsl" />
-    <None Include="Shaders\psDiffuse.glsl" />
-    <None Include="Shaders\psLight.glsl" />
-    <None Include="Shaders\psLightDeferred.glsl" />
-    <None Include="Shaders\psNormalMapTS.glsl" />
-    <None Include="Shaders\psNormalMapWS.glsl" />
-    <None Include="Shaders\psNormalMapWSDeferred.glsl" />
-    <None Include="Shaders\psPostProcess.glsl" />
-    <None Include="Shaders\psReflection.glsl" />
-    <None Include="Shaders\psShadowPass.glsl" />
-    <None Include="Shaders\psSkybox.glsl" />
-    <None Include="Shaders\psSkyboxDeferred.glsl" />
-    <None Include="Shaders\psSpecular.glsl" />
-    <None Include="Shaders\psTexture.glsl" />
-    <None Include="Shaders\psTextureMulti.glsl" />
-    <None Include="Shaders\vs.glsl" />
-    <None Include="Shaders\vsBasicLighting.glsl" />
-    <None Include="Shaders\vsBloom.glsl" />
-    <None Include="Shaders\vsDeferredLighting.glsl" />
-    <None Include="Shaders\vsDiffuse.glsl" />
-    <None Include="Shaders\vsLight.glsl" />
-    <None Include="Shaders\vsLightDeferred.glsl" />
-    <None Include="Shaders\vsNormalMapTS.glsl" />
-    <None Include="Shaders\vsNormalMapWS.glsl" />
-    <None Include="Shaders\vsNormalMapWSDeferred.glsl" />
-    <None Include="Shaders\vsPostProcess.glsl" />
-    <None Include="Shaders\vsReflection.glsl" />
-    <None Include="Shaders\vsShadowPass.glsl" />
-    <None Include="Shaders\vsSkybox.glsl" />
-    <None Include="Shaders\vsSpecular.glsl" />
-    <None Include="Shaders\vsTexture.glsl" />
-    <None Include="Shaders\vsTextureMulti.glsl" />
+    <None Include="Shaders\Light.frag" />
+    <None Include="Shaders\Light.vert" />
+    <None Include="Shaders\LightDeferred.frag" />
+    <None Include="Shaders\LightDeferred.vert" />
+    <None Include="Shaders\NormalMapTS.frag" />
+    <None Include="Shaders\NormalMapTS.vert" />
+    <None Include="Shaders\NormalMapWS.frag" />
+    <None Include="Shaders\NormalMapWS.vert" />
+    <None Include="Shaders\NormalMapWSDeferred.frag" />
+    <None Include="Shaders\NormalMapWSDeferred.vert" />
+    <None Include="Shaders\PostProcess.frag" />
+    <None Include="Shaders\PostProcess.vert" />
+    <None Include="Shaders\ps.frag" />
+    <None Include="Shaders\Reflection.frag" />
+    <None Include="Shaders\Reflection.vert" />
+    <None Include="Shaders\ShadowPass.frag" />
+    <None Include="Shaders\ShadowPass.vert" />
+    <None Include="Shaders\Skybox.frag" />
+    <None Include="Shaders\Skybox.vert" />
+    <None Include="Shaders\SkyboxDeferred.frag" />
+    <None Include="Shaders\Specular.frag" />
+    <None Include="Shaders\Specular.vert" />
+    <None Include="Shaders\Texture.frag" />
+    <None Include="Shaders\Texture.vert" />
+    <None Include="Shaders\TextureMulti.frag" />
+    <None Include="Shaders\TextureMulti.vert" />
+    <None Include="Shaders\vs.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

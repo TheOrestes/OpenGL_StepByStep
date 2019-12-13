@@ -99,6 +99,9 @@
     <ClCompile Include="StaticObjectManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="BBoxCube.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GLSLShader.h">
@@ -194,116 +197,11 @@
     <ClInclude Include="StaticObjectManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BBoxCube.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Shaders\ps.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\psBasicLighting.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\psDiffuse.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\psLight.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\psNormalMapTS.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\psNormalMapWS.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\psPostProcess.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\psReflection.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\psSkybox.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\psSpecular.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\psTexture.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\psTextureMulti.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\vs.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\vsBasicLighting.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\vsDiffuse.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\vsLight.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\vsNormalMapTS.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\vsNormalMapWS.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\vsPostProcess.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\vsReflection.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\vsSkybox.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\vsSpecular.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\vsTexture.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\vsTextureMulti.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\psBloom.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\vsBloom.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\psLightDeferred.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\vsLightDeferred.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\psNormalMapWSDeferred.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\vsNormalMapWSDeferred.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\psDeferredLighting.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\vsDeferredLighting.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\psSkyboxDeferred.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\psShadowPass.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\vsShadowPass.glsl">
-      <Filter>Shaders</Filter>
-    </None>
-    <None Include="Shaders\psDeferredDebug.glsl">
-      <Filter>Shaders</Filter>
-    </None>
     <None Include="Shaders\HDRI2Cubemap.frag">
       <Filter>Shaders</Filter>
     </None>
@@ -314,6 +212,120 @@
       <Filter>Shaders</Filter>
     </None>
     <None Include="Shaders\HDRISkybox.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\BasicLighting.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\BasicLighting.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Bloom.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Bloom.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\DeferredDebug.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\DeferredLighting.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\DeferredLighting.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Diffuse.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Diffuse.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Light.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Light.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\LightDeferred.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\LightDeferred.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\NormalMapTS.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\NormalMapTS.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\NormalMapWS.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\NormalMapWS.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\NormalMapWSDeferred.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\NormalMapWSDeferred.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\PostProcess.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\PostProcess.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\ps.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Reflection.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Reflection.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\ShadowPass.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\ShadowPass.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Skybox.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Skybox.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\SkyboxDeferred.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Specular.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Specular.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Texture.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Texture.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\TextureMulti.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\TextureMulti.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\vs.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Color.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Color.vert">
       <Filter>Shaders</Filter>
     </None>
   </ItemGroup>

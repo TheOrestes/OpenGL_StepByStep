@@ -13,5 +13,5 @@ void main()
 {	
 	mat4 matLightSpace = matLightViewToProjection* matWorldToLightView;
 
-	gl_Position = matLightSpace * matWorld * vec4(in_Position, 1.0);
+	gl_Position = matLightSpace * (matWorld * vec4(in_Position, 1.0));
 }
