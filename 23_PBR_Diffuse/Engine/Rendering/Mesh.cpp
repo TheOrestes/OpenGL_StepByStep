@@ -75,7 +75,11 @@ void	Mesh::SetupMesh()
 void Mesh::SetMaterialProperties(int shaderID, Material * mat)
 {
 	glUniform4fv(glGetUniformLocation(shaderID, "material.Albedo"), 1, glm::value_ptr(mat->m_colAlbedo));
-	glUniform4fv(glGetUniformLocation(shaderID, "material.Roughness"), 1, glm::value_ptr(mat->m_colRoughness));
+	glUniform4fv(glGetUniformLocation(shaderID, "material.Emission"), 1, glm::value_ptr(mat->m_colEmission));
+	glUniform1fv(glGetUniformLocation(shaderID, "material.Roughness"), 1,  &(mat->m_fRoughness));
+	glUniform1fv(glGetUniformLocation(shaderID, "material.Metallic"), 1, &(mat->m_fMetallic));
+	glUniform1fv(glGetUniformLocation(shaderID, "material.Occlusion"), 1, &(mat->m_fOcclusion));
+	glUniform1fv(glGetUniformLocation(shaderID, "material.Height"), 1, &(mat->m_fHeight));
 
 	// toggle wireframe on/off...!
 	if (mat->m_bWireframe)
@@ -130,30 +134,26 @@ void	Mesh::Render(GLSLShader* shader, const glm::mat4& world, Material* material
 	GLuint shaderID = shader->GetShaderID();
 	shader->Use();
 
-	GLuint i = 0;
 	if (material->m_pTexAlbedo.getHasTexture())
 	{
 		glUniform1i(glGetUniformLocation(shaderID, "hasDiffuse"), true);
 		glUniform1i(glGetUniformLocation(shaderID, "texture_diffuse"), 0);
 	}
 
-	if (material->m_pTexSpecular.getHasTexture())
+	if (material->m_pTexMask.getHasTexture())
 	{
-		++i;
-		glUniform1i(glGetUniformLocation(shaderID, "hasSpecular"), true);
-		glUniform1i(glGetUniformLocation(shaderID, "texture_specular"), 1);
+		glUniform1i(glGetUniformLocation(shaderID, "hasMask"), true);
+		glUniform1i(glGetUniformLocation(shaderID, "texture_mask"), 1);
 	}
 
 	if (material->m_pTexNormal.getHasTexture())
 	{
-		++i;
 		glUniform1i(glGetUniformLocation(shaderID, "hasNormal"), true);
 		glUniform1i(glGetUniformLocation(shaderID, "texture_normal"), 2);
 	}
 
 	if (material->m_pTexEmission.getHasTexture())
 	{
-		++i;
 		glUniform1i(glGetUniformLocation(shaderID, "hasEmissive"), true);
 		glUniform1i(glGetUniformLocation(shaderID, "texture_emissive"), 3);
 	}
@@ -162,10 +162,11 @@ void	Mesh::Render(GLSLShader* shader, const glm::mat4& world, Material* material
 	glBindTexture(GL_TEXTURE_2D, material->m_pTexAlbedo.getID());
 
 	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, material->m_pTexSpecular.getID());
+	glBindTexture(GL_TEXTURE_2D, material->m_pTexMask.getID());
 
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, material->m_pTexNormal.getID());
+
 
 	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, material->m_pTexEmission.getID());

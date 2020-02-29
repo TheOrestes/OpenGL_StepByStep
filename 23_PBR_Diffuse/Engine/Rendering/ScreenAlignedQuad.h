@@ -11,7 +11,8 @@ enum QuadDesc
 	ALBEDO,
 	EMISSION,
 	BRIGHTNESS,
-	SHADOW_DEPTH
+	SHADOW_DEPTH,
+	MASK
 };
 
 class ScreenAlignedQuad

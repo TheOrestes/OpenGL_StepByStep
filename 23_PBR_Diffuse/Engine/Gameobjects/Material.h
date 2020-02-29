@@ -8,11 +8,9 @@
 enum TextureType
 {
 	TEXTURE_ALBEDO,
-	TEXTURE_SPECULAR,
-	TEXTURE_NORMAL,
-	TEXTURE_HEIGHT,
-	TEXTURE_OCCLUSION,
+	TEXTURE_MASK,
 	TEXTURE_EMISSION,
+	TEXTURE_NORMAL,
 	TEXTURE_MAX_TYPE
 };
 
@@ -51,21 +49,27 @@ struct Material
 	Material()
 	{
 		m_colAlbedo = glm::vec4(0.8,0.8,0.8,1.0);
-		m_colRoughness = glm::vec4(glm::vec3(0.8f), 1);
+		m_colEmission = glm::vec4(0.0f);
+		m_fRoughness = 0.5f;
+		m_fMetallic = 0.5f;
+		m_fOcclusion = 1.0f;
+		m_fHeight = 0.0f;
 		m_bWireframe = false;
 	}
 
 	// Textures
 	TextureProperty m_pTexAlbedo;
-	TextureProperty m_pTexSpecular;
-	TextureProperty m_pTexNormal;
-	TextureProperty m_pTexHeight;
-	TextureProperty m_pTexOcclusion;
 	TextureProperty m_pTexEmission;
+	TextureProperty m_pTexNormal;
+	TextureProperty m_pTexMask;		// R-Roughness, G-Metallic, B-Occlusion, A-Height 
 
 	// Material properties
 	glm::vec4	m_colAlbedo;
-	glm::vec4	m_colRoughness;
+	glm::vec4	m_colEmission;
+	float		m_fRoughness;
+	float		m_fMetallic;
+	float		m_fOcclusion;
+	float		m_fHeight;
 	bool		m_bWireframe;
 };
 

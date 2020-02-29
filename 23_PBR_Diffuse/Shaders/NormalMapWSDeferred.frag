@@ -5,6 +5,7 @@ layout (location = 0) out vec3 gPosition;
 layout (location = 1) out vec4 gNormal;
 layout (location = 2) out vec3 gAlbedo;
 layout (location = 3) out vec3 gEmission;
+layout (location = 4) out vec3 gMask;
 
 in vec3 vs_outPosition;
 in vec2 vs_outUV;
@@ -17,9 +18,12 @@ in vec3 vs_outBarycentric;
 //---------------------------------------------------------------------------------------
 struct Material
 {
-	vec4 Albedo;
-	vec4 Roughness;
-	vec4 Metallic;
+	vec4  Albedo;
+	vec4  Emission;
+	float Roughness;
+	float Metallic;
+	float Occlusion;
+	float Height;
 };
 
 uniform Material material;
@@ -29,11 +33,11 @@ uniform Material material;
 //---------------------------------------------------------------------------------------
 uniform mat4		matWorld;
 uniform bool		hasDiffuse = false;
-uniform bool		hasSpecular = false;
+uniform bool		hasMask = false;
 uniform bool		hasNormal = false;
 uniform bool		hasEmissive = false;
 uniform sampler2D 	texture_diffuse;
-uniform sampler2D	texture_specular;
+uniform sampler2D	texture_mask;
 uniform sampler2D 	texture_normal;
 uniform sampler2D	texture_emissive;
 
@@ -55,11 +59,11 @@ void main()
 	vec4 Ambient = vec4(0);
 	vec4 Diffuse = vec4(0);
 	vec4 Specular = vec4(0);
+	vec3 Mask = vec3(0);
 
 	// texture look-ups
-	vec4 baseColor = hasDiffuse ? texture(texture_diffuse, vs_outUV) : vec4(1);
-	vec4 specColor = hasSpecular ? texture(texture_specular, vs_outUV) : vec4(0);
-	vec4 emissiveColor = hasEmissive ? texture(texture_emissive, vs_outUV) : vec4(0);
+	vec4 baseColor = hasDiffuse ? material.Albedo * texture(texture_diffuse, vs_outUV) : material.Albedo;
+	vec4 emissiveColor = hasEmissive ? material.Emission * texture(texture_emissive, vs_outUV) : material.Emission;
 
 	// Extract normals, get them from [0,1] to [-1,1] range
 	vec3 texNormal = normalize(texture(texture_normal, vs_outUV) * 2.0 - 1.0).rgb;
@@ -69,17 +73,23 @@ void main()
 	// world space using TBN matrix. If not, then use already transformed world space normals!
 	vec3 Normal = hasNormal ? normalize(vs_outTBN * texNormal) : vs_outNormal;
 
+	if(hasMask)
+		Mask = vec3(texture(texture_mask, vs_outUV));
+	else
+		Mask = vec3(material.Roughness, material.Metallic, material.Occlusion);
+
 	// ! write World Space position into Position buffer
 	gPosition = vs_outPosition;
 
 	// ! Write into Normal Buffer : Normals(RGB) + Specular(A)
 	gNormal.rgb = Normal;
-	gNormal.a = specColor.r;
 
 	// Ambient
 	Ambient	= material.Albedo * baseColor;
 
 	gAlbedo = mix(wireframeColor, Ambient.rgb, edgeFactor());
+
+	gMask = Mask;
 
 	// ! Write into Emissive buffer
 	gEmission = emissiveColor.rgb;

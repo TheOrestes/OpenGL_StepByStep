@@ -118,16 +118,16 @@ Mesh	Model::ProcessMesh(aiMesh* mesh, const aiScene* scene, Material* material)
 		}
 
 		// Look for Specular Texture
-		unsigned int nSpecular = mat->GetTextureCount(aiTextureType_SPECULAR);
-		if (nSpecular > 0)
+		unsigned int nMask = mat->GetTextureCount(aiTextureType_SPECULAR);
+		if (nMask > 0)
 		{
 			mat->GetTexture(aiTextureType_SPECULAR, 0, &str);
 			const int id2 = TextureManager::getInstannce().Load2DTextureFromFile(str.C_Str(), m_Directory);
-			material->m_pTexSpecular.setID(id2);
-			material->m_pTexSpecular.SetHasTexture(true);
-			material->m_pTexSpecular.setType(TextureType::TEXTURE_SPECULAR);
-			material->m_pTexSpecular.setName("texture_specular");
-			material->m_pTexSpecular.setPath(str.C_Str());
+			material->m_pTexMask.setID(id2);
+			material->m_pTexMask.SetHasTexture(true);
+			material->m_pTexMask.setType(TextureType::TEXTURE_MASK);
+			material->m_pTexMask.setName("texture_mask");
+			material->m_pTexMask.setPath(str.C_Str());
 		}
 
 		// Look for Normal texture...

@@ -177,12 +177,28 @@ void UIManager::RenderSceneUI(Scene* ptrScene, PostProcess* ptrFX)
 					Material* mat = object->GetMaterialPtr();
 					
 					float albedo[4] = { mat->m_colAlbedo.r, mat->m_colAlbedo.g, mat->m_colAlbedo.b, mat->m_colAlbedo.a };
-					if(ImGui::ColorEdit4("Albedo Color", albedo))
+					if(ImGui::ColorEdit4("Albedo", albedo))
 						mat->m_colAlbedo = glm::vec4(albedo[0], albedo[1], albedo[2], albedo[3]);
 
-					float roughness[4] = { mat->m_colRoughness.r, mat->m_colRoughness.g, mat->m_colRoughness.b, mat->m_colRoughness.a };
-					if(ImGui::ColorEdit4("Roughness Color", roughness))
-						mat->m_colRoughness = glm::vec4(roughness[0], roughness[1], roughness[2], roughness[3]);
+					float emission[4] = { mat->m_colEmission.r, mat->m_colEmission.g, mat->m_colEmission.b, mat->m_colEmission.a };
+					if (ImGui::ColorEdit4("Emission", emission))
+						mat->m_colEmission = glm::vec4(emission[0], emission[1], emission[2], emission[3]);
+
+					float roughness = mat->m_fRoughness;
+					if (ImGui::SliderFloat("Roughness", &roughness, 0.0f, 1.0f))
+						mat->m_fRoughness = roughness;
+
+					float metallic = mat->m_fMetallic;
+					if (ImGui::SliderFloat("Metallic", &metallic, 0.0f, 1.0f))
+						mat->m_fMetallic = metallic;
+
+					float occlusion = mat->m_fOcclusion;
+					if (ImGui::SliderFloat("Occlusion", &occlusion, 0.0f, 1.0f))
+						mat->m_fOcclusion = occlusion;
+
+					float height = mat->m_fHeight;
+					if (ImGui::SliderFloat("Height", &height, 0.0f, 1.0f))
+						mat->m_fHeight = height;
 
 					bool showWireframe = mat->m_bWireframe;
 					if(ImGui::Checkbox("Wireframe", &showWireframe))
@@ -219,6 +235,11 @@ void UIManager::RenderSceneUI(Scene* ptrScene, PostProcess* ptrFX)
 					bool autoRotate = object->GetAutoRotateFlag();
 					if(ImGui::Checkbox("Auto Rotate", &autoRotate))
 						object->SetAutoRotate(autoRotate);
+
+					// AutoRotate Speed
+					float autoSpeed = object->GetAutoRotateSpeed();
+					if (ImGui::SliderFloat("Rotation Speed", &autoSpeed, 0.01f, 1.0f))
+						object->SetAutoRotateSpeed(autoSpeed);
 
 					ImGui::TreePop();
 				}

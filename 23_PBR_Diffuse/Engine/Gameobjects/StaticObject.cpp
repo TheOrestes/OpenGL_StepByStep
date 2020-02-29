@@ -17,6 +17,7 @@ StaticObject::StaticObject()
 	m_pMaterial = nullptr;
 
 	m_bAutoRotate = false;
+	m_fAutoRotateSpeed = 0.1f;
 
 	m_fCurrentAngle = 0.0f;
 }
@@ -37,6 +38,7 @@ StaticObject::StaticObject(const StaticObjectData& data)
 	m_vecScale = data.scale;
 
 	m_bAutoRotate = data.autoRotate;
+	m_fAutoRotateSpeed = 0.1f;
 
 	m_fCurrentAngle = 0.0f;
 }
@@ -88,7 +90,7 @@ void StaticObject::Update( float dt )
 {
 	if (m_bAutoRotate)
 	{
-		m_fCurrentAngle += 0.2f * dt;
+		m_fCurrentAngle += m_fAutoRotateSpeed * dt;
 	}
 		
 	m_fAngle = m_fCurrentAngle;

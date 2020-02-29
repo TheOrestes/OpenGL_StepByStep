@@ -36,6 +36,7 @@ public:
 	inline Material*		GetMaterialPtr() { return m_pMaterial; }
 	inline float			GetCurrentAngle() { return m_fAngle; }
 	inline bool				GetAutoRotateFlag() { return m_bAutoRotate; }
+	inline float			GetAutoRotateSpeed() { return m_fAutoRotateSpeed; }
 	
 
 	inline void				SetName(const std::string& name) { m_strName = name; }
@@ -46,6 +47,7 @@ public:
 	inline void				SetRotationAngle(float angle) { m_fCurrentAngle = angle; }
 	inline void				SetScale(const glm::vec3& scale) { m_vecScale = scale; }
 	inline void				SetAutoRotate(bool _flag) { m_bAutoRotate = _flag; }
+	inline void				SetAutoRotateSpeed(float _speed) { m_fAutoRotateSpeed = _speed; }
 
 private:
 	std::string				m_strName;
@@ -64,6 +66,7 @@ private:
 	glm::mat4				m_matWorld;
 
 	bool					m_bAutoRotate;
+	float					m_fAutoRotateSpeed;
 	float					m_fCurrentAngle;
 };
 

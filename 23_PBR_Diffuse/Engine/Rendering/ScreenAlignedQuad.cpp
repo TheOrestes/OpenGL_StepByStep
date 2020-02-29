@@ -106,6 +106,18 @@ void ScreenAlignedQuad::CreateScreenAlignedQuad(int id)
 			break;
 		}
 
+		case QuadDesc::MASK:
+		{
+			m_vertices[0] = VertexPT(glm::vec3(-1.0f,  -0.33f, 0), glm::vec2(0, 1));
+			m_vertices[1] = VertexPT(glm::vec3(-1.0f,  -1.0f,  0), glm::vec2(0, 0));
+			m_vertices[2] = VertexPT(glm::vec3(-0.33f, -1.0f,  0), glm::vec2(1, 0));
+			m_vertices[3] = VertexPT(glm::vec3(-1.0f,  -0.33f, 0), glm::vec2(0, 1));
+			m_vertices[4] = VertexPT(glm::vec3(-0.33f, -1.0f,  0), glm::vec2(1, 0));
+			m_vertices[5] = VertexPT(glm::vec3(-0.33f, -0.33f, 0), glm::vec2(1, 1));
+
+			break;
+		}
+
 		default:
 			break;
 	}

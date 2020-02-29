@@ -25,9 +25,12 @@ PostProcess::PostProcess()
 	m_PositionBuffer = -1;
 	m_NormalBuffer = -1;
 	m_AlbedoBuffer = -1;
+	m_EmissionBuffer = -1;
+	m_MaskBuffer = -1;
 	m_hPositionBuffer = -1;
 	m_hNormalBuffer = -1;
 	m_hAlbedoBuffer = -1;
+	m_hMaskBuffer = -1;
 
 	m_pPostFXShader = nullptr;
 	m_pDeferredShader = nullptr;
@@ -64,6 +67,7 @@ PostProcess::~PostProcess()
 	SAFE_DELETE(m_pDebugQuadEmission);
 	SAFE_DELETE(m_pDebugQuadNormal);
 	SAFE_DELETE(m_pDebugQuadPosition);
+	SAFE_DELETE(m_pDebugQuadMask);
 	SAFE_DELETE(m_pDebugQuadShadowDepth);
 	
 	glDeleteBuffers(1, &m_colorBuffer);
@@ -71,6 +75,7 @@ PostProcess::~PostProcess()
 	glDeleteBuffers(1, &m_AlbedoBuffer);
 	glDeleteBuffers(1, &m_NormalBuffer);
 	glDeleteBuffers(1, &m_DepthBuffer);
+	glDeleteBuffers(1, &m_MaskBuffer);
 	glDeleteBuffers(1, &m_ShadowDepthBuffer);
 
 	glDeleteFramebuffers(1, &m_fboDeferred);
@@ -106,6 +111,7 @@ void PostProcess::Initialize()
 	m_pDebugQuadNormal = new ScreenAlignedQuad();
 	m_pDebugQuadAlbedo = new ScreenAlignedQuad();
 	m_pDebugQuadEmission = new ScreenAlignedQuad();
+	m_pDebugQuadMask = new ScreenAlignedQuad();
 	m_pDebugQuadBrightness = new ScreenAlignedQuad();
 	m_pDebugQuadShadowDepth = new ScreenAlignedQuad();
 
@@ -115,6 +121,7 @@ void PostProcess::Initialize()
 	m_pDebugQuadEmission->CreateScreenAlignedQuad(4);
 	m_pDebugQuadBrightness->CreateScreenAlignedQuad(5);
 	m_pDebugQuadShadowDepth->CreateScreenAlignedQuad(6);
+	m_pDebugQuadMask->CreateScreenAlignedQuad(7);
 
 	UIManager::getInstance().WriteToConsole(LOGTYPE::LOG_INFO, "PostProcess", "PostProcess initialization finished...");
 }
@@ -138,7 +145,7 @@ void PostProcess::CreateDeferredBuffers(int horizRes, int vertRes)
 
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_PositionBuffer, 0);
 
-	// ! NORMAL(RGB) + SPECULAR(A) BUFFER
+	// ! NORMAL(RGB) + HEIGHT(A) BUFFER
 	glGenTextures(1, &m_NormalBuffer);
 	glBindTexture(GL_TEXTURE_2D, m_NormalBuffer);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, horizRes, vertRes, 0, GL_RGBA, GL_FLOAT, nullptr);
@@ -174,6 +181,18 @@ void PostProcess::CreateDeferredBuffers(int horizRes, int vertRes)
 
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, m_EmissionBuffer, 0);
 
+	// ! MASK BUFFER
+	glGenTextures(1, &m_MaskBuffer);
+	glBindTexture(GL_TEXTURE_2D, m_MaskBuffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, horizRes, vertRes, 0, GL_RGB, GL_FLOAT, nullptr);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, m_MaskBuffer, 0);
+
 	// create render buffer object 
 	glGenRenderbuffers(1, &m_rboDeferred);
 	glBindRenderbuffer(GL_RENDERBUFFER, m_rboDeferred);
@@ -184,8 +203,12 @@ void PostProcess::CreateDeferredBuffers(int horizRes, int vertRes)
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_rboDeferred);
 
 	// Tell OGL which color attachments we will use
-	GLuint attachments[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
-	glDrawBuffers(4, attachments);
+	GLuint attachments[5] = { GL_COLOR_ATTACHMENT0,		// Position
+							  GL_COLOR_ATTACHMENT1,		// Normal
+							  GL_COLOR_ATTACHMENT2,		// Albedo
+		                      GL_COLOR_ATTACHMENT3,		// Emission
+	                          GL_COLOR_ATTACHMENT4 };	// Mask
+	glDrawBuffers(5, attachments);
 
 	// Check if correct FBO was created or not ...
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -329,6 +352,11 @@ void PostProcess::DrawDebugBuffers()
 	glBindTexture(GL_TEXTURE_2D, m_ShadowDepthBuffer);
 	m_pDebugQuadShadowDepth->RenderToScreenAlignedQuad();
 
+	// Render Mask
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, m_MaskBuffer);
+	m_pDebugQuadMask->RenderToScreenAlignedQuad();
+
 	// Unbind all textures
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -429,6 +457,8 @@ void PostProcess::ExecuteDeferredRenderPass()
 	glBindTexture(GL_TEXTURE_2D, m_AlbedoBuffer);
 	glActiveTexture(GL_TEXTURE3);
 	glBindTexture(GL_TEXTURE_2D, m_EmissionBuffer);
+	glActiveTexture(GL_TEXTURE4);
+	glBindTexture(GL_TEXTURE_2D, m_MaskBuffer);
 
 	// Shadow Depth map
 	glActiveTexture(GL_TEXTURE5);
@@ -437,7 +467,6 @@ void PostProcess::ExecuteDeferredRenderPass()
 	// Bind skybox texture
 	glActiveTexture(GL_TEXTURE6);
 	HDRSkybox::getInstance().BindHDRISKybox();
-
 
 	// Render Quad!
 	m_pScreenQuadFinal->RenderToScreenAlignedQuad();
@@ -450,6 +479,8 @@ void PostProcess::ExecuteDeferredRenderPass()
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glActiveTexture(GL_TEXTURE3);
+	glBindTexture(GL_TEXTURE_2D, 0);
+	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glActiveTexture(GL_TEXTURE5);
 	glBindTexture(GL_TEXTURE_2D, 0);
@@ -600,6 +631,7 @@ void PostProcess::SetDeferredPassShaderVariables(int shaderID)
 	m_hNormalBuffer = glGetUniformLocation(shaderID, "normalBuffer");
 	m_hAlbedoBuffer = glGetUniformLocation(shaderID, "albedoBuffer");
 	m_hEmissiveBuffer = glGetUniformLocation(shaderID, "emissiveBuffer");
+	m_hMaskBuffer = glGetUniformLocation(shaderID, "maskBuffer");
 	
 	m_hShadowDepthBuffer = glGetUniformLocation(shaderID, "shadowDepthBuffer");
 
@@ -623,6 +655,7 @@ void PostProcess::SetDeferredPassShaderVariables(int shaderID)
 	glUniform1i(m_hNormalBuffer, 1);
 	glUniform1i(m_hAlbedoBuffer, 2);
 	glUniform1i(m_hEmissiveBuffer, 3);
+	glUniform1i(m_hMaskBuffer, 4);
 	glUniform1i(m_hShadowDepthBuffer, 5);
 	glUniform1i(hCubeMap, 6);
 
