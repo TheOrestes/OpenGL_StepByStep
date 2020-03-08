@@ -52,3 +52,5 @@ x64/
 *.db
 *.VC.db
 *.opendb
+*.dat
+/24_PBR_IBL/.vs
