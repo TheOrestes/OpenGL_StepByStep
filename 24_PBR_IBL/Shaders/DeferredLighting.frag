@@ -141,9 +141,19 @@ float GeometryFunction_Smith(vec3 Normal, vec3 View, vec3 LightDir, float roughn
 // in - cosine of angle between Half & View, F0 - surface reflection at zero / direct incidence angle
 // out - Vec3 result
 //---------------------------------------------------------------------------------------------------------------------
-vec3 Fresnel_Schilck(float costTheta, vec3 F0)
+vec3 Fresnel_Schlick(float costTheta, vec3 F0)
 {
 	return F0 + (1.0f - F0) * pow(1.0f - costTheta, 5.0f);
+}
+
+//---------------------------------------------------------------------------------------------------------------------
+// Fresnel Term (F) with roughness consideration for Indirect Diffuse calculations
+// in - cosine of angle between Half & View, F0 - surface reflection at zero / direct incidence angle
+// out - Vec3 result
+//---------------------------------------------------------------------------------------------------------------------
+vec3 Fresnel_Schlick_Roughness(float costTheta, vec3 F0, float roughness)
+{
+	return F0 + (max(vec3(1.0f - roughness), F0) - F0) * pow(1.0f - costTheta, 5.0f);
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -175,7 +185,7 @@ void PointLightIlluminance(vec3 Position, vec3 Normal, vec3 Albedo, float roughn
 		// Cook-Torrance BRDF
 		float NDF = NormalDistributionFunction_GGX(Normal, Half, roughness);
 		float G = GeometryFunction_Smith(Normal, viewDir, LightDir, roughness);
-		vec3 F = Fresnel_Schilck(max(dot(Half, viewDir), 0.0f), F0);
+		vec3 F = Fresnel_Schlick(max(dot(Half, viewDir), 0.0f), F0);
 		
 		// Energy conservation between diffuse & Specular since they can't be above 1.
 		vec3 Ks = F;
@@ -216,7 +226,7 @@ void DirectionalLightIlluminance(vec3 Position, vec3 Normal, vec3 Albedo, float 
 		// Cook-Torrance BRDF
 		float NDF = NormalDistributionFunction_GGX(Normal, Half, roughness);
 		float G = GeometryFunction_Smith(Normal, viewDir, LightDir, roughness);
-		vec3 F = Fresnel_Schilck(max(dot(Half, viewDir), 0.0f), F0);
+		vec3 F = Fresnel_Schlick(max(dot(Half, viewDir), 0.0f), F0);
 		
 		// Energy conservation between diffuse & SpecularDir
 		vec3 Ks = F;
@@ -244,11 +254,16 @@ void main()
 	vec4 Albedo = texture2D(albedoBuffer, vs_outTexcoord);
 	vec3 Mask = texture2D(maskBuffer, vs_outTexcoord).rgb;
 
+	// Extract for readability!
+	float Roughness = Mask.r;
+	float Metallic = Mask.g;
+	float Occl = Mask.b;
+
 	vec3 Lo_Dir = vec3(0);
 	vec3 Lo_Point = vec3(0);
 
-	DirectionalLightIlluminance(Position, Normal, Albedo.rgb, Mask.r, Mask.g, Lo_Dir);
-	PointLightIlluminance(Position, Normal, Albedo.rgb, Mask.r, Mask.g, Lo_Point);
+	DirectionalLightIlluminance(Position, Normal, Albedo.rgb, Roughness, Metallic, Lo_Dir);
+	PointLightIlluminance(Position, Normal, Albedo.rgb, Roughness, Metallic, Lo_Point);
 
 	vec3 Lo = Lo_Dir + Lo_Point;
 
@@ -264,14 +279,21 @@ void main()
 	vec4 ShadowColor = vec4(vec3(1.0f - Shadow), 1.0f);
 
 	// Occlusion
-	vec4 Occlusion = vec4(vec3(Mask.b), 1.0f);
+	vec4 Occlusion = vec4(vec3(Occl), 1.0f);
 
 	// Irradiance
-	vec4 Irradiance = vec4(texture(texture_irradiance, Normal).rgb, 1);
+	vec3 Irradiance = vec3(texture(texture_irradiance, Normal));
+
+	// Just like direct lighting has diffuse & specular component, even indirect lighting has it! 
+	// It is necessary to weigh both accordingly using Fresnel equation.
+	vec3 F0 = vec3(0.04f);
+	vec3 Ks = Fresnel_Schlick_Roughness(max(dot(Normal, viewDir), 0.0f), F0, Roughness);
+	vec3 Kd = 1.0f - Ks;
+
+	vec4 IndirectDiffuse = vec4(Kd * Irradiance, 1.0f); 
 
 	//outColor = Albedo + ShadowColor * (Diffuse + Specular) + Reflection;
-	outColor = vec4(Lo,1) + Albedo * Occlusion * Irradiance + Reflection;
-	//outColor = vec4(Mask,1);
+	outColor = vec4(Lo,1) + Albedo * Occlusion * IndirectDiffuse + Reflection;
 
 	// Always add Emission color to bright buffer!
 	float brightness = dot(outColor.rgb, vec3(0.2126f, 0.7152f, 0.0722f));
