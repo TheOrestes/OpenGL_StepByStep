@@ -17,8 +17,9 @@ uniform sampler2D emissiveBuffer;
 uniform sampler2D maskBuffer;
 uniform sampler2D shadowDepthBuffer;
 
-uniform samplerCube	texture_skybox;
 uniform samplerCube texture_irradiance;
+uniform samplerCube texture_prefiltSpecular;
+uniform sampler2D	texture_brdfLUT;
 
 // Camera related
 uniform vec3 cameraPosition;
@@ -197,7 +198,7 @@ void PointLightIlluminance(vec3 Position, vec3 Normal, vec3 Albedo, float roughn
 		vec3 Specular = Numerator / max(Denominator, 0.001f);
 
 		// accumulate...
-		Lo += (Kd * Albedo / PI + Specular) * pointLights[i].color * pointLights[i].intensity * atten * NdotL;
+		Lo += (Kd * Albedo / PI + Ks * Specular) * pointLights[i].color * pointLights[i].intensity * atten * NdotL;
 	}
 }
 
@@ -238,7 +239,7 @@ void DirectionalLightIlluminance(vec3 Position, vec3 Normal, vec3 Albedo, float 
 		vec3 Specular = Numerator / max(Denominator, 0.001f);
 
 		// accumulate...
-		Lo += (Kd * Albedo / PI + Specular) * dirLights[i].color * dirLights[i].intensity * NdotL;
+		Lo += (Kd * Albedo / PI + Ks * Specular) * dirLights[i].color * dirLights[i].intensity * NdotL;
 	}
 }
 
@@ -246,12 +247,15 @@ void DirectionalLightIlluminance(vec3 Position, vec3 Normal, vec3 Albedo, float 
 void main()
 {
 	// Sample screen buffers
-	vec3 Position = texture2D(positionBuffer, vs_outTexcoord).rgb; 
+	vec4 PosDepth = texture2D(positionBuffer, vs_outTexcoord); 
+	vec3 Position = PosDepth.rgb;
+	float depth = PosDepth.a;
+
 	vec4 NormalBufferColor = texture2D(normalBuffer, vs_outTexcoord);
 	vec3 Normal = NormalBufferColor.rgb;
 	float Height = NormalBufferColor.a;
-	vec4 Emission = texture2D(emissiveBuffer, vs_outTexcoord);
-	vec4 Albedo = texture2D(albedoBuffer, vs_outTexcoord);
+	vec3 Emission = texture2D(emissiveBuffer, vs_outTexcoord).rgb;
+	vec3 Albedo = texture2D(albedoBuffer, vs_outTexcoord).rgb;
 	vec3 Mask = texture2D(maskBuffer, vs_outTexcoord).rgb;
 
 	// Extract for readability!
@@ -267,38 +271,49 @@ void main()
 
 	vec3 Lo = Lo_Dir + Lo_Point;
 
-	// Reflection
-	vec4 Reflection = vec4(0);
+	// Calculate Camera view direction & reflection vector!
 	vec3 viewDir = normalize(cameraPosition - Position);
 	vec3 viewReflection = normalize(reflect(viewDir, Normal));
-	Reflection = texture(texture_skybox, viewReflection);
-	Reflection *= 0.0f;
 
 	// Shadow
 	float Shadow = readShadowMap(Position, Normal, viewDir);
 	vec4 ShadowColor = vec4(vec3(1.0f - Shadow), 1.0f);
 
 	// Occlusion
-	vec4 Occlusion = vec4(vec3(Occl), 1.0f);
-
-	// Irradiance
-	vec3 Irradiance = vec3(texture(texture_irradiance, Normal));
+	vec3 Occlusion = vec3(Occl);
 
 	// Just like direct lighting has diffuse & specular component, even indirect lighting has it! 
 	// It is necessary to weigh both accordingly using Fresnel equation.
 	vec3 F0 = vec3(0.04f);
 	vec3 Ks = Fresnel_Schlick_Roughness(max(dot(Normal, viewDir), 0.0f), F0, Roughness);
 	vec3 Kd = 1.0f - Ks;
+	Kd *= 1.0f - Metallic;
 
-	vec4 IndirectDiffuse = vec4(Kd * Irradiance, 1.0f); 
+		//---------- Indirect Diffuse
+	vec3 Irradiance = vec3(texture(texture_irradiance, Normal));
+	vec3 IndirectDiffuse = Kd * Irradiance;
 
-	//outColor = Albedo + ShadowColor * (Diffuse + Specular) + Reflection;
-	outColor = vec4(Lo,1) + Albedo * Occlusion * IndirectDiffuse + Reflection;
+	//--------- Indirect Specular
+	const float MAX_REFLECTION_LOD = 4.0f;
+
+	// choose which mip-map level to look-up based on roughness value of a material...
+	vec3 prefilteredSpecColor = textureLod(texture_prefiltSpecular, -viewReflection, Roughness * MAX_REFLECTION_LOD).rgb;
+	vec2 envBRDF = texture(texture_brdfLUT, vec2(max(dot(Normal, viewDir), 0.0f), Roughness)).rg;
+	vec3 IndirectSpecular = prefilteredSpecColor;// * Ks * (envBRDF.x + envBRDF.y);
+
+	vec3 Ambient = (IndirectDiffuse + IndirectSpecular) * Occlusion;
+
+	outColor = vec4(Lo + Ambient, 1.0f);// + Skybox;
+
+	//outColor = vec4(Lo,1);										// Direct lighting
+	//outColor = vec4(IndirectDiffuse,1);							// Indirect Diffuse
+	//outColor = vec4(IndirectSpecular,1);							// Indirect Specular
+	//outColor = vec4(IndirectDiffuse + IndirectSpecular, 1);		// Indirect Combined
 
 	// Always add Emission color to bright buffer!
 	float brightness = dot(outColor.rgb, vec3(0.2126f, 0.7152f, 0.0722f));
 	if(brightness > fBloomThreshold)
-		Emission += vec4(Lo, 1);
+		Emission += Lo;
 
-	brightColor = Emission;
+	brightColor = vec4(Emission,1);
 }

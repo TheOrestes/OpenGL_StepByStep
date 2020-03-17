@@ -11,14 +11,26 @@ HDRSkybox::~HDRSkybox()
 {
 	SAFE_DELETE(m_pCaptureShader);
 	SAFE_DELETE(m_pRenderShader);
+	SAFE_DELETE(m_pBrdfLUTShader);
+	SAFE_DELETE(m_pIrradianceShader);
+	SAFE_DELETE(m_pPrefiltSpecShader);
 
 	glDeleteBuffers(1, &m_vbo);
 	glDeleteBuffers(1, &m_ibo);
 	glDeleteTextures(1, &m_tbo);
 
+	glDeleteBuffers(1, &m_Quad_vbo);
+	glDeleteBuffers(1, &m_Quad_ibo);
+
+	glDeleteVertexArrays(1, &m_vao);
+	glDeleteVertexArrays(1, &m_Quad_vao);
+
 	glDeleteFramebuffers(1, &m_captureFBO);
 	glDeleteRenderbuffers(1, &m_captureRBO);
 	glDeleteTextures(1, &m_captureTBO);
+	glDeleteTextures(1, &m_BrdfLUTmapTBO);
+	glDeleteTextures(1, &m_IrradianceTBO);
+	glDeleteTextures(1, &m_PrefilterSpecmapTBO);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -35,11 +47,16 @@ void HDRSkybox::Initialize()
 	m_pCaptureShader = new GLSLShader("Shaders/HDRI2Cubemap.vert", "Shaders/HDRI2Cubemap.frag");
 	m_pRenderShader = new GLSLShader("Shaders/HDRISkybox.vert", "Shaders/HDRISkybox.frag");
 	m_pIrradianceShader = new GLSLShader("Shaders/Cubemap2Irradiance.vert", "Shaders/Cubemap2Irradiance.frag");
+	m_pPrefiltSpecShader = new GLSLShader("Shaders/PrefilterSpecmap.vert", "Shaders/PrefilterSpecmap.frag");
+	m_pBrdfLUTShader = new GLSLShader("Shaders/BRDFLut.vert", "Shaders/BRDFLut.frag");
 
 	m_tbo = TextureManager::getInstannce().Load2DTextureFromFile("Footprint_Court_2k.hdr", "../Assets/HDRI");
 
 	// create cube for capturing cubemap
 	InitCaptureCube();
+
+	// create quad for Specular BRDF LUT texture
+	InitLUTQuad();
 
 	// capture cubemap for HDRI map
 	InitCaptureCubemap();
@@ -47,10 +64,16 @@ void HDRSkybox::Initialize()
 	// create Irradiance map from cubemap
 	InitIrradianceCubemap();
 
+	// create Prefiltered specular cubemap
+	InitPrefilteredSpecularCubemap();
+
+	// create Specular BRDF LUT Map
+	InitSpecularBrdfLUT();
+
 	UIManager::getInstance().WriteToConsole(LOGTYPE::LOG_INFO, "HDRSkybox", "HDRI Skybox initialized...");
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void HDRSkybox::InitCaptureCube()
 {
 	// Vertex Data
@@ -104,7 +127,47 @@ void HDRSkybox::InitCaptureCube()
 	glBindVertexArray(0);
 }
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void HDRSkybox::InitLUTQuad()
+{
+	// Quad vertex data
+	m_Quad_Vertices[0] = VertexPT(glm::vec3(-1, -1, 0), glm::vec2(0.0f, 1.0f));
+	m_Quad_Vertices[1] = VertexPT(glm::vec3(-1, 1, 0), glm::vec2(0.0f, 0.0f));
+	m_Quad_Vertices[2] = VertexPT(glm::vec3(1, 1, 0), glm::vec2(1.0f, 0.0f));
+	m_Quad_Vertices[3] = VertexPT(glm::vec3(1, -1, 0), glm::vec2(1.0f, 1.0f));
+
+	// Quad Index data ( 1 face = 2 triangles = 6 indices )
+	m_Quad_Indices[0] = 0;	m_Quad_Indices[1] = 1;	m_Quad_Indices[2] = 2;
+	m_Quad_Indices[3] = 2;	m_Quad_Indices[4] = 3;	m_Quad_Indices[5] = 0;
+
+	// create vao
+	glGenVertexArrays(1, &m_Quad_vao);
+	glBindVertexArray(m_Quad_vao);
+
+	// create vbo
+	glGenBuffers(1, &m_Quad_vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, m_Quad_vbo);
+	glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(VertexPT), m_Quad_Vertices, GL_STATIC_DRAW);
+
+	// create ibo
+	glGenBuffers(1, &m_Quad_ibo);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_Quad_ibo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(m_Quad_Indices), m_Quad_Indices, GL_STATIC_DRAW);
+
+	GLuint shader = m_pBrdfLUTShader->GetShaderID();
+	m_Quad_PosAttrib = glGetAttribLocation(shader, "in_Position");
+	glEnableVertexAttribArray(m_Quad_PosAttrib);
+	glVertexAttribPointer(m_Quad_PosAttrib, 3, GL_FLOAT, false, sizeof(VertexPT), (void*)0);
+
+	m_Quad_UVAttrib = glGetAttribLocation(shader, "in_Texcoord");
+	glEnableVertexAttribArray(m_Quad_UVAttrib);
+	glVertexAttribPointer(m_Quad_UVAttrib, 2, GL_FLOAT, false, sizeof(VertexPT), (void*)offsetof(VertexPT, uv));
+
+	//glEnableVertexAttribArray(0);
+	glBindVertexArray(0);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void HDRSkybox::InitCaptureCubemap()
 {
 	// Create FBO & assign correct RBO to it
@@ -242,6 +305,100 @@ void HDRSkybox::InitIrradianceCubemap()
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void HDRSkybox::InitPrefilteredSpecularCubemap()
+{
+	// Generate Prefiltered specular map from already created cubemap
+	// 1. Create empty faces for prefilterd specular map, in this case, we need 6!
+	glGenTextures(1, &m_PrefilterSpecmapTBO);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, m_PrefilterSpecmapTBO);
+	for (GLuint i = 0; i < 6; ++i)
+	{
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 512, 512, 0, GL_RGB, GL_FLOAT, nullptr);
+	}
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+
+	// set shader for usage
+	m_pPrefiltSpecShader->Use();
+	GLuint shaderID = m_pPrefiltSpecShader->GetShaderID();
+
+	// set captured cubemap as an active texture
+	glUniform1i(glGetUniformLocation(shaderID, "CubemapTexture"), 0);
+
+	// set capture projection & view matrices for all faces...
+	glUniformMatrix4fv(glGetUniformLocation(shaderID, "matProj"), 1, GL_FALSE, glm::value_ptr(m_matCaptureProj));
+
+	// now start the process of creating 6 faces of cubemap. Each face will have 5 levels of mipmaps based on roughness level.
+	glBindFramebuffer(GL_FRAMEBUFFER, m_captureFBO);
+
+	// set capture cubemap 
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, m_captureTBO);
+
+	unsigned int maxMipLevels = 5;
+	for (GLuint mip = 0; mip < maxMipLevels; ++mip)
+	{
+		// resize framebuffer based on mip level
+		unsigned int mipWidth =  512 * std::pow(0.5f, mip);
+		unsigned int mipHeight = 512 * std::pow(0.5f, mip);
+
+		glBindRenderbuffer(GL_RENDERBUFFER, m_captureRBO);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, mipWidth, mipHeight);
+		glViewport(0, 0, mipWidth, mipHeight);
+
+		float roughness = (float)mip / (float)(maxMipLevels - 1);
+		glUniform1f(glGetUniformLocation(shaderID, "roughness"), roughness);
+
+		for (GLuint j = 0; j < 6; ++j)
+		{
+			glUniformMatrix4fv(glGetUniformLocation(shaderID, "matView"), 1, GL_FALSE, glm::value_ptr(m_matCaptureView[j]));
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + j, m_PrefilterSpecmapTBO, mip);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			glBindVertexArray(m_vao);
+			glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
+			glBindVertexArray(0);
+		}
+	}
+
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(0, 0, START_WINDOW_WIDTH, START_WINDOW_HEIGHT);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void HDRSkybox::InitSpecularBrdfLUT()
+{
+	glGenTextures(1, &m_BrdfLUTmapTBO);
+	glBindTexture(GL_TEXTURE_2D, m_BrdfLUTmapTBO);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RG16F, 512, 512, 0, GL_RG, GL_FLOAT, 0);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glBindFramebuffer(GL_FRAMEBUFFER, m_captureFBO);
+	glBindRenderbuffer(GL_RENDERBUFFER, m_captureRBO);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_BrdfLUTmapTBO, 0);
+
+	glViewport(0, 0, 512, 512);
+
+	m_pBrdfLUTShader->Use();
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	RenderQuad();
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	glViewport(0, 0, START_WINDOW_WIDTH, START_WINDOW_HEIGHT);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void HDRSkybox::RenderCubemap()
 {
 	// So based on shader for skybox, we have made sure that third component equal to w, 
@@ -274,6 +431,17 @@ void HDRSkybox::RenderCubemap()
 	glDepthFunc(GL_LESS);
 
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void HDRSkybox::RenderQuad()
+{
+	glBindVertexArray(m_Quad_vao);
+	// know more about the last element!
+	// http://stackoverflow.com/questions/17191258/no-display-from-gldrawelements
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+	glBindVertexArray(0);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -318,4 +486,28 @@ void HDRSkybox::BindIrrandianceSkybox()
 void HDRSkybox::UnbindIrrandianceSkybox()
 {
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void HDRSkybox::BindPrefilteredSpecularMap()
+{
+	glBindTexture(GL_TEXTURE_CUBE_MAP, m_PrefilterSpecmapTBO);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void HDRSkybox::UnbindPrefilteredSpecularMap()
+{
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void HDRSkybox::BindBrdfLUTMap()
+{
+	glBindTexture(GL_TEXTURE_2D, m_BrdfLUTmapTBO);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+void HDRSkybox::UnbindBrdfLUTMap()
+{
+	glBindTexture(GL_TEXTURE_2D, 0);
 }

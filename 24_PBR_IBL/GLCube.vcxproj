@@ -169,6 +169,8 @@ xcopy $(SolutionDir)\Shaders $(SolutionDir)$(Platform)\$(Configuration)\Shaders 
     <None Include="Shaders\BasicLighting.vert" />
     <None Include="Shaders\Bloom.frag" />
     <None Include="Shaders\Bloom.vert" />
+    <None Include="Shaders\BRDFLut.frag" />
+    <None Include="Shaders\BRDFLut.vert" />
     <None Include="Shaders\Color.frag" />
     <None Include="Shaders\Color.vert" />
     <None Include="Shaders\Cubemap2Irradiance.frag" />
@@ -194,6 +196,8 @@ xcopy $(SolutionDir)\Shaders $(SolutionDir)$(Platform)\$(Configuration)\Shaders 
     <None Include="Shaders\NormalMapWSDeferred.vert" />
     <None Include="Shaders\PostProcess.frag" />
     <None Include="Shaders\PostProcess.vert" />
+    <None Include="Shaders\PrefilterSpecmap.frag" />
+    <None Include="Shaders\PrefilterSpecmap.vert" />
     <None Include="Shaders\ps.frag" />
     <None Include="Shaders\Reflection.frag" />
     <None Include="Shaders\Reflection.vert" />

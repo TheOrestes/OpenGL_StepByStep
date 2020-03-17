@@ -86,7 +86,6 @@ void Application::Run(float dt)
 		// 5. Debug Buffers
 		m_pPostFX->DrawDebugBuffers();
 
-
 		UIManager::getInstance().Render(m_pScene, m_pPostFX);
 
 		glfwSwapBuffers(m_pWindow);

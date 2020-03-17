@@ -1,7 +1,7 @@
 
 #version 400
 
-layout (location = 0) out vec3 gPosition;
+layout (location = 0) out vec4 gPosition;
 layout (location = 1) out vec4 gNormal;
 layout (location = 2) out vec3 gAlbedo;
 layout (location = 3) out vec3 gEmission;
@@ -46,6 +46,9 @@ uniform vec3		cameraPosition;
 uniform vec3		wireframeColor = vec3(0.0f, 0.0f, 0.0f);
 uniform float		wireframeWidth = 0.75f;
 
+const float nearPlane = 1.0f;
+const float farPlane = 1000.0f;
+
 /////////////////////////////////////////////////////////////////////////////////////////
 float edgeFactor()
 {
@@ -54,6 +57,14 @@ float edgeFactor()
 	return min(min(f.x, f.y), f.z);
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////
+float LinearizeDepth(float depth)
+{
+	float z = depth * 2.0f - 1.0f;
+	return (2.0f * nearPlane * farPlane) / (farPlane + nearPlane - z * (farPlane - nearPlane));
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
 void main()
 {
 	vec4 Ambient = vec4(0);
@@ -78,8 +89,9 @@ void main()
 	else
 		Mask = vec3(material.Roughness, material.Metallic, material.Occlusion);
 
-	// ! write World Space position into Position buffer
-	gPosition = vs_outPosition;
+	// ! write World Space position into Position buffer & depth value to Alpha channel.
+	float Depth = LinearizeDepth(gl_FragCoord.z);
+	gPosition = vec4(vs_outPosition, Depth);
 
 	// ! Write into Normal Buffer : Normals(RGB) + Specular(A)
 	gNormal.rgb = Normal;

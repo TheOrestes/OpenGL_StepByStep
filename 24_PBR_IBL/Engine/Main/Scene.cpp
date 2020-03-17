@@ -35,8 +35,8 @@ void Scene::InitScene()
 
 	// Initialize Static objects...
 	StaticObjectData data;
-	data.name = "HighpolySphere";
-	data.path = "../Assets/models/SK_Mannequin.fbx";
+	data.name = "Highpoly_Sphere_NoTexture";
+	data.path = "../Assets/models/Highpoly_Sphere_NoTexture.fbx";
 	data.shader = "NormalMapWSDeferred";
 	data.position = glm::vec3(0, 5, 0);
 	data.angle = 0.0f;
@@ -102,9 +102,9 @@ void Scene::Update(float dt)
 void Scene::Render()
 {
 	//GLSkybox::getInstance().Render();
-	HDRSkybox::getInstance().Render();
 	LightsManager::getInstance()->RenderLights();
 	StaticObjectManager::getInstance().RenderAll();
+	HDRSkybox::getInstance().Render();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

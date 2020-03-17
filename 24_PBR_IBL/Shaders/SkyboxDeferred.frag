@@ -15,7 +15,7 @@ void main()
 	gPosition = vec3(0);
 	gNormal = vec4(0);
 	gAlbedo = texture(cubeMap, -vs_outTex).rgb;
-	//gEmission = vec3(0);
+	gEmission = vec3(0);
 	
 	// Find out brightness for this fragment & fill Emission buffer
 	float brightness = dot(gAlbedo, vec3(0.2126f, 0.7152f, 0.0722f));

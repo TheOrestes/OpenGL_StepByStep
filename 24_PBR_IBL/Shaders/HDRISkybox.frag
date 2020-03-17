@@ -3,7 +3,7 @@
 
 in vec3 vs_outTex;
 
-layout (location = 0) out vec3 gPosition;
+layout (location = 0) out vec4 gPosition;
 layout (location = 1) out vec4 gNormal;
 layout (location = 2) out vec3 gAlbedo;
 layout (location = 3) out vec3 gEmission;
@@ -12,7 +12,7 @@ uniform samplerCube cubeMap;
 
 void main()
 {
-	gPosition = vec3(0);
+	gPosition = vec4(0);
 	gNormal = vec4(0);
 	gAlbedo = texture(cubeMap, -vs_outTex).rgb;
 	gEmission = vec3(0);

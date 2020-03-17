@@ -74,7 +74,6 @@ PostProcess::~PostProcess()
 	glDeleteBuffers(1, &m_PositionBuffer);
 	glDeleteBuffers(1, &m_AlbedoBuffer);
 	glDeleteBuffers(1, &m_NormalBuffer);
-	glDeleteBuffers(1, &m_DepthBuffer);
 	glDeleteBuffers(1, &m_MaskBuffer);
 	glDeleteBuffers(1, &m_ShadowDepthBuffer);
 
@@ -134,9 +133,10 @@ void PostProcess::CreateDeferredBuffers(int horizRes, int vertRes)
 	glBindFramebuffer(GL_FRAMEBUFFER, m_fboDeferred);
 
 	// ! POSITION BUFFER
+	// ! RGB - Position & A - Depth
 	glGenTextures(1, &m_PositionBuffer);
 	glBindTexture(GL_TEXTURE_2D, m_PositionBuffer);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, horizRes, vertRes, 0, GL_RGB, GL_FLOAT, nullptr);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, horizRes, vertRes, 0, GL_RGBA, GL_FLOAT, nullptr);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -472,6 +472,14 @@ void PostProcess::ExecuteDeferredRenderPass()
 	glActiveTexture(GL_TEXTURE7);
 	HDRSkybox::getInstance().BindIrrandianceSkybox();
 
+	// Bind Prefiltered Specular Map
+	glActiveTexture(GL_TEXTURE8);
+	HDRSkybox::getInstance().BindPrefilteredSpecularMap();
+
+	// Bind BRDF LUT Map
+	glActiveTexture(GL_TEXTURE9);
+	HDRSkybox::getInstance().BindBrdfLUTMap();
+
 	// Render Quad!
 	m_pScreenQuadFinal->RenderToScreenAlignedQuad();
 
@@ -490,8 +498,12 @@ void PostProcess::ExecuteDeferredRenderPass()
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glActiveTexture(GL_TEXTURE6);
 	HDRSkybox::getInstance().UnbindHDRISkybox();
-	glActiveTexture(GL_TEXTURE6);
+	glActiveTexture(GL_TEXTURE7);
 	HDRSkybox::getInstance().UnbindIrrandianceSkybox();
+	glActiveTexture(GL_TEXTURE8);
+	HDRSkybox::getInstance().UnbindPrefilteredSpecularMap();
+	glActiveTexture(GL_TEXTURE9);
+	HDRSkybox::getInstance().UnbindBrdfLUTMap();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -651,6 +663,12 @@ void PostProcess::SetDeferredPassShaderVariables(int shaderID)
 	// Skybox Irradiance map
 	GLuint hIrradMap = glGetUniformLocation(shaderID, "texture_irradiance");
 
+	// Skybox Prefiltered specular map
+	GLuint hPrefiltSpecMap = glGetUniformLocation(shaderID, "texture_prefiltSpecular");
+
+	// BRDF LUT map
+	GLuint hBrdfLUT = glGetUniformLocation(shaderID, "texture_brdfLUT");
+
 	// Camera related uniforms
 	glUniform3fv(hCamPosition, 1, glm::value_ptr(camPosition));
 	glUniformMatrix4fv(hCameraViewMat, 1, GL_FALSE, glm::value_ptr(camViewMatrix));
@@ -668,6 +686,8 @@ void PostProcess::SetDeferredPassShaderVariables(int shaderID)
 	glUniform1i(m_hShadowDepthBuffer, 5);
 	glUniform1i(hCubeMap, 6);
 	glUniform1i(hIrradMap, 7);
+	glUniform1i(hPrefiltSpecMap, 8);
+	glUniform1i(hBrdfLUT, 9);
 
 	// Point Light related uniform variables!
 	PointLightIlluminance(shaderID);
