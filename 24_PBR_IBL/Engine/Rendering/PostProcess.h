@@ -59,7 +59,7 @@ private:
 	ScreenAlignedQuad*	m_pDebugQuadNormal;			// Debug Normal
 	ScreenAlignedQuad*	m_pDebugQuadAlbedo;			// Debug Albedo
 	ScreenAlignedQuad*  m_pDebugQuadEmission;		// Debug Emission
-	ScreenAlignedQuad*	m_pDebugQuadMask;			// Debug Mask
+	ScreenAlignedQuad*	m_pDebugQuadObjectID;		// Debug ObjectID
 	ScreenAlignedQuad*  m_pDebugQuadBrightness;		// Debug Brightness
 	ScreenAlignedQuad*  m_pDebugQuadShadowDepth;	// Debug Shadow Depth
 
@@ -79,12 +79,17 @@ private:
 	GLuint				m_NormalBuffer;				// Normal information buffer
 	GLuint				m_EmissionBuffer;			// Emissive information buffer
 	GLuint				m_MaskBuffer;				// RGB mask buffer, R:Roughness,G:Metallic,B:Occlusion
+	GLuint				m_SkyboxBuffer;				// Skybox buffer
+	GLuint				m_ObjectIDBuffer;			// Object ID buffer, Red - StaticObjects, Green - Skybox, Blue - Unused
+
 
 	GLint				m_hPositionBuffer;			// Handle to Position buffer
 	GLint				m_hAlbedoBuffer;			// Handle to Albedo color buffer
 	GLint				m_hNormalBuffer;			// Handle to Normal information buffer
 	GLint				m_hEmissiveBuffer;			// Handle to Emissive buffer
 	GLint				m_hMaskBuffer;				// Handle to Mask buffer
+	GLint				m_hSkyboxBuffer;			// Handle to skybox buffer
+	GLint				m_hObjectIDBuffer;			// Handle to ObjectID buffer
 
 	// Shadow Mapping
 	GLuint				m_fboShadow;				// Framebuffer object for shadow mapping

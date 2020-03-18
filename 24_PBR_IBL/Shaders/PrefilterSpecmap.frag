@@ -88,7 +88,7 @@ vec3 ImportanceSampleGGX(vec2 Xi, vec3 N, float roughness)
 
 	vec3 sampleVec = tangent * H.x + bitangent * H.y + N * H.z;
 
-	return normalize(sampleVec);
+	return sampleVec;
 }
 
 //---------------------------------------------------------------------------------------------------------------------
@@ -100,7 +100,7 @@ void main()
 	vec3 R = N;
 	vec3 V = R;
 
-	const uint	SAMPLE_COUNT= 1024u;
+	const uint	SAMPLE_COUNT= 1024U;
 	vec3		prefilteredColor = vec3(0);
 	float		totalWeight = 0.0f;
 
@@ -109,7 +109,7 @@ void main()
 		// generates a sample vector that is biased towards the preferred alignment direction (Importane Sampling) 
 		vec2 Xi = Hammersley(i, SAMPLE_COUNT);
 		vec3 H = ImportanceSampleGGX(Xi, N, roughness);
-		vec3 L = normalize(2.0f * dot(V,H) * H - V);
+		vec3 L = 2.0f * dot(V,H) * H - V;
 
 		float NdotL = max(dot(N,L), 0.0f);
 		if(NdotL > 0.0f)

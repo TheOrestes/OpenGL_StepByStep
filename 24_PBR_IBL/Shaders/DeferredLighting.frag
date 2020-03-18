@@ -15,6 +15,8 @@ uniform sampler2D normalBuffer;
 uniform sampler2D albedoBuffer;
 uniform sampler2D emissiveBuffer;
 uniform sampler2D maskBuffer;
+uniform sampler2D skyboxBuffer;
+uniform sampler2D objectIDBuffer;
 uniform sampler2D shadowDepthBuffer;
 
 uniform samplerCube texture_irradiance;
@@ -63,6 +65,15 @@ struct DirectionalLight
 };
 
 uniform DirectionalLight dirLights[MAX_POINT_LIGHTS];
+
+
+//---------------------------------------------------------------------------------------------------------------------
+// Linearize color
+//---------------------------------------------------------------------------------------------------------------------
+vec3 LinearizeColor(vec3 color)
+{
+	return pow(color, vec3(2.2f));
+}
 
 //---------------------------------------------------------------------------------------------------------------------
 // Read from Shadow Map
@@ -247,16 +258,20 @@ void DirectionalLightIlluminance(vec3 Position, vec3 Normal, vec3 Albedo, float 
 void main()
 {
 	// Sample screen buffers
-	vec4 PosDepth = texture2D(positionBuffer, vs_outTexcoord); 
-	vec3 Position = PosDepth.rgb;
-	float depth = PosDepth.a;
+	vec4 PosBuffer = texture2D(positionBuffer, vs_outTexcoord); 
+	vec3 Position = PosBuffer.rgb;
 
 	vec4 NormalBufferColor = texture2D(normalBuffer, vs_outTexcoord);
 	vec3 Normal = NormalBufferColor.rgb;
 	float Height = NormalBufferColor.a;
 	vec3 Emission = texture2D(emissiveBuffer, vs_outTexcoord).rgb;
-	vec3 Albedo = texture2D(albedoBuffer, vs_outTexcoord).rgb;
+	vec3 Albedo = LinearizeColor(texture2D(albedoBuffer, vs_outTexcoord).rgb);
 	vec3 Mask = texture2D(maskBuffer, vs_outTexcoord).rgb;
+	vec3 Skybox = texture2D(skyboxBuffer, vs_outTexcoord).rgb;
+
+	vec3 ObjectID = texture2D(objectIDBuffer, vs_outTexcoord).rgb;
+
+	float GeometryMask = Mask.b;
 
 	// Extract for readability!
 	float Roughness = Mask.r;
@@ -269,7 +284,7 @@ void main()
 	DirectionalLightIlluminance(Position, Normal, Albedo.rgb, Roughness, Metallic, Lo_Dir);
 	PointLightIlluminance(Position, Normal, Albedo.rgb, Roughness, Metallic, Lo_Point);
 
-	vec3 Lo = Lo_Dir + Lo_Point;
+	vec3 Lo_Direct = Lo_Dir + Lo_Point;
 
 	// Calculate Camera view direction & reflection vector!
 	vec3 viewDir = normalize(cameraPosition - Position);
@@ -294,21 +309,37 @@ void main()
 	vec3 IndirectDiffuse = Kd * Irradiance;
 
 	//--------- Indirect Specular
-	const float MAX_REFLECTION_LOD = 4.0f;
+	const float MAX_REFLECTION_LOD = 3.0f;
 
 	// choose which mip-map level to look-up based on roughness value of a material...
 	vec3 prefilteredSpecColor = textureLod(texture_prefiltSpecular, -viewReflection, Roughness * MAX_REFLECTION_LOD).rgb;
 	vec2 envBRDF = texture(texture_brdfLUT, vec2(max(dot(Normal, viewDir), 0.0f), Roughness)).rg;
-	vec3 IndirectSpecular = prefilteredSpecColor;// * Ks * (envBRDF.x + envBRDF.y);
+	vec3 IndirectSpecular = Ks * prefilteredSpecColor *  envBRDF.x + envBRDF.y;
 
-	vec3 Ambient = (IndirectDiffuse + IndirectSpecular) * Occlusion;
+	
+	vec3 Lo_Indirect = ((Albedo * IndirectDiffuse) + IndirectSpecular) * Occlusion;
+	
+	vec3 Lo = vec3(0);
 
-	outColor = vec4(Lo + Ambient, 1.0f);// + Skybox;
+	// determine object id from RGB texture
+	vec3 redChannel = vec3(1,0,0);		// Static objects
+	vec3 greenChannel = vec3(0,1,0);	// Skybox
 
-	//outColor = vec4(Lo,1);										// Direct lighting
+	if(dot(redChannel, ObjectID) == 1)
+		Lo = Lo_Direct + Lo_Indirect;
+	else if(dot(greenChannel, ObjectID) == 1)
+		Lo = Skybox;
+
+	//if(GeometryMask >= 0.5f)
+	//	Lo = Lo_Direct + Lo_Indirect;
+	//else
+	//	Lo = Skybox;
+
+	outColor = vec4(Lo,1);										// Direct lighting
 	//outColor = vec4(IndirectDiffuse,1);							// Indirect Diffuse
 	//outColor = vec4(IndirectSpecular,1);							// Indirect Specular
 	//outColor = vec4(IndirectDiffuse + IndirectSpecular, 1);		// Indirect Combined
+	//outColor = vec4(Skybox, 1);
 
 	// Always add Emission color to bright buffer!
 	float brightness = dot(outColor.rgb, vec3(0.2126f, 0.7152f, 0.0722f));

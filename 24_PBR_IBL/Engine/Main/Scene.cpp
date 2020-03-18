@@ -35,8 +35,8 @@ void Scene::InitScene()
 
 	// Initialize Static objects...
 	StaticObjectData data;
-	data.name = "Highpoly_Sphere_NoTexture";
-	data.path = "../Assets/models/Highpoly_Sphere_NoTexture.fbx";
+	data.name = "SteamPunk";
+	data.path = "../Assets/models/SK_Mannequin.fbx";
 	data.shader = "NormalMapWSDeferred";
 	data.position = glm::vec3(0, 5, 0);
 	data.angle = 0.0f;

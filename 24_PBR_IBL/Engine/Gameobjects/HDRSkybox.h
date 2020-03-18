@@ -62,6 +62,9 @@ private:
 	GLuint		m_BrdfLUTmapTBO;		// TBO for brdf LUT map
 
 	int			m_iCubemapSize;			// capture cubemap size
+	int			m_iPrefiltCubemapSize;
+	int			m_iIrradiancemapSize;
+	int			m_iBrdfLUTmapSize;
 
 	GLuint		m_Quad_vao;				// VAO for quad
 	GLuint		m_Quad_vbo;				// VBO for quad

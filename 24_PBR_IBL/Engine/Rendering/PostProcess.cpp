@@ -27,10 +27,12 @@ PostProcess::PostProcess()
 	m_AlbedoBuffer = -1;
 	m_EmissionBuffer = -1;
 	m_MaskBuffer = -1;
+	m_SkyboxBuffer = -1;
 	m_hPositionBuffer = -1;
 	m_hNormalBuffer = -1;
 	m_hAlbedoBuffer = -1;
 	m_hMaskBuffer = -1;
+	m_hSkyboxBuffer = -1;
 
 	m_pPostFXShader = nullptr;
 	m_pDeferredShader = nullptr;
@@ -40,6 +42,7 @@ PostProcess::PostProcess()
 	m_pDebugQuadBrightness = nullptr;
 	m_pDebugQuadAlbedo = nullptr;
 	m_pDebugQuadEmission = nullptr;
+	m_pDebugQuadObjectID = nullptr;
 	m_pDebugQuadNormal = nullptr;
 	m_pDebugQuadPosition = nullptr;
 	m_pDebugQuadShadowDepth = nullptr;
@@ -67,7 +70,7 @@ PostProcess::~PostProcess()
 	SAFE_DELETE(m_pDebugQuadEmission);
 	SAFE_DELETE(m_pDebugQuadNormal);
 	SAFE_DELETE(m_pDebugQuadPosition);
-	SAFE_DELETE(m_pDebugQuadMask);
+	SAFE_DELETE(m_pDebugQuadObjectID);
 	SAFE_DELETE(m_pDebugQuadShadowDepth);
 	
 	glDeleteBuffers(1, &m_colorBuffer);
@@ -75,6 +78,8 @@ PostProcess::~PostProcess()
 	glDeleteBuffers(1, &m_AlbedoBuffer);
 	glDeleteBuffers(1, &m_NormalBuffer);
 	glDeleteBuffers(1, &m_MaskBuffer);
+	glDeleteBuffers(1, &m_SkyboxBuffer);
+	glDeleteBuffers(1, &m_ObjectIDBuffer);
 	glDeleteBuffers(1, &m_ShadowDepthBuffer);
 
 	glDeleteFramebuffers(1, &m_fboDeferred);
@@ -110,7 +115,7 @@ void PostProcess::Initialize()
 	m_pDebugQuadNormal = new ScreenAlignedQuad();
 	m_pDebugQuadAlbedo = new ScreenAlignedQuad();
 	m_pDebugQuadEmission = new ScreenAlignedQuad();
-	m_pDebugQuadMask = new ScreenAlignedQuad();
+	m_pDebugQuadObjectID = new ScreenAlignedQuad();
 	m_pDebugQuadBrightness = new ScreenAlignedQuad();
 	m_pDebugQuadShadowDepth = new ScreenAlignedQuad();
 
@@ -120,7 +125,7 @@ void PostProcess::Initialize()
 	m_pDebugQuadEmission->CreateScreenAlignedQuad(4);
 	m_pDebugQuadBrightness->CreateScreenAlignedQuad(5);
 	m_pDebugQuadShadowDepth->CreateScreenAlignedQuad(6);
-	m_pDebugQuadMask->CreateScreenAlignedQuad(7);
+	m_pDebugQuadObjectID->CreateScreenAlignedQuad(7);
 
 	UIManager::getInstance().WriteToConsole(LOGTYPE::LOG_INFO, "PostProcess", "PostProcess initialization finished...");
 }
@@ -193,6 +198,30 @@ void PostProcess::CreateDeferredBuffers(int horizRes, int vertRes)
 
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT4, GL_TEXTURE_2D, m_MaskBuffer, 0);
 
+	// ! Skybox BUFFER
+	glGenTextures(1, &m_SkyboxBuffer);
+	glBindTexture(GL_TEXTURE_2D, m_SkyboxBuffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, horizRes, vertRes, 0, GL_RGB, GL_FLOAT, nullptr);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT5, GL_TEXTURE_2D, m_SkyboxBuffer, 0);
+
+	// ! ObjectID BUFFER
+	glGenTextures(1, &m_ObjectIDBuffer);
+	glBindTexture(GL_TEXTURE_2D, m_ObjectIDBuffer);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, horizRes, vertRes, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT6, GL_TEXTURE_2D, m_ObjectIDBuffer, 0);
+
 	// create render buffer object 
 	glGenRenderbuffers(1, &m_rboDeferred);
 	glBindRenderbuffer(GL_RENDERBUFFER, m_rboDeferred);
@@ -203,12 +232,14 @@ void PostProcess::CreateDeferredBuffers(int horizRes, int vertRes)
 	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_rboDeferred);
 
 	// Tell OGL which color attachments we will use
-	GLuint attachments[5] = { GL_COLOR_ATTACHMENT0,		// Position
+	GLuint attachments[7] = { GL_COLOR_ATTACHMENT0,		// Position
 							  GL_COLOR_ATTACHMENT1,		// Normal
 							  GL_COLOR_ATTACHMENT2,		// Albedo
 		                      GL_COLOR_ATTACHMENT3,		// Emission
-	                          GL_COLOR_ATTACHMENT4 };	// Mask
-	glDrawBuffers(5, attachments);
+	                          GL_COLOR_ATTACHMENT4,		// Mask
+							  GL_COLOR_ATTACHMENT5,		// Skybox
+							  GL_COLOR_ATTACHMENT6 };	// ObjectID
+	glDrawBuffers(7, attachments);
 
 	// Check if correct FBO was created or not ...
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -352,10 +383,10 @@ void PostProcess::DrawDebugBuffers()
 	glBindTexture(GL_TEXTURE_2D, m_ShadowDepthBuffer);
 	m_pDebugQuadShadowDepth->RenderToScreenAlignedQuad();
 
-	// Render Mask
+	// Render ObjectID
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_MaskBuffer);
-	m_pDebugQuadMask->RenderToScreenAlignedQuad();
+	glBindTexture(GL_TEXTURE_2D, m_ObjectIDBuffer);
+	m_pDebugQuadObjectID->RenderToScreenAlignedQuad();
 
 	// Unbind all textures
 	glActiveTexture(GL_TEXTURE0);
@@ -459,25 +490,29 @@ void PostProcess::ExecuteDeferredRenderPass()
 	glBindTexture(GL_TEXTURE_2D, m_EmissionBuffer);
 	glActiveTexture(GL_TEXTURE4);
 	glBindTexture(GL_TEXTURE_2D, m_MaskBuffer);
+	glActiveTexture(GL_TEXTURE5);
+	glBindTexture(GL_TEXTURE_2D, m_SkyboxBuffer);
+	glActiveTexture(GL_TEXTURE6);
+	glBindTexture(GL_TEXTURE_2D, m_ObjectIDBuffer);
 
 	// Shadow Depth map
-	glActiveTexture(GL_TEXTURE5);
+	glActiveTexture(GL_TEXTURE7);
 	glBindTexture(GL_TEXTURE_2D, m_ShadowDepthBuffer);
 
 	// Bind skybox texture
-	glActiveTexture(GL_TEXTURE6);
+	glActiveTexture(GL_TEXTURE8);
 	HDRSkybox::getInstance().BindHDRISKybox();
 
 	// Bind Irrandiance texture
-	glActiveTexture(GL_TEXTURE7);
+	glActiveTexture(GL_TEXTURE9);
 	HDRSkybox::getInstance().BindIrrandianceSkybox();
 
 	// Bind Prefiltered Specular Map
-	glActiveTexture(GL_TEXTURE8);
+	glActiveTexture(GL_TEXTURE10);
 	HDRSkybox::getInstance().BindPrefilteredSpecularMap();
 
 	// Bind BRDF LUT Map
-	glActiveTexture(GL_TEXTURE9);
+	glActiveTexture(GL_TEXTURE11);
 	HDRSkybox::getInstance().BindBrdfLUTMap();
 
 	// Render Quad!
@@ -497,12 +532,16 @@ void PostProcess::ExecuteDeferredRenderPass()
 	glActiveTexture(GL_TEXTURE5);
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glActiveTexture(GL_TEXTURE6);
-	HDRSkybox::getInstance().UnbindHDRISkybox();
+	glBindTexture(GL_TEXTURE_2D, 0);
 	glActiveTexture(GL_TEXTURE7);
-	HDRSkybox::getInstance().UnbindIrrandianceSkybox();
+	glBindTexture(GL_TEXTURE_2D, 0);
 	glActiveTexture(GL_TEXTURE8);
-	HDRSkybox::getInstance().UnbindPrefilteredSpecularMap();
+	HDRSkybox::getInstance().UnbindHDRISkybox();
 	glActiveTexture(GL_TEXTURE9);
+	HDRSkybox::getInstance().UnbindIrrandianceSkybox();
+	glActiveTexture(GL_TEXTURE10);
+	HDRSkybox::getInstance().UnbindPrefilteredSpecularMap();
+	glActiveTexture(GL_TEXTURE11);
 	HDRSkybox::getInstance().UnbindBrdfLUTMap();
 }
 
@@ -650,6 +689,8 @@ void PostProcess::SetDeferredPassShaderVariables(int shaderID)
 	m_hAlbedoBuffer = glGetUniformLocation(shaderID, "albedoBuffer");
 	m_hEmissiveBuffer = glGetUniformLocation(shaderID, "emissiveBuffer");
 	m_hMaskBuffer = glGetUniformLocation(shaderID, "maskBuffer");
+	m_hSkyboxBuffer = glGetUniformLocation(shaderID, "skyboxBuffer");
+	m_hObjectIDBuffer = glGetUniformLocation(shaderID, "objectIDBuffer");
 	
 	m_hShadowDepthBuffer = glGetUniformLocation(shaderID, "shadowDepthBuffer");
 
@@ -683,11 +724,13 @@ void PostProcess::SetDeferredPassShaderVariables(int shaderID)
 	glUniform1i(m_hAlbedoBuffer, 2);
 	glUniform1i(m_hEmissiveBuffer, 3);
 	glUniform1i(m_hMaskBuffer, 4);
-	glUniform1i(m_hShadowDepthBuffer, 5);
-	glUniform1i(hCubeMap, 6);
-	glUniform1i(hIrradMap, 7);
-	glUniform1i(hPrefiltSpecMap, 8);
-	glUniform1i(hBrdfLUT, 9);
+	glUniform1i(m_hSkyboxBuffer, 5);
+	glUniform1i(m_hObjectIDBuffer, 6);
+	glUniform1i(m_hShadowDepthBuffer, 7);
+	glUniform1i(hCubeMap, 8);
+	glUniform1i(hIrradMap, 9);
+	glUniform1i(hPrefiltSpecMap, 10);
+	glUniform1i(hBrdfLUT, 11);
 
 	// Point Light related uniform variables!
 	PointLightIlluminance(shaderID);

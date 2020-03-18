@@ -35,7 +35,7 @@ void UIManager::Initialize(GLFWwindow* window)
 	ImGui_ImplOpenGL3_Init("#version 130");
 	
 	//io.Fonts->AddFontDefault();
-	//io.Fonts->AddFontFromFileTTF("data/fonts/consola.ttf", 12.0f);
+	io.Fonts->AddFontFromFileTTF("../Assets/Fonts/consola.ttf", 13.0f);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -358,7 +358,7 @@ void UIManager::RenderSceneUI(Scene* ptrScene, PostProcess* ptrFX)
 		}
 
 		float bloomCutoff = ptrFX->GetBloomThreshold();
-		if(ImGui::SliderFloat("Bloom Cutoff", &bloomCutoff, 0.0f, 2.0f))
+		if(ImGui::SliderFloat("Bloom Cutoff", &bloomCutoff, 0.0f, 50.0f))
 		{
 			ptrFX->SetBloomThreshold(bloomCutoff);
 		}

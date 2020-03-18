@@ -19,10 +19,10 @@ void main()
 	// find out hemisphere orientation
 	vec3 N = normalize(localPos);
 	vec3 Up = vec3(0,1,0);
-	vec3 Right = normalize(cross(Up, N));
-	Up = normalize(cross(N, Right));
+	vec3 Right = cross(Up, N);
+	Up = cross(N, Right);
 
-	float sampleDelta = 0.025f;
+	float sampleDelta = 0.010f;
 	float NrSamples = 0.0f;
 
 	// solidangle to spherical angle integral --> Approximation using Riemann sum!

@@ -38,7 +38,9 @@ HDRSkybox::HDRSkybox()
 {
 	m_iCubemapSize = 1024;
 
-	
+	m_iBrdfLUTmapSize = 512;
+	m_iIrradiancemapSize = 32;
+	m_iPrefiltCubemapSize = 128;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -50,7 +52,7 @@ void HDRSkybox::Initialize()
 	m_pPrefiltSpecShader = new GLSLShader("Shaders/PrefilterSpecmap.vert", "Shaders/PrefilterSpecmap.frag");
 	m_pBrdfLUTShader = new GLSLShader("Shaders/BRDFLut.vert", "Shaders/BRDFLut.frag");
 
-	m_tbo = TextureManager::getInstannce().Load2DTextureFromFile("Footprint_Court_2k.hdr", "../Assets/HDRI");
+	m_tbo = TextureManager::getInstannce().Load2DTextureFromFile("circus_arena_2k.hdr", "../Assets/HDRI");
 
 	// create cube for capturing cubemap
 	InitCaptureCube();
@@ -255,7 +257,7 @@ void HDRSkybox::InitIrradianceCubemap()
 
 	for (GLuint i = 0; i < 6; ++i)
 	{
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 32, 32, 0, GL_RGB, GL_FLOAT, nullptr);
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, m_iIrradiancemapSize, m_iIrradiancemapSize, 0, GL_RGB, GL_FLOAT, nullptr);
 	}
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -266,7 +268,7 @@ void HDRSkybox::InitIrradianceCubemap()
 	// 2. start by binding this cubemap to capture FBO & running convolution shader
 	glBindFramebuffer(GL_FRAMEBUFFER, m_captureFBO);
 	glBindRenderbuffer(GL_RENDERBUFFER, m_captureRBO);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 32, 32);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, m_iIrradiancemapSize, m_iIrradiancemapSize);
 
 	m_pIrradianceShader->Use();
 	GLuint shaderID = m_pIrradianceShader->GetShaderID();
@@ -282,7 +284,7 @@ void HDRSkybox::InitIrradianceCubemap()
 	glBindTexture(GL_TEXTURE_CUBE_MAP, m_captureTBO);
 
 	// Configure viewport to capture dimension
-	glViewport(0, 0, 32, 32);
+	glViewport(0, 0, m_iIrradiancemapSize, m_iIrradiancemapSize);
 
 	// perform convolution on each face
 	for (GLuint j = 0; j < 6; ++j)
@@ -313,7 +315,7 @@ void HDRSkybox::InitPrefilteredSpecularCubemap()
 	glBindTexture(GL_TEXTURE_CUBE_MAP, m_PrefilterSpecmapTBO);
 	for (GLuint i = 0; i < 6; ++i)
 	{
-		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, 512, 512, 0, GL_RGB, GL_FLOAT, nullptr);
+		glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, m_iPrefiltCubemapSize, m_iPrefiltCubemapSize, 0, GL_RGB, GL_FLOAT, nullptr);
 	}
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -340,12 +342,12 @@ void HDRSkybox::InitPrefilteredSpecularCubemap()
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, m_captureTBO);
 
-	unsigned int maxMipLevels = 5;
+	unsigned int maxMipLevels = 4;
 	for (GLuint mip = 0; mip < maxMipLevels; ++mip)
 	{
 		// resize framebuffer based on mip level
-		unsigned int mipWidth =  512 * std::pow(0.5f, mip);
-		unsigned int mipHeight = 512 * std::pow(0.5f, mip);
+		unsigned int mipWidth =  m_iPrefiltCubemapSize * std::pow(0.5f, mip);
+		unsigned int mipHeight = m_iPrefiltCubemapSize * std::pow(0.5f, mip);
 
 		glBindRenderbuffer(GL_RENDERBUFFER, m_captureRBO);
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, mipWidth, mipHeight);
@@ -376,7 +378,7 @@ void HDRSkybox::InitSpecularBrdfLUT()
 {
 	glGenTextures(1, &m_BrdfLUTmapTBO);
 	glBindTexture(GL_TEXTURE_2D, m_BrdfLUTmapTBO);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RG16F, 512, 512, 0, GL_RG, GL_FLOAT, 0);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RG16F, m_iBrdfLUTmapSize, m_iBrdfLUTmapSize, 0, GL_RG, GL_FLOAT, 0);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -385,10 +387,10 @@ void HDRSkybox::InitSpecularBrdfLUT()
 
 	glBindFramebuffer(GL_FRAMEBUFFER, m_captureFBO);
 	glBindRenderbuffer(GL_RENDERBUFFER, m_captureRBO);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
+	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, m_iBrdfLUTmapSize, m_iBrdfLUTmapSize);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_BrdfLUTmapTBO, 0);
 
-	glViewport(0, 0, 512, 512);
+	glViewport(0, 0, m_iBrdfLUTmapSize, m_iBrdfLUTmapSize);
 
 	m_pBrdfLUTShader->Use();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
