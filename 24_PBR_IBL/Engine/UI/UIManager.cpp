@@ -203,6 +203,11 @@ void UIManager::RenderSceneUI(Scene* ptrScene, PostProcess* ptrFX)
 					bool showWireframe = mat->m_bWireframe;
 					if(ImGui::Checkbox("Wireframe", &showWireframe))
 						mat->m_bWireframe = showWireframe;
+
+					ImGui::SameLine();
+					bool useDxNormals = mat->m_bDxNormals;
+					if (ImGui::Checkbox("Use D3D Normals", &useDxNormals))
+						mat->m_bDxNormals = useDxNormals;
 				
 					ImGui::TreePop();
 				}

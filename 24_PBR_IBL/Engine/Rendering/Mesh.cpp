@@ -90,6 +90,16 @@ void Mesh::SetMaterialProperties(int shaderID, Material * mat)
 	{
 		glUniform1f(glGetUniformLocation(shaderID, "wireframeWidth"), 0.0f);
 	}
+
+	// toggle D3D normals on/off...!
+	if (mat->m_bDxNormals)
+	{
+		glUniform1f(glGetUniformLocation(shaderID, "useD3DNormals"), true);
+	}
+	else
+	{
+		glUniform1f(glGetUniformLocation(shaderID, "useD3DNormals"), false);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

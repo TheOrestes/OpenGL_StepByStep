@@ -48,13 +48,14 @@ struct Material
 	// default constructor
 	Material()
 	{
-		m_colAlbedo = glm::vec4(0.8,0.8,0.8,1.0);
+		m_colAlbedo = glm::vec4(1.0f);
 		m_colEmission = glm::vec4(0.0f);
 		m_fRoughness = 0.5f;
 		m_fMetallic = 0.5f;
 		m_fOcclusion = 1.0f;
 		m_fHeight = 0.0f;
 		m_bWireframe = false;
+		m_bDxNormals = false;
 	}
 
 	// Textures
@@ -71,5 +72,6 @@ struct Material
 	float		m_fOcclusion;
 	float		m_fHeight;
 	bool		m_bWireframe;
+	bool		m_bDxNormals;
 };
 

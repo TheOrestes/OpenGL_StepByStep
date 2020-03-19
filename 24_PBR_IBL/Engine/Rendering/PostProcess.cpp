@@ -54,7 +54,7 @@ PostProcess::PostProcess()
 	m_fGamma = 2.2f;
 
 	m_bDrawBloomEffect = true;
-	m_fBloomThreshold = 1.0f;
+	m_fBloomThreshold = 2.5f;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

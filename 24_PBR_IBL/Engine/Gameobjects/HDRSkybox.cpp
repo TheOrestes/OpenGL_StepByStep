@@ -52,7 +52,7 @@ void HDRSkybox::Initialize()
 	m_pPrefiltSpecShader = new GLSLShader("Shaders/PrefilterSpecmap.vert", "Shaders/PrefilterSpecmap.frag");
 	m_pBrdfLUTShader = new GLSLShader("Shaders/BRDFLut.vert", "Shaders/BRDFLut.frag");
 
-	m_tbo = TextureManager::getInstannce().Load2DTextureFromFile("circus_arena_2k.hdr", "../Assets/HDRI");
+	m_tbo = TextureManager::getInstannce().Load2DTextureFromFile("music_hall_01_2k.hdr", "../Assets/HDRI");
 
 	// create cube for capturing cubemap
 	InitCaptureCube();
@@ -133,10 +133,10 @@ void HDRSkybox::InitCaptureCube()
 void HDRSkybox::InitLUTQuad()
 {
 	// Quad vertex data
-	m_Quad_Vertices[0] = VertexPT(glm::vec3(-1, -1, 0), glm::vec2(0.0f, 1.0f));
-	m_Quad_Vertices[1] = VertexPT(glm::vec3(-1, 1, 0), glm::vec2(0.0f, 0.0f));
-	m_Quad_Vertices[2] = VertexPT(glm::vec3(1, 1, 0), glm::vec2(1.0f, 0.0f));
-	m_Quad_Vertices[3] = VertexPT(glm::vec3(1, -1, 0), glm::vec2(1.0f, 1.0f));
+	m_Quad_Vertices[0] = VertexPT(glm::vec3(-1, -1, 0), glm::vec2(0.0f, 0.0f));
+	m_Quad_Vertices[1] = VertexPT(glm::vec3(-1, 1, 0), glm::vec2(0.0f, 1.0f));
+	m_Quad_Vertices[2] = VertexPT(glm::vec3(1, 1, 0), glm::vec2(1.0f, 1.0f));
+	m_Quad_Vertices[3] = VertexPT(glm::vec3(1, -1, 0), glm::vec2(1.0f, 0.0f));
 
 	// Quad Index data ( 1 face = 2 triangles = 6 indices )
 	m_Quad_Indices[0] = 0;	m_Quad_Indices[1] = 1;	m_Quad_Indices[2] = 2;
@@ -342,7 +342,7 @@ void HDRSkybox::InitPrefilteredSpecularCubemap()
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, m_captureTBO);
 
-	unsigned int maxMipLevels = 4;
+	unsigned int maxMipLevels = 5;
 	for (GLuint mip = 0; mip < maxMipLevels; ++mip)
 	{
 		// resize framebuffer based on mip level

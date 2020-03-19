@@ -35,6 +35,7 @@ uniform mat4 matLightViewToProjection;
 // Bloom
 uniform float fBloomThreshold;
 
+
 //---------------------------------------------------------------------------------------------------------------------
 // Point Lights
 //---------------------------------------------------------------------------------------------------------------------
@@ -265,7 +266,7 @@ void main()
 	vec3 Normal = NormalBufferColor.rgb;
 	float Height = NormalBufferColor.a;
 	vec3 Emission = texture2D(emissiveBuffer, vs_outTexcoord).rgb;
-	vec3 Albedo = LinearizeColor(texture2D(albedoBuffer, vs_outTexcoord).rgb);
+	vec3 Albedo = (texture2D(albedoBuffer, vs_outTexcoord).rgb);
 	vec3 Mask = texture2D(maskBuffer, vs_outTexcoord).rgb;
 	vec3 Skybox = texture2D(skyboxBuffer, vs_outTexcoord).rgb;
 
@@ -300,6 +301,7 @@ void main()
 	// Just like direct lighting has diffuse & specular component, even indirect lighting has it! 
 	// It is necessary to weigh both accordingly using Fresnel equation.
 	vec3 F0 = vec3(0.04f);
+	F0 = mix(F0, Albedo, Metallic);
 	vec3 Ks = Fresnel_Schlick_Roughness(max(dot(Normal, viewDir), 0.0f), F0, Roughness);
 	vec3 Kd = 1.0f - Ks;
 	Kd *= 1.0f - Metallic;
@@ -309,14 +311,13 @@ void main()
 	vec3 IndirectDiffuse = Kd * Irradiance;
 
 	//--------- Indirect Specular
-	const float MAX_REFLECTION_LOD = 3.0f;
+	const float MAX_REFLECTION_LOD = 4.0f;
 
 	// choose which mip-map level to look-up based on roughness value of a material...
 	vec3 prefilteredSpecColor = textureLod(texture_prefiltSpecular, -viewReflection, Roughness * MAX_REFLECTION_LOD).rgb;
 	vec2 envBRDF = texture(texture_brdfLUT, vec2(max(dot(Normal, viewDir), 0.0f), Roughness)).rg;
-	vec3 IndirectSpecular = Ks * prefilteredSpecColor *  envBRDF.x + envBRDF.y;
+	vec3 IndirectSpecular = Ks * prefilteredSpecColor * (envBRDF.x + envBRDF.y);
 
-	
 	vec3 Lo_Indirect = ((Albedo * IndirectDiffuse) + IndirectSpecular) * Occlusion;
 	
 	vec3 Lo = vec3(0);
@@ -342,9 +343,10 @@ void main()
 	//outColor = vec4(Skybox, 1);
 
 	// Always add Emission color to bright buffer!
-	float brightness = dot(outColor.rgb, vec3(0.2126f, 0.7152f, 0.0722f));
+	// do not consider HDRI map into brightness calculations!
+	float brightness = dot((Lo_Direct + Lo_Indirect).rgb, vec3(0.2126f, 0.7152f, 0.0722f));
 	if(brightness > fBloomThreshold)
-		Emission += Lo;
+		Emission += (Lo_Direct + Lo_Indirect);
 
 	brightColor = vec4(Emission,1);
 }

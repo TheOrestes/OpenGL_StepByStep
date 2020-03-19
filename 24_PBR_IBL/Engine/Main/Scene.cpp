@@ -36,7 +36,7 @@ void Scene::InitScene()
 	// Initialize Static objects...
 	StaticObjectData data;
 	data.name = "SteamPunk";
-	data.path = "../Assets/models/SK_Mannequin.fbx";
+	data.path = "../Assets/models/SteamPunk.fbx";
 	data.shader = "NormalMapWSDeferred";
 	data.position = glm::vec3(0, 5, 0);
 	data.angle = 0.0f;
@@ -49,7 +49,7 @@ void Scene::InitScene()
 	// plane
 	StaticObjectData dataPlane;
 	dataPlane.name = "ShadowPlane";
-	dataPlane.path = "../Assets/models/ShadowPlane.fbx";
+	dataPlane.path = "../Assets/models/Plane_Bathroom.fbx";
 	dataPlane.shader = "NormalMapWSDeferred";
 	dataPlane.position = glm::vec3(0, 0, 0);
 	dataPlane.angle = 0.0f;

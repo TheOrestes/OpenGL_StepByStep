@@ -48,6 +48,8 @@ uniform vec3		cameraPosition;
 uniform vec3		wireframeColor = vec3(0.0f, 0.0f, 0.0f);
 uniform float		wireframeWidth = 0.75f;
 
+uniform bool		useD3DNormals = false;
+
 const float nearPlane = 1.0f;
 const float farPlane = 1000.0f;
 
@@ -67,6 +69,22 @@ float LinearizeDepth(float depth)
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////
+vec3 ComputeTexNormal(vec3 worldNormal, vec3 texNormal)
+{
+	vec3 dPosX = dFdx(vs_outPosition);
+	vec3 dPosY = dFdy(vs_outPosition);
+	vec2 dTexX = dFdx(vs_outUV);
+	vec2 dTexY = dFdy(vs_outUV);
+
+	vec3 normal = normalize(worldNormal);
+	vec3 tangent = normalize(dPosX * dTexY.t - dPosY * dTexX.t);
+	vec3 binormal = -normalize(cross(normal, tangent));
+	mat3 TBN = mat3(tangent, binormal, normal);
+
+	return normalize(TBN * texNormal);
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
 void main()
 {
 	vec4 Ambient = vec4(0);
@@ -79,11 +97,17 @@ void main()
 	vec4 emissiveColor = hasEmissive ? material.Emission * texture(texture_emissive, vs_outUV) : material.Emission;
 
 	// Extract normals, get them from [0,1] to [-1,1] range
+	// Flip green channel for normal if we are using DirectX normal map!
 	vec3 texNormal = normalize(texture(texture_normal, vs_outUV) * 2.0 - 1.0).rgb;
+	if(useD3DNormals)
+	{
+		texNormal = vec3(texNormal.r, -texNormal.g, texNormal.b);
+	}
 
 	// use TBN matrix to transform these Tangent space normals to World Space
 	// if object has normal map, then use tangent space texture normals by transforming then to 
 	// world space using TBN matrix. If not, then use already transformed world space normals!
+	//vec3 Normal = ComputeTexNormal(vs_outNormal, texNormal);//hasNormal ? normalize(vs_outTBN * texNormal) : vs_outNormal;
 	vec3 Normal = hasNormal ? normalize(vs_outTBN * texNormal) : vs_outNormal;
 
 	if(hasMask)
