@@ -194,6 +194,8 @@ xcopy $(SolutionDir)\Shaders $(SolutionDir)$(Platform)\$(Configuration)\Shaders 
     <None Include="Shaders\NormalMapWS.vert" />
     <None Include="Shaders\NormalMapWSDeferred.frag" />
     <None Include="Shaders\NormalMapWSDeferred.vert" />
+    <None Include="Shaders\PostFX.frag" />
+    <None Include="Shaders\PostFX.vert" />
     <None Include="Shaders\PostProcess.frag" />
     <None Include="Shaders\PostProcess.vert" />
     <None Include="Shaders\PrefilterSpecmap.frag" />

@@ -36,7 +36,6 @@ PostProcess::PostProcess()
 
 	m_pPostFXShader = nullptr;
 	m_pDeferredShader = nullptr;
-	m_pBloomShader = nullptr;
 
 	m_pScreenQuadFinal = nullptr;
 	m_pDebugQuadBrightness = nullptr;
@@ -61,7 +60,6 @@ PostProcess::PostProcess()
 PostProcess::~PostProcess()
 {
 	SAFE_DELETE(m_pDeferredShader);
-	SAFE_DELETE(m_pBloomShader);
 	SAFE_DELETE(m_pPostFXShader);
 
 	SAFE_DELETE(m_pScreenQuadFinal);
@@ -88,11 +86,8 @@ PostProcess::~PostProcess()
 	glDeleteFramebuffers(1, &m_fboShadow);
 	glDeleteRenderbuffers(1, &m_rboShadow);
 
-	glDeleteFramebuffers(1, &m_fboBloom);
-	glDeleteRenderbuffers(1, &m_rboBloom);
-	
-	glDeleteFramebuffers(1, &m_fboPostProcess);
-	glDeleteRenderbuffers(1, &m_rboPostProcess);
+	glDeleteFramebuffers(1, &m_fboPostFX);
+	glDeleteRenderbuffers(1, &m_rboPostFX);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -102,8 +97,7 @@ void PostProcess::Initialize()
 
 	// Create shader & grab handles to all the uniform variables...
 	m_pDeferredShader = new GLSLShader("Shaders/DeferredLighting.vert", "Shaders/DeferredLighting.frag");
-	m_pBloomShader = new GLSLShader("Shaders/Bloom.vert", "Shaders/Bloom.frag");
-	m_pPostFXShader = new GLSLShader("Shaders/PostProcess.vert", "Shaders/PostProcess.frag");
+	m_pPostFXShader = new GLSLShader("Shaders/PostFX.vert", "Shaders/PostFX.frag");
 	m_pDebugShader = new GLSLShader("Shaders/DeferredLighting.vert", "Shaders/DeferredDebug.frag");
 
 	// Create screen aligned quad for final render
@@ -286,11 +280,11 @@ void PostProcess::CreateShadowMappingBuffers(int horizRes, int vertRes)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void PostProcess::CreateBloomBuffers(int horizRes, int vertRes)
+void PostProcess::CreatePostFXBuffers(int horizRes, int vertRes)
 {
 	// create framebuffer object
-	glGenFramebuffers(1, &m_fboBloom);
-	glBindFramebuffer(GL_FRAMEBUFFER, m_fboBloom);
+	glGenFramebuffers(1, &m_fboPostFX);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_fboPostFX);
 
 	// ! COLOR BUFFER
 	// Create color texture attachment for this fbo
@@ -322,13 +316,13 @@ void PostProcess::CreateBloomBuffers(int horizRes, int vertRes)
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_brightBuffer, 0);
 
 	// create render buffer object 
-	glGenRenderbuffers(1, &m_rboBloom);
-	glBindRenderbuffer(GL_RENDERBUFFER, m_rboBloom);
+	glGenRenderbuffers(1, &m_rboPostFX);
+	glBindRenderbuffer(GL_RENDERBUFFER, m_rboPostFX);
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, horizRes, vertRes);
 	glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
 	// attach render buffer to the framebuffer
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_rboBloom);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_rboPostFX);
 
 	// Tell OGL which color attachments we will use
 	GLuint attachments[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
@@ -337,12 +331,12 @@ void PostProcess::CreateBloomBuffers(int horizRes, int vertRes)
 	// Check if correct FBO was created or not ...
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 	{
-		UIManager::getInstance().WriteToConsole(LOGTYPE::LOG_ERROR, "PostProcess", "Bloom buffer creation failed!");
+		UIManager::getInstance().WriteToConsole(LOGTYPE::LOG_ERROR, "PostProcess", "PostFX buffer creation failed!");
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	UIManager::getInstance().WriteToConsole(LOGTYPE::LOG_INFO, "PostProcess", "Bloom rendering buffers created!");
+	UIManager::getInstance().WriteToConsole(LOGTYPE::LOG_INFO, "PostProcess", "PostFX rendering buffers created!");
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -394,21 +388,6 @@ void PostProcess::DrawDebugBuffers()
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void PostProcess::BeginRTPass()
-{
-	glBindFramebuffer(GL_FRAMEBUFFER, m_fboPostProcess);
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glEnable(GL_DEPTH_TEST);
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-void PostProcess::EndRTPass()
-{
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
 void PostProcess::BeginGeometryRenderPass()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, m_fboDeferred);
@@ -424,23 +403,17 @@ void PostProcess::EndGeometryRenderPass()
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void PostProcess::BeginBloomPrepass()
+void PostProcess::BeginPostprocessPrepass()
 {
-	if (!m_bDrawBloomEffect)
-		return;
-
-	glBindFramebuffer(GL_FRAMEBUFFER, m_fboBloom);
+	glBindFramebuffer(GL_FRAMEBUFFER, m_fboPostFX);
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void PostProcess::EndBloomPrepass()
+void PostProcess::EndPostprocessPrepass()
 {
-	if (!m_bDrawBloomEffect)
-		return;
-
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -559,45 +532,16 @@ void PostProcess::ExecutePostprocessPass()
 	m_hColorBuffer = glGetUniformLocation(id, "colorBuffer");
 	glUniform1i(m_hColorBuffer, 0);
 
-	GLint m_hGamma = glGetUniformLocation(id, "gamma");
-	glUniform1f(m_hGamma, m_fGamma);
-
-	GLint m_hExposure = glGetUniformLocation(id, "exposure");
-	glUniform1f(m_hExposure, m_fExposure);
-	
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_colorBuffer);
-
-	m_pScreenQuadFinal->RenderToScreenAlignedQuad();
-
-	glBindTexture(GL_TEXTURE_2D, 0);
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-void PostProcess::ExecuteBloomPass()
-{
-	if (!m_bDrawBloomEffect)
-		return;
-
-	glDisable(GL_DEPTH_TEST);
-
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	m_pBloomShader->Use();
-	int id = m_pBloomShader->GetShaderID();
-
-	m_hColorBuffer = glGetUniformLocation(id, "colorBuffer");
-	glUniform1i(m_hColorBuffer, 0);
-
 	m_hBrightBuffer = glGetUniformLocation(id, "brightBuffer");
 	glUniform1i(m_hBrightBuffer, 1);
 
 	GLint m_hGamma = glGetUniformLocation(id, "gamma");
 	glUniform1f(m_hGamma, m_fGamma);
-
+	
 	GLint m_hExposure = glGetUniformLocation(id, "exposure");
 	glUniform1f(m_hExposure, m_fExposure);
+
+	glUniform1i(glGetUniformLocation(id, "DoBloom"), m_bDrawBloomEffect);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_colorBuffer);

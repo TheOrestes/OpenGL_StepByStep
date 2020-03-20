@@ -14,22 +14,19 @@ public:
 
 	void				Initialize();
 
-	void				BeginRTPass();
-	void				EndRTPass();
 	void				BeginGeometryRenderPass();
 	void				EndGeometryRenderPass();
-	void				BeginBloomPrepass();
-	void				EndBloomPrepass();
+	void				BeginPostprocessPrepass();
+	void				EndPostprocessPrepass();
 	void				BeginShadowPass();
 	void				EndShadowPass();
 
 	void				ExecuteDeferredRenderPass();
 	void				ExecutePostprocessPass();
-	void				ExecuteBloomPass();
 
 	void				CreateDeferredBuffers(int horizRes, int vertRes);
 	void				CreateShadowMappingBuffers(int horizRes, int vertRes);
-	void				CreateBloomBuffers(int horizRes, int vertRes);
+	void				CreatePostFXBuffers(int horizRes, int vertRes);
 
 	void				DrawDebugBuffers();
 
@@ -99,12 +96,8 @@ private:
 	GLuint				m_hShadowDepthBuffer;		// Handle to Depth buffer
 
 	// Postprocessing
-	GLuint				m_fboPostProcess;			// Framebuffer object for postprocess
-	GLuint				m_rboPostProcess;			// Renderbuffer object for postprocess
-
-	// Bloom
-	GLuint				m_fboBloom;					// Framebuffer object for Bloom
-	GLuint				m_rboBloom;					// Renderbuffer object for Bloom
+	GLuint				m_fboPostFX;			// Framebuffer object for postprocess
+	GLuint				m_rboPostFX;			// Renderbuffer object for postprocess
 
 	bool				m_bDrawDebugBuffers;		// toggle debug G-Buffer rendering!
 	bool				m_bDrawBloomEffect;			// toggle Bloom effect!
@@ -112,7 +105,6 @@ private:
 
 	GLSLShader*			m_pPostFXShader;			// Ptr to Postprocess shader
 	GLSLShader*			m_pDeferredShader;			// Ptr to Deferred shader
-	GLSLShader*			m_pBloomShader;				// Ptr to Bloom shader
 	GLSLShader*			m_pDebugShader;				// Ptr to Debug shader
 
 	// Postprocess properties

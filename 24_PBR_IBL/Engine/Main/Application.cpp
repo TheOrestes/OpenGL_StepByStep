@@ -49,7 +49,7 @@ void Application::Initialize(GLFWwindow* window)
 	m_pPostFX->CreateShadowMappingBuffers(m_iWindowWidth, m_iWindowHeight);
 
 	// Setup buffers for Bloom
-	m_pPostFX->CreateBloomBuffers(m_iWindowWidth, m_iWindowHeight);
+	m_pPostFX->CreatePostFXBuffers(m_iWindowWidth, m_iWindowHeight);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -75,13 +75,13 @@ void Application::Run(float dt)
 		m_pScene->Render();
 		m_pPostFX->EndGeometryRenderPass();
 
-		// 3. Perform Deferred rendering, but render to Bloom buffers!
-		m_pPostFX->BeginBloomPrepass();
+		// 3. Perform Deferred rendering, but render to Postprocess buffers!
+		m_pPostFX->BeginPostprocessPrepass();
 		m_pPostFX->ExecuteDeferredRenderPass();
-		m_pPostFX->EndBloomPrepass();
+		m_pPostFX->EndPostprocessPrepass();
 		
-		// 4. Perform Bloom
-		m_pPostFX->ExecuteBloomPass();
+		// 4. Perform PostProcess!
+		m_pPostFX->ExecutePostprocessPass();
 
 		// 5. Debug Buffers
 		m_pPostFX->DrawDebugBuffers();

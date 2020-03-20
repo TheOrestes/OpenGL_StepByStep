@@ -171,6 +171,12 @@
     <None Include="Shaders\BRDFLut.vert">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="Shaders\PostFX.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\PostFX.vert">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Gameobjects\BBoxCube.cpp">
