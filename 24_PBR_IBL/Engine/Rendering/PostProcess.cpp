@@ -38,22 +38,15 @@ PostProcess::PostProcess()
 	m_pDeferredShader = nullptr;
 
 	m_pScreenQuadFinal = nullptr;
-	m_pDebugQuadBrightness = nullptr;
-	m_pDebugQuadAlbedo = nullptr;
-	m_pDebugQuadEmission = nullptr;
-	m_pDebugQuadObjectID = nullptr;
-	m_pDebugQuadNormal = nullptr;
-	m_pDebugQuadPosition = nullptr;
-	m_pDebugQuadShadowDepth = nullptr;
 
-	m_bDrawDebugBuffers = false;
+	m_iChannelID = 0;
 
 	// properties
 	m_fExposure = 1.0f;
 	m_fGamma = 2.2f;
 
 	m_bDrawBloomEffect = true;
-	m_fBloomThreshold = 2.5f;
+	m_fBloomThreshold = 1.0f;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -63,13 +56,6 @@ PostProcess::~PostProcess()
 	SAFE_DELETE(m_pPostFXShader);
 
 	SAFE_DELETE(m_pScreenQuadFinal);
-	SAFE_DELETE(m_pDebugQuadAlbedo);
-	SAFE_DELETE(m_pDebugQuadBrightness);
-	SAFE_DELETE(m_pDebugQuadEmission);
-	SAFE_DELETE(m_pDebugQuadNormal);
-	SAFE_DELETE(m_pDebugQuadPosition);
-	SAFE_DELETE(m_pDebugQuadObjectID);
-	SAFE_DELETE(m_pDebugQuadShadowDepth);
 	
 	glDeleteBuffers(1, &m_colorBuffer);
 	glDeleteBuffers(1, &m_PositionBuffer);
@@ -98,28 +84,10 @@ void PostProcess::Initialize()
 	// Create shader & grab handles to all the uniform variables...
 	m_pDeferredShader = new GLSLShader("Shaders/DeferredLighting.vert", "Shaders/DeferredLighting.frag");
 	m_pPostFXShader = new GLSLShader("Shaders/PostFX.vert", "Shaders/PostFX.frag");
-	m_pDebugShader = new GLSLShader("Shaders/DeferredLighting.vert", "Shaders/DeferredDebug.frag");
 
 	// Create screen aligned quad for final render
 	m_pScreenQuadFinal = new ScreenAlignedQuad();
 	m_pScreenQuadFinal->CreateScreenAlignedQuad(0);
-
-	// Create screen aligned quad for debug renders
-	m_pDebugQuadPosition = new ScreenAlignedQuad();
-	m_pDebugQuadNormal = new ScreenAlignedQuad();
-	m_pDebugQuadAlbedo = new ScreenAlignedQuad();
-	m_pDebugQuadEmission = new ScreenAlignedQuad();
-	m_pDebugQuadObjectID = new ScreenAlignedQuad();
-	m_pDebugQuadBrightness = new ScreenAlignedQuad();
-	m_pDebugQuadShadowDepth = new ScreenAlignedQuad();
-
-	m_pDebugQuadPosition->CreateScreenAlignedQuad(1);
-	m_pDebugQuadNormal->CreateScreenAlignedQuad(2);
-	m_pDebugQuadAlbedo->CreateScreenAlignedQuad(3);
-	m_pDebugQuadEmission->CreateScreenAlignedQuad(4);
-	m_pDebugQuadBrightness->CreateScreenAlignedQuad(5);
-	m_pDebugQuadShadowDepth->CreateScreenAlignedQuad(6);
-	m_pDebugQuadObjectID->CreateScreenAlignedQuad(7);
 
 	UIManager::getInstance().WriteToConsole(LOGTYPE::LOG_INFO, "PostProcess", "PostProcess initialization finished...");
 }
@@ -340,54 +308,6 @@ void PostProcess::CreatePostFXBuffers(int horizRes, int vertRes)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-void PostProcess::DrawDebugBuffers()
-{
-	if (!m_bDrawDebugBuffers)
-		return;
-
-	m_pDebugShader->Use();
-	
-	// Render Position!
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_PositionBuffer);	
-	m_pDebugQuadPosition->RenderToScreenAlignedQuad();
-
-	// Render Normal
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_NormalBuffer);
-	m_pDebugQuadNormal->RenderToScreenAlignedQuad();
-
-	// Render Albedo
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_AlbedoBuffer);
-	m_pDebugQuadAlbedo->RenderToScreenAlignedQuad();
-
-	// Render Emission
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_EmissionBuffer);
-	m_pDebugQuadEmission->RenderToScreenAlignedQuad();
-
-	// Render Brightness
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_brightBuffer);
-	m_pDebugQuadBrightness->RenderToScreenAlignedQuad();
-
-	// Render ShadowDepth
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_ShadowDepthBuffer);
-	m_pDebugQuadShadowDepth->RenderToScreenAlignedQuad();
-
-	// Render ObjectID
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, m_ObjectIDBuffer);
-	m_pDebugQuadObjectID->RenderToScreenAlignedQuad();
-
-	// Unbind all textures
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, 0);
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
 void PostProcess::BeginGeometryRenderPass()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, m_fboDeferred);
@@ -548,7 +468,6 @@ void PostProcess::ExecutePostprocessPass()
 
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, m_brightBuffer);
-	glGenerateMipmap(GL_TEXTURE_2D);
 
 	m_pScreenQuadFinal->RenderToScreenAlignedQuad();
 
@@ -675,6 +594,9 @@ void PostProcess::SetDeferredPassShaderVariables(int shaderID)
 	glUniform1i(hIrradMap, 9);
 	glUniform1i(hPrefiltSpecMap, 10);
 	glUniform1i(hBrdfLUT, 11);
+
+	// set channel ID to draw!
+	glUniform1i(glGetUniformLocation(shaderID, "channelID"), m_iChannelID);
 
 	// Point Light related uniform variables!
 	PointLightIlluminance(shaderID);

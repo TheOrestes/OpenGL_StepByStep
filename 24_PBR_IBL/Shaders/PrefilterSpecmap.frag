@@ -122,7 +122,7 @@ void main()
 
 			// to avoid bright dots in specular reflections, we make sure not to sample envMap, but instead sample
 			// mip-level of the envMap based on integral's PDF & roughness!
-			float resolution = 2048.0f;
+			float resolution = 512.0f;
 			float saTexel = 4.0f * PI / (6.0f * resolution * resolution);
 			float saSample = 1.0f / (float(SAMPLE_COUNT) * pdf + 0.0001f);
 

@@ -83,9 +83,6 @@ void Application::Run(float dt)
 		// 4. Perform PostProcess!
 		m_pPostFX->ExecutePostprocessPass();
 
-		// 5. Debug Buffers
-		m_pPostFX->DrawDebugBuffers();
-
 		UIManager::getInstance().Render(m_pScene, m_pPostFX);
 
 		glfwSwapBuffers(m_pWindow);

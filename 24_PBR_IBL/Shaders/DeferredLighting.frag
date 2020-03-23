@@ -35,6 +35,8 @@ uniform mat4 matLightViewToProjection;
 // Bloom
 uniform float fBloomThreshold;
 
+// Debug
+uniform int channelID;
 
 //---------------------------------------------------------------------------------------------------------------------
 // Point Lights
@@ -192,7 +194,7 @@ void PointLightIlluminance(vec3 Position, vec3 Normal, vec3 Albedo, float roughn
 		// specular
 		vec3 Half = normalize(viewDir + LightDir);
 		
-		vec3 F0 = vec3(0.04f);
+		vec3 F0 = vec3(0.6f);
 		F0 = mix(F0, Albedo, Metallic);
 
 		// Cook-Torrance BRDF
@@ -233,7 +235,7 @@ void DirectionalLightIlluminance(vec3 Position, vec3 Normal, vec3 Albedo, float 
 		// specular
 		vec3 Half = normalize(viewDir + LightDir);
 		
-		vec3 F0 = vec3(0.04f);
+		vec3 F0 = vec3(0.6f);
 		F0 = mix(F0, Albedo, Metallic);
 
 		// Cook-Torrance BRDF
@@ -289,11 +291,11 @@ void main()
 
 	// Calculate Camera view direction & reflection vector!
 	vec3 viewDir = normalize(cameraPosition - Position);
-	vec3 viewReflection = normalize(reflect(viewDir, Normal));
+	vec3 viewReflection = normalize(reflect(-viewDir, Normal));
 
 	// Shadow
 	float Shadow = readShadowMap(Position, Normal, viewDir);
-	vec4 ShadowColor = vec4(vec3(1.0f - Shadow), 1.0f);
+	vec3 ShadowColor = vec3(Shadow);
 
 	// Occlusion
 	vec3 Occlusion = vec3(Occl);
@@ -308,17 +310,17 @@ void main()
 
 		//---------- Indirect Diffuse
 	vec3 Irradiance = vec3(texture(texture_irradiance, Normal));
-	vec3 IndirectDiffuse = Kd * Irradiance;
+	vec3 IndirectDiffuse = Kd * Irradiance * (Albedo / PI);
 
 	//--------- Indirect Specular
 	const float MAX_REFLECTION_LOD = 4.0f;
 
 	// choose which mip-map level to look-up based on roughness value of a material...
-	vec3 prefilteredSpecColor = textureLod(texture_prefiltSpecular, -viewReflection, Roughness * MAX_REFLECTION_LOD).rgb;
+	vec3 prefilteredSpecColor = textureLod(texture_prefiltSpecular, viewReflection, Roughness * MAX_REFLECTION_LOD).rgb;
 	vec2 envBRDF = texture(texture_brdfLUT, vec2(max(dot(Normal, viewDir), 0.0f), Roughness)).rg;
-	vec3 IndirectSpecular = Ks * prefilteredSpecColor * (envBRDF.x + envBRDF.y);
+	vec3 IndirectSpecular = prefilteredSpecColor * ((Ks * envBRDF.x) + envBRDF.y);
 
-	vec3 Lo_Indirect = ((Albedo * IndirectDiffuse) + IndirectSpecular) * Occlusion;
+	vec3 Lo_Indirect = (IndirectDiffuse + IndirectSpecular) * Occlusion;
 	
 	vec3 Lo = vec3(0);
 
@@ -331,22 +333,39 @@ void main()
 	else if(dot(greenChannel, ObjectID) == 1)
 		Lo = Skybox;
 
-	//if(GeometryMask >= 0.5f)
-	//	Lo = Lo_Direct + Lo_Indirect;
-	//else
-	//	Lo = Skybox;
-
-	outColor = vec4(Lo,1);										// Direct lighting
-	//outColor = vec4(IndirectDiffuse,1);							// Indirect Diffuse
-	//outColor = vec4(IndirectSpecular,1);							// Indirect Specular
-	//outColor = vec4(IndirectDiffuse + IndirectSpecular, 1);		// Indirect Combined
-	//outColor = vec4(Skybox, 1);
-
 	// Always add Emission color to bright buffer!
 	// do not consider HDRI map into brightness calculations!
-	float brightness = dot((Lo_Direct + Lo_Indirect).rgb, vec3(0.2126f, 0.7152f, 0.0722f));
+	float brightness = dot((Lo_Direct).rgb, vec3(0.2126f, 0.7152f, 0.0722f));
 	if(brightness > fBloomThreshold)
-		Emission += (Lo_Direct + Lo_Indirect);
+		Emission += (Lo_Direct);
 
 	brightColor = vec4(Emission,1);
+
+	// Decide which channel to show during final output!
+	if(channelID == 0)
+		outColor = vec4(Lo,1);
+	else if(channelID == 1)
+		outColor = vec4(Lo_Direct, 1);
+	else if(channelID == 2)
+		outColor = vec4(IndirectDiffuse, 1);
+	else if(channelID == 3)
+		outColor = vec4(IndirectSpecular, 1);
+	else if(channelID == 4)
+		outColor = vec4(Albedo, 1);
+	else if(channelID == 5)
+		outColor = vec4(Position, 1);
+	else if(channelID == 6)
+		outColor = vec4(Normal, 1);
+	else if(channelID == 7)
+		outColor = vec4(Emission, 1);
+	else if(channelID == 8)
+		outColor = vec4(vec3(Roughness), 1);
+	else if(channelID == 9)
+		outColor = vec4(vec3(Metallic), 1);
+	else if(channelID == 10)
+		outColor = vec4(Occlusion, 1);
+	else if(channelID == 11)
+		outColor = vec4(Skybox, 1);
+	else if(channelID == 12)
+		outColor = vec4(ObjectID, 1);
 }

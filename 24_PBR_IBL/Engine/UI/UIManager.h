@@ -69,5 +69,5 @@ private:
 	bool	m_bShowFPSUI;
 	bool	m_bShowSceneUI;
 
-	bool	m_bDrawGBuffers;
+	int		m_iChannelID;
 };

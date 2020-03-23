@@ -36,7 +36,7 @@ void Scene::InitScene()
 	// Initialize Static objects...
 	StaticObjectData data;
 	data.name = "SteamPunk";
-	data.path = "../Assets/models/SteamPunk.fbx";
+	data.path = "../Assets/models/Robot/SteamPunk.fbx";
 	data.shader = "NormalMapWSDeferred";
 	data.position = glm::vec3(0, 5, 0);
 	data.angle = 0.0f;
@@ -49,7 +49,7 @@ void Scene::InitScene()
 	// plane
 	StaticObjectData dataPlane;
 	dataPlane.name = "ShadowPlane";
-	dataPlane.path = "../Assets/models/Plane_Bathroom.fbx";
+	dataPlane.path = "../Assets/models/Planes/Plane_Oak.fbx";
 	dataPlane.shader = "NormalMapWSDeferred";
 	dataPlane.position = glm::vec3(0, 0, 0);
 	dataPlane.angle = 0.0f;
@@ -63,17 +63,17 @@ void Scene::InitScene()
 	m_pRedPointLight = new PointLightObject(glm::vec4(1, 0, 0, 1));
 	m_pRedPointLight->SetLightIntensity(0.15f);
 	m_pRedPointLight->SetLightPosition(glm::vec3(2, 5, 5));
-	LightsManager::getInstance()->GatherPointLights(m_pRedPointLight);
+	//LightsManager::getInstance()->GatherPointLights(m_pRedPointLight);
 
 	m_pGreenPointLight = new PointLightObject(glm::vec4(0, 1, 0, 1));
 	m_pGreenPointLight->SetLightIntensity(0.15f);
 	m_pGreenPointLight->SetLightPosition(glm::vec3(10, 15, 0));
-	LightsManager::getInstance()->GatherPointLights(m_pGreenPointLight);
+	//LightsManager::getInstance()->GatherPointLights(m_pGreenPointLight);
 
 	m_pBluePointLight = new PointLightObject(glm::vec4(0, 0, 1, 1));
 	m_pBluePointLight->SetLightIntensity(0.15f);
 	m_pBluePointLight->SetLightPosition(glm::vec3(-5, 20, 5));
-	LightsManager::getInstance()->GatherPointLights(m_pBluePointLight);
+	//LightsManager::getInstance()->GatherPointLights(m_pBluePointLight);
 
 	// Load directional lights
 	m_pMainDirectionalLight = new DirectionalLightObject(glm::vec4(1, 1, 1, 1));

@@ -13,31 +13,52 @@ uniform float exposure;
 uniform bool DoBloom;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-uniform float weight[5] = float[] (0.06136, 0.24477, 0.38774, 0.24477, 0.06136);
+uniform float weight[9] = float[](0.0625f, 0.125f, 0.0625f, 0.125f, 0.25f, 0.125f, 0.0625f, 0.125f, 0.0625f);
+
+uniform float blurStrength = 0.1f;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 vec4 blurKernel()
 {
-	vec2 tex_offset = 1.0 / textureSize(brightBuffer, 0); // gets size of single texel
+	vec2 tex_offset = 1 / textureSize(brightBuffer, 0); // gets size of single texel
 	int texLod = 0;
-    vec3 result = textureLod(brightBuffer, vs_outTexcoord, texLod).rgb * weight[0]; // current fragment's contribution
-      
-	for(int i = 1, j = 0, k = 0; i < 8; ++i, ++j, ++k)
-    {
+    vec3 result = vec3(0); 
+
+	vec2 direction = vec2(0);
+
+	for(int i = 0 ; i < 8 ; i++)
+	{
 		if(i%2 == 0)
 		{
-			result += textureLod(brightBuffer, vs_outTexcoord - vec2(tex_offset.x * j, 0.0), texLod).rgb * weight[j];
-			result += textureLod(brightBuffer, vs_outTexcoord + vec2(tex_offset.x * j, 0.0), texLod).rgb * weight[j];
+			direction = vec2(1,0);
+			vec2 off1 = tex_offset * direction;
+			result += texture2D(brightBuffer, vs_outTexcoord).rgb * 0.29411764705882354;
+			result += texture2D(brightBuffer, vs_outTexcoord + off1 ).rgb * 0.35294117647058826;
+			result += texture2D(brightBuffer, vs_outTexcoord - off1 ).rgb * 0.35294117647058826;
 		}
 		else
 		{
-			result += textureLod(brightBuffer, vs_outTexcoord + vec2(0.0, tex_offset.y * k), texLod).rgb * weight[k];
-			result += textureLod(brightBuffer, vs_outTexcoord - vec2(0.0, tex_offset.y * k), texLod).rgb * weight[k];
+			direction = vec2(0,1);
+			vec2 off1 = tex_offset * direction;
+			result += texture2D(brightBuffer, vs_outTexcoord).rgb * 0.29411764705882354;
+			result += texture2D(brightBuffer, vs_outTexcoord + off1).rgb * 0.35294117647058826;
+			result += texture2D(brightBuffer, vs_outTexcoord - off1).rgb * 0.35294117647058826;
 		}
-		
-		texLod++;
-    }
-  
+	}
+
+	//for(int i = 2 ; i < 4 ; i++)
+	//{
+	//	result += textureLod(brightBuffer, vs_outTexcoord + vec2(-tex_offset.x,  tex_offset.y),	i).rgb * weight[0]; 
+	//	result += textureLod(brightBuffer, vs_outTexcoord + vec2(0.0f,			 tex_offset.y),	i).rgb * weight[1]; 
+	//	result += textureLod(brightBuffer, vs_outTexcoord + vec2(tex_offset.x,	 tex_offset.y),	i).rgb * weight[2]; 
+	//	result += textureLod(brightBuffer, vs_outTexcoord + vec2(-tex_offset.x,  0.0f),			i).rgb * weight[3]; 
+	//	result += textureLod(brightBuffer, vs_outTexcoord + vec2(0.0f,			 0.0f),			i).rgb * weight[4]; 
+	//	result += textureLod(brightBuffer, vs_outTexcoord + vec2(tex_offset.x,	 0.0f),			i).rgb * weight[5]; 
+	//	result += textureLod(brightBuffer, vs_outTexcoord + vec2(-tex_offset.x, -tex_offset.y), i).rgb * weight[6]; 
+	//	result += textureLod(brightBuffer, vs_outTexcoord + vec2(0.0f,			-tex_offset.y), i).rgb * weight[7]; 
+	//	result += textureLod(brightBuffer, vs_outTexcoord + vec2(tex_offset.x,	-tex_offset.y), i).rgb * weight[8]; 
+	//}
+      
     return vec4(result, 1.0);
 }
 

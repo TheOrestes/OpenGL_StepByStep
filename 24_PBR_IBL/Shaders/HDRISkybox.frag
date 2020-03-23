@@ -15,11 +15,11 @@ uniform samplerCube cubeMap;
 
 void main()
 {
-	gPosition = vec4(vec3(0), 0.1f);
+	gPosition = vec4(0);
 	gNormal = vec4(0);
 	gAlbedo = vec3(0);
 	gEmission = vec3(0);
-	gMask = vec3(vec2(0), 0.2f);
+	gMask = vec3(0);
 	gSkybox = texture(cubeMap, -vs_outTex).rgb;
 
 	// set Green channel for Skybox!

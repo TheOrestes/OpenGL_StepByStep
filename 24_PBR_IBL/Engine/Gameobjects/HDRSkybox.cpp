@@ -36,7 +36,7 @@ HDRSkybox::~HDRSkybox()
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 HDRSkybox::HDRSkybox()
 {
-	m_iCubemapSize = 1024;
+	m_iCubemapSize = 512;
 
 	m_iBrdfLUTmapSize = 512;
 	m_iIrradiancemapSize = 32;
@@ -52,7 +52,7 @@ void HDRSkybox::Initialize()
 	m_pPrefiltSpecShader = new GLSLShader("Shaders/PrefilterSpecmap.vert", "Shaders/PrefilterSpecmap.frag");
 	m_pBrdfLUTShader = new GLSLShader("Shaders/BRDFLut.vert", "Shaders/BRDFLut.frag");
 
-	m_tbo = TextureManager::getInstannce().Load2DTextureFromFile("music_hall_01_2k.hdr", "../Assets/HDRI");
+	m_tbo = TextureManager::getInstannce().Load2DTextureFromFile("wooden_lounge_2k.hdr", "../Assets/HDRI");
 
 	// create cube for capturing cubemap
 	InitCaptureCube();
@@ -198,6 +198,8 @@ void HDRSkybox::InitCaptureCubemap()
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+
 	// set up projection & view matrices for capturing data onto 6 faces of cubemap from 6 directions!!!
 	m_matCaptureProj = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
 
@@ -242,6 +244,11 @@ void HDRSkybox::InitCaptureCubemap()
 	}
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+	// let OpenGL generate mipmaps from first mip face(combatting visible dots artifact)
+	glBindTexture(GL_TEXTURE_CUBE_MAP, m_captureTBO);
+	glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
+	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
 	// Restore original viewport dimensions!
 	glViewport(0, 0, START_WINDOW_WIDTH, START_WINDOW_HEIGHT);

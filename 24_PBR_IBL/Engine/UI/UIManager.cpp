@@ -16,6 +16,8 @@ UIManager::UIManager()
 	m_bShowConsoleUI = false;
 	m_bShowFPSUI = true;
 	m_bShowSceneUI = true;
+
+	m_iChannelID = 0;
 }
 
 
@@ -381,11 +383,72 @@ void UIManager::RenderSceneUI(Scene* ptrScene, PostProcess* ptrFX)
 		}
 	}
 
-	if (ImGui::CollapsingHeader("Debug"))
+	static int channelID = 0;
+	if (ImGui::CollapsingHeader("Debug Pass"))
 	{
-		if (ImGui::Checkbox("Draw G-Buffers", &m_bDrawGBuffers))
+		if (ImGui::RadioButton("Final", &channelID, 0))
 		{
-			ptrFX->SetDebugDrawGBuffers(m_bDrawGBuffers);
+			ptrFX->SetChannelID(channelID);
+		}
+
+		if (ImGui::RadioButton("Direct Lighing", &channelID, 1))
+		{
+			ptrFX->SetChannelID(channelID);
+		}
+
+		if (ImGui::RadioButton("Indirect Diffuse", &channelID, 2))
+		{
+			ptrFX->SetChannelID(channelID);
+		}
+
+		if (ImGui::RadioButton("Indirect Specular", &channelID, 3))
+		{
+			ptrFX->SetChannelID(channelID);
+		}
+
+		if (ImGui::RadioButton("Albedo", &channelID, 4))
+		{
+			ptrFX->SetChannelID(channelID);
+		}
+
+		if (ImGui::RadioButton("Position", &channelID, 5))
+		{
+			ptrFX->SetChannelID(channelID);
+		}
+
+		if (ImGui::RadioButton("Normal", &channelID, 6))
+		{
+			ptrFX->SetChannelID(channelID);
+		}
+
+		if (ImGui::RadioButton("Emission", &channelID, 7))
+		{
+			ptrFX->SetChannelID(channelID);
+		}
+
+		if (ImGui::RadioButton("Roughness", &channelID, 8))
+		{
+			ptrFX->SetChannelID(channelID);
+		}
+
+		if (ImGui::RadioButton("Metallic", &channelID, 9))
+		{
+			ptrFX->SetChannelID(channelID);
+		}
+
+		if (ImGui::RadioButton("Occlusion", &channelID, 10))
+		{
+			ptrFX->SetChannelID(channelID);
+		}
+
+		if (ImGui::RadioButton("Skybox", &channelID, 11))
+		{
+			ptrFX->SetChannelID(channelID);
+		}
+
+		if (ImGui::RadioButton("Object ID", &channelID, 12))
+		{
+			ptrFX->SetChannelID(channelID);
 		}
 	}
 

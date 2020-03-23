@@ -28,10 +28,8 @@ public:
 	void				CreateShadowMappingBuffers(int horizRes, int vertRes);
 	void				CreatePostFXBuffers(int horizRes, int vertRes);
 
-	void				DrawDebugBuffers();
-
 	//--- GETTER-SETTER
-	inline	void		SetDebugDrawGBuffers(bool _flag)	{ m_bDrawDebugBuffers = _flag; }
+	inline	void		SetChannelID(int _id)				{ m_iChannelID = _id; }
 	inline	void		SetBloomEffect(bool _flag)			{ m_bDrawBloomEffect = _flag; }
 	inline	void		SetBloomThreshold(float _value)		{ m_fBloomThreshold = _value; }
 	inline	void		SetGamma(float _value)				{ m_fGamma = _value; }
@@ -51,14 +49,6 @@ private:
 	void				SetDeferredPassShaderVariables(int shaderID);
 
 	ScreenAlignedQuad*	m_pScreenQuadFinal;			// Main screen aligned quad used for rendering!
-
-	ScreenAlignedQuad*	m_pDebugQuadPosition;		// Debug Position
-	ScreenAlignedQuad*	m_pDebugQuadNormal;			// Debug Normal
-	ScreenAlignedQuad*	m_pDebugQuadAlbedo;			// Debug Albedo
-	ScreenAlignedQuad*  m_pDebugQuadEmission;		// Debug Emission
-	ScreenAlignedQuad*	m_pDebugQuadObjectID;		// Debug ObjectID
-	ScreenAlignedQuad*  m_pDebugQuadBrightness;		// Debug Brightness
-	ScreenAlignedQuad*  m_pDebugQuadShadowDepth;	// Debug Shadow Depth
 
 	// PostProcess
 	GLuint				m_colorBuffer;				// texture object for holding color data
@@ -99,13 +89,13 @@ private:
 	GLuint				m_fboPostFX;			// Framebuffer object for postprocess
 	GLuint				m_rboPostFX;			// Renderbuffer object for postprocess
 
-	bool				m_bDrawDebugBuffers;		// toggle debug G-Buffer rendering!
 	bool				m_bDrawBloomEffect;			// toggle Bloom effect!
 	float				m_fBloomThreshold;			// Bloom cutoff value!
 
+	int					m_iChannelID;			// Debug channel ID
+
 	GLSLShader*			m_pPostFXShader;			// Ptr to Postprocess shader
 	GLSLShader*			m_pDeferredShader;			// Ptr to Deferred shader
-	GLSLShader*			m_pDebugShader;				// Ptr to Debug shader
 
 	// Postprocess properties
 	float				m_fGamma;
