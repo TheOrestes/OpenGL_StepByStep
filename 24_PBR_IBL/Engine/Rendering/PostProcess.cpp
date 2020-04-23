@@ -486,8 +486,8 @@ void PostProcess::PointLightIlluminance(int shaderID)
 
 		glm::vec3 position = light->GetLightPosition();
 		glm::vec3 color = light->GetLightColor();
-		float intensity = light->GetLightIntensity();
-		float radius = light->GetLightRadius();
+		float intensity = light->m_fLightIntensity;
+		float radius = light->m_fLightRadius;
 
 		// form a string out of point light Ids
 		std::string pointLightPosStr = "pointLights[" + std::to_string(i) + "].position";
@@ -512,9 +512,9 @@ void PostProcess::DirectionalLightIlluminance(int shaderID)
 	{
 		DirectionalLightObject* light = LightsManager::getInstance()->GetDirectionalLight(i);
 
-		glm::vec3 direction = light->GetLightDirection();
-		glm::vec3 color = light->GetLightColor();
-		float intensity = light->GetLightIntensity();
+		glm::vec3 direction = light->m_vecLightDirection;
+		glm::vec3 color = light->m_vecLightColor;
+		float intensity = light->m_fLightIntensity;
 
 		// form a string out of directional light IDs
 		std::string dirLightDirectionStr = "dirLights[" + std::to_string(i) + "].direction";
@@ -534,8 +534,8 @@ void PostProcess::SetDeferredPassShaderVariables(int shaderID)
 	glm::mat4 camViewMatrix = Camera::getInstance().getViewMatrix();
 	glm::mat4 camProjMatrix = Camera::getInstance().getProjectionMatrix();
 
-	glm::mat4 worldToLightViewMatrix = LightsManager::getInstance()->GetDirectionalLight(0)->GetWorldToLightViewMatrix();
-	glm::mat4 lightViewToProjectionMatrix = LightsManager::getInstance()->GetDirectionalLight(0)->GetLightViewToProjectionMatrix();
+	glm::mat4 worldToLightViewMatrix = LightsManager::getInstance()->GetDirectionalLight(0)->m_matWorldToLightViewMatrix;
+	glm::mat4 lightViewToProjectionMatrix = LightsManager::getInstance()->GetDirectionalLight(0)->m_matLightViewToProjectionMatrix;
 
 	// set camera position uniform variable
 	GLuint hCamPosition = glGetUniformLocation(shaderID, "cameraPosition");

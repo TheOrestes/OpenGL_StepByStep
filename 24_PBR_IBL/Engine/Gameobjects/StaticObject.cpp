@@ -8,7 +8,7 @@
 StaticObject::StaticObject()
 {
 	m_strName.clear();
-	m_strShader.clear();
+	m_strShaderName.clear();
 	m_strPath.clear();
 
 	m_pShader = nullptr;
@@ -19,7 +19,7 @@ StaticObject::StaticObject()
 	m_bAutoRotate = false;
 	m_fAutoRotateSpeed = 0.1f;
 
-	m_fCurrentAngle = 0.0f;
+	m_fCurrentRotationAngle = 0.0f;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -27,20 +27,20 @@ StaticObject::StaticObject(const StaticObjectData& data)
 	:
 	m_strName(data.name),
 	m_strPath(data.path),
-	m_strShader(data.shader),
+	m_strShaderName(data.shader),
 	m_pShader(nullptr),
 	m_pShadowPassShader(nullptr),
 	m_pModel(nullptr)
 {
 	m_vecPosition  = data.position;
 	m_fAngle = data.angle;
-	m_vecRotation = data.rotation;
+	m_vecRotationAxis = data.rotation;
 	m_vecScale = data.scale;
 
 	m_bAutoRotate = data.autoRotate;
 	m_fAutoRotateSpeed = 0.1f;
 
-	m_fCurrentAngle = 0.0f;
+	m_fCurrentRotationAngle = 0.0f;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -53,10 +53,10 @@ StaticObject::~StaticObject()
 void StaticObject::Init()
 {
 	std::string vertShaderPath;
-	vertShaderPath = "Shaders/" + m_strShader + ".vert";
+	vertShaderPath = "Shaders/" + m_strShaderName + ".vert";
 
 	std::string fragShaderPath;
-	fragShaderPath = "Shaders/" + m_strShader + ".frag";
+	fragShaderPath = "Shaders/" + m_strShaderName + ".frag";
 
 	m_pShader = new GLSLShader(vertShaderPath, fragShaderPath);
 
@@ -71,7 +71,7 @@ void StaticObject::Init()
 	// Initial transformation...
 	glm::mat4 model = glm::mat4(1);
 	model = glm::translate(model, m_vecPosition); 
-	model = glm::rotate(model, m_fAngle, m_vecRotation);
+	model = glm::rotate(model, m_fAngle, m_vecRotationAxis);
 	model = glm::scale(model, m_vecScale);	
 
 	m_matWorld = model;
@@ -90,14 +90,14 @@ void StaticObject::Update( float dt )
 {
 	if (m_bAutoRotate)
 	{
-		m_fCurrentAngle += m_fAutoRotateSpeed * dt;
+		m_fCurrentRotationAngle += m_fAutoRotateSpeed * dt;
 	}
 		
-	m_fAngle = m_fCurrentAngle;
+	m_fAngle = m_fCurrentRotationAngle;
 
 	glm::mat4 model = glm::mat4(1);
 	model = glm::translate(model, m_vecPosition); 
-	model = glm::rotate(model, m_fAngle, m_vecRotation);
+	model = glm::rotate(model, m_fAngle, m_vecRotationAxis);
 	model = glm::scale(model, m_vecScale);	
 
 	m_matWorld = model;

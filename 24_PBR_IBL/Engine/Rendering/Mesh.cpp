@@ -132,8 +132,8 @@ void Mesh::SetShadowPassMaterialShaderVariables(int shaderID, const glm::mat4& w
 	GLuint hLightViewToProjection = glGetUniformLocation(shaderID, "matLightViewToProjection");
 
 	glUniformMatrix4fv(hWorld, 1, GL_FALSE, glm::value_ptr(world));
-	glUniformMatrix4fv(hWorldToLightView, 1, GL_FALSE, glm::value_ptr(mainSunLight->GetWorldToLightViewMatrix()));
-	glUniformMatrix4fv(hLightViewToProjection, 1, GL_FALSE, glm::value_ptr(mainSunLight->GetLightViewToProjectionMatrix()));
+	glUniformMatrix4fv(hWorldToLightView, 1, GL_FALSE, glm::value_ptr(mainSunLight->m_matWorldToLightViewMatrix));
+	glUniformMatrix4fv(hLightViewToProjection, 1, GL_FALSE, glm::value_ptr(mainSunLight->m_matLightViewToProjectionMatrix));
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

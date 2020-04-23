@@ -61,24 +61,24 @@ void Scene::InitScene()
 
 	// Load point lights
 	m_pRedPointLight = new PointLightObject(glm::vec4(1, 0, 0, 1));
-	m_pRedPointLight->SetLightIntensity(0.15f);
+	m_pRedPointLight->m_fLightIntensity = 0.15f;
 	m_pRedPointLight->SetLightPosition(glm::vec3(2, 5, 5));
 	//LightsManager::getInstance()->GatherPointLights(m_pRedPointLight);
 
 	m_pGreenPointLight = new PointLightObject(glm::vec4(0, 1, 0, 1));
-	m_pGreenPointLight->SetLightIntensity(0.15f);
+	m_pGreenPointLight->m_fLightIntensity = 0.15f;
 	m_pGreenPointLight->SetLightPosition(glm::vec3(10, 15, 0));
 	//LightsManager::getInstance()->GatherPointLights(m_pGreenPointLight);
 
 	m_pBluePointLight = new PointLightObject(glm::vec4(0, 0, 1, 1));
-	m_pBluePointLight->SetLightIntensity(0.15f);
+	m_pBluePointLight->m_fLightIntensity = 0.15f;
 	m_pBluePointLight->SetLightPosition(glm::vec3(-5, 20, 5));
 	//LightsManager::getInstance()->GatherPointLights(m_pBluePointLight);
 
 	// Load directional lights
 	m_pMainDirectionalLight = new DirectionalLightObject(glm::vec4(1, 1, 1, 1));
-	m_pMainDirectionalLight->SetLightAngleXYZ(glm::vec3(60.0f, 0, 0));
-	m_pMainDirectionalLight->SetLightIntensity(3.0f);
+	m_pMainDirectionalLight->SetEulerLightAngles(glm::vec3(60.0f, 0, 0));
+	m_pMainDirectionalLight->m_fLightIntensity = 3.0f;
 	LightsManager::getInstance()->GatherDirectionalLights(m_pMainDirectionalLight);
 
 	// Load Skybox

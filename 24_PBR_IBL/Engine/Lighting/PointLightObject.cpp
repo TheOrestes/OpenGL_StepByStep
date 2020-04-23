@@ -6,8 +6,8 @@ PointLightObject::PointLightObject()
 {
 	m_vecLightPosition = glm::vec3(0);
 	m_vecLightColor = glm::vec3(1);
-	m_fIntensity = 1.0f;
-	m_fRadius = 5.0f;
+	m_fLightIntensity = 1.0f;
+	m_fLightRadius = 5.0f;
 
 	Init();
 }
@@ -17,8 +17,8 @@ PointLightObject::PointLightObject(const glm::vec3& color)
 {
 	m_vecLightPosition = glm::vec3(0);
 	m_vecLightColor = color;
-	m_fIntensity = 2.0f;
-	m_fRadius = 5.0f;
+	m_fLightIntensity = 2.0f;
+	m_fLightRadius = 5.0f;
 
 	Init();
 }
@@ -68,15 +68,4 @@ void PointLightObject::SetLightColor(const glm::vec3& col)
 	m_pLightMesh->SetColor(col);
 }
 
-//////////////////////////////////////////////////////////////////////////////////////////
-void PointLightObject::SetLightIntensity(float intensity)
-{ 
-	m_fIntensity = intensity; 
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////
-void PointLightObject::SetLightRadius(float radius)
-{ 
-	m_fRadius = radius; 
-}
 

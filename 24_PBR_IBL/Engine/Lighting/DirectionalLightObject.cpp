@@ -10,11 +10,10 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 DirectionalLightObject::DirectionalLightObject()
 {
-	m_vecLightAngleXYZ = glm::vec3(0);
+	m_vecLightAngleEuler = glm::vec3(0);
 	m_vecLightDirection = glm::vec3(0);
 	m_vecLightColor = glm::vec3(1);
-	m_fIntensity = 1.0f;
-	m_vecLightAngleXYZ = glm::vec3(0,0,0);
+	m_fLightIntensity = 1.0f;
 
 	m_matWorld = glm::mat4(1);
 	m_matWorldToLightViewMatrix = glm::mat4(1.0f);
@@ -32,10 +31,10 @@ DirectionalLightObject::DirectionalLightObject()
 //////////////////////////////////////////////////////////////////////////////////////////
 DirectionalLightObject::DirectionalLightObject(const glm::vec3& color)
 {
-	m_vecLightAngleXYZ = glm::vec3(0, 0, 0);
+	m_vecLightAngleEuler = glm::vec3(0, 0, 0);
 	m_vecLightDirection = glm::vec3(0);
 	m_vecLightColor = color;
-	m_fIntensity = 2.0f;
+	m_fLightIntensity = 2.0f;
 
 	m_matWorld = glm::mat4(1);
 	m_matWorldToLightViewMatrix = glm::mat4(1.0f);
@@ -142,13 +141,13 @@ void DirectionalLightObject::Render()
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
-void DirectionalLightObject::SetLightAngleXYZ(const glm::vec3& angleXYZ) 
+void DirectionalLightObject::SetEulerLightAngles(const glm::vec3& angleXYZ) 
 { 
-	m_vecLightAngleXYZ = angleXYZ; 
+	m_vecLightAngleEuler = angleXYZ; 
 	glm::mat4 rotateXYZ = glm::mat4(1);
-	rotateXYZ = glm::rotate(rotateXYZ, glm::radians(m_vecLightAngleXYZ.z), glm::vec3(0, 0, 1));
-	rotateXYZ = glm::rotate(rotateXYZ, glm::radians(m_vecLightAngleXYZ.y), glm::vec3(0, 1, 0));
-	rotateXYZ = glm::rotate(rotateXYZ, glm::radians(m_vecLightAngleXYZ.x), glm::vec3(1, 0, 0));
+	rotateXYZ = glm::rotate(rotateXYZ, glm::radians(m_vecLightAngleEuler.z), glm::vec3(0, 0, 1));
+	rotateXYZ = glm::rotate(rotateXYZ, glm::radians(m_vecLightAngleEuler.y), glm::vec3(0, 1, 0));
+	rotateXYZ = glm::rotate(rotateXYZ, glm::radians(m_vecLightAngleEuler.x), glm::vec3(1, 0, 0));
 
 	m_matWorld = rotateXYZ;
 
@@ -158,17 +157,6 @@ void DirectionalLightObject::SetLightAngleXYZ(const glm::vec3& angleXYZ)
 											   glm::vec3(0.0, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
-/////////////////////////////////////////////////////////////////////////////////////////
-void DirectionalLightObject::SetWorldToLightViewMatrix(const glm::mat4& _lightViewMatrix)
-{
-	m_matWorldToLightViewMatrix = _lightViewMatrix;
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////
-void DirectionalLightObject::SetLightViewToProjectionMatrix(const glm::mat4& _lightProjMatrix)
-{
-	m_matLightViewToProjectionMatrix = _lightProjMatrix;
-}
 
 
 

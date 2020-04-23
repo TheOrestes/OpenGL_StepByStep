@@ -164,17 +164,17 @@ void UIManager::RenderSceneUI(Scene* ptrScene, PostProcess* ptrFX)
 			ImGui::PushID(i);
 			ImGui::AlignFirstTextHeightToWidgets();
 
-			if (ImGui::TreeNode(object->GetName().c_str()))
+			if (ImGui::TreeNode(object->m_strName.c_str()))
 			{
 				// File path
 				ImGui::BulletText("FilePath"); ImGui::SameLine();
-				ImGui::TextColored(ImVec4(0,1,0,1), object->GetPath().c_str());
+				ImGui::TextColored(ImVec4(0,1,0,1), object->m_strPath.c_str());
 
 				// Shader Name
 				if (ImGui::TreeNode("Material"))
 				{
 					ImGui::BulletText("Shader"); ImGui::SameLine();
-					ImGui::TextColored(ImVec4(0, 1, 0, 1), object->GetShaderName().c_str());
+					ImGui::TextColored(ImVec4(0, 1, 0, 1), object->m_strShaderName.c_str());
 
 					Material* mat = object->GetMaterialPtr();
 					
@@ -218,35 +218,35 @@ void UIManager::RenderSceneUI(Scene* ptrScene, PostProcess* ptrFX)
 				if (ImGui::TreeNode("Transform"))
 				{
 					// Position
-					glm::vec3 pos = object->GetPosition();
+					glm::vec3 pos = object->m_vecPosition;
 					
-					if(ImGui::SliderFloat3("Position", glm::value_ptr(pos), -100, 100))
-						object->SetPosition(pos);
+					if (ImGui::SliderFloat3("Position", glm::value_ptr(pos), -100, 100))
+						object->m_vecPosition = pos;
 
 					// Rotation Axis
-					glm::vec3 rot = object->GetRotationAxis();
-					if(ImGui::InputFloat3("Rotation Axis", glm::value_ptr(rot), 1))
-						object->SetRotationAxis(rot);
+					glm::vec3 rot = object->m_vecRotationAxis;
+					if (ImGui::InputFloat3("Rotation Axis", glm::value_ptr(rot), 1))
+						object->m_vecRotationAxis = rot;
 
 					// Rotation Angle
-					float rotAngle = object->GetCurrentAngle();
-					if(ImGui::SliderAngle("Rotation Angle", &rotAngle))
-						object->SetRotationAngle(rotAngle);
+					float rotAngle = object->m_fAngle;
+					if (ImGui::SliderAngle("Rotation Angle", &rotAngle))
+						object->m_fCurrentRotationAngle = rotAngle;
 
 					// Scale
-					glm::vec3 scale = object->GetScale();
-					if(ImGui::InputFloat3("Scale", glm::value_ptr(scale)))
-						object->SetScale(scale);
+					glm::vec3 scale = object->m_vecScale;
+					if (ImGui::InputFloat3("Scale", glm::value_ptr(scale)))
+						object->m_vecScale = scale;
 
 					// AutoUpdate
-					bool autoRotate = object->GetAutoRotateFlag();
-					if(ImGui::Checkbox("Auto Rotate", &autoRotate))
-						object->SetAutoRotate(autoRotate);
+					bool autoRotate = object->m_bAutoRotate;
+					if (ImGui::Checkbox("Auto Rotate", &autoRotate))
+						object->m_bAutoRotate = autoRotate;
 
 					// AutoRotate Speed
-					float autoSpeed = object->GetAutoRotateSpeed();
+					float autoSpeed = object->m_fAutoRotateSpeed;
 					if (ImGui::SliderFloat("Rotation Speed", &autoSpeed, 0.01f, 1.0f))
-						object->SetAutoRotateSpeed(autoSpeed);
+						object->m_fAutoRotateSpeed = autoSpeed;
 
 					ImGui::TreePop();
 				}
@@ -272,44 +272,44 @@ void UIManager::RenderSceneUI(Scene* ptrScene, PostProcess* ptrFX)
 			std::string lightName = "DirectionalLight" + std::to_string(i);
 			if (ImGui::TreeNode(lightName.c_str()))
 			{
-				glm::vec3	angleXYZ = dirLightObject->GetLightAngleXYZ();
+				glm::vec3	angleXYZ = dirLightObject->GetLightAngleEuler();
 				if (ImGui::SliderFloat3("Rotation", glm::value_ptr(angleXYZ), -360, 360, "%0.1f"))
-					dirLightObject->SetLightAngleXYZ(angleXYZ);
+					dirLightObject->SetEulerLightAngles(angleXYZ);
 		
-				glm::vec3	color = dirLightObject->GetLightColor();
+				glm::vec3	color = dirLightObject->m_vecLightColor;
 				if (ImGui::ColorEdit3("Color", glm::value_ptr(color)))
-					dirLightObject->SetLightColor(color);
+					dirLightObject->m_vecLightColor = color;
 		
-				float		intensity = dirLightObject->GetLightIntensity();
+				float		intensity = dirLightObject->m_fLightIntensity;
 				if (ImGui::SliderFloat("Intensity", &intensity, 0, 10))
-					dirLightObject->SetLightIntensity(intensity);
+					dirLightObject->m_fLightIntensity = intensity;
 
 				ImGui::Separator();
 
-				bool bShowShadowBounds = dirLightObject->IsShowDebugShadowVolumeOn();
+				bool bShowShadowBounds = dirLightObject->m_bShowDebugShadowVolume;
 				ImGui::Checkbox("Edit Shadow Bounds (Buggy, Crash!)", &bShowShadowBounds);
-				dirLightObject->SetShowDebugShadowVolume(bShowShadowBounds);
+				dirLightObject->m_bShowDebugShadowVolume = bShowShadowBounds;
 				
 				if (ImGui::CollapsingHeader("Shadow Bound Properties", &bShowShadowBounds))
 				{
-					float bound = dirLightObject->GetShadowBound();
+					float bound = dirLightObject->m_fShadowBounds;
 					if (ImGui::SliderFloat("Bounds", &bound, 1.0f, 100.0f))
 					{
-						dirLightObject->SetShadowBound(bound);
+						dirLightObject->m_fShadowBounds = bound;
 						dirLightObject->UpdateBounds();
 					}
 
-					float nearPlane = dirLightObject->GetShadowNearPlane();
+					float nearPlane = dirLightObject->m_fShadowNearPlane;
 					if (ImGui::SliderFloat("Near Plane", &nearPlane, -50.0f, 100.0f))
 					{
-						dirLightObject->SetShadowNearPlane(nearPlane);
+						dirLightObject->m_fShadowNearPlane = nearPlane;
 						dirLightObject->UpdateBounds();
 					}
 
-					float farPlane = dirLightObject->GetShadowFarPlane();
+					float farPlane = dirLightObject->m_fShadowFarPlane;
 					if (ImGui::SliderFloat("Far Plane", &farPlane, 1.0f, 200.0f))
 					{
-						dirLightObject->SetShadowFarPlane(farPlane);
+						dirLightObject->m_fShadowFarPlane = farPlane;
 						dirLightObject->UpdateBounds();
 					}
 				}
@@ -341,13 +341,13 @@ void UIManager::RenderSceneUI(Scene* ptrScene, PostProcess* ptrFX)
 				if (ImGui::ColorEdit3("Color", glm::value_ptr(color)))
 					pointLightObject->SetLightColor(color);
 		
-				float		intensity = pointLightObject->GetLightIntensity();
+				float		intensity = pointLightObject->m_fLightIntensity;
 				if (ImGui::SliderFloat("Intensity", &intensity, 0, 10))
-					pointLightObject->SetLightIntensity(intensity);
+					pointLightObject->m_fLightIntensity = intensity;
 				
-				float		radius = pointLightObject->GetLightRadius();
+				float		radius = pointLightObject->m_fLightRadius;
 				if (ImGui::SliderFloat("Radius", &radius, 0, 50))
-					pointLightObject->SetLightRadius(radius);
+					pointLightObject->m_fLightRadius = radius;
 		
 				ImGui::TreePop();
 			}
