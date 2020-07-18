@@ -39,6 +39,7 @@ Dependencies/
 Log/
 ipch/
 x64/
+.vs/
 99_DynamicTextureUpdate
 
 # Misc
@@ -53,4 +54,5 @@ x64/
 *.VC.db
 *.opendb
 *.dat
+*.rar
 /24_PBR_IBL/.vs
