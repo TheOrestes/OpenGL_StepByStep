@@ -4,7 +4,7 @@ This repository is created with a purpose of veryeasy to understand OpenGL imple
 
 | Topic | Description |
 | ----------- | ----------- |
-| Create Window | Title |
+| Create Window | Standard window creation using GLFW. GL Extensions initialized using GLEW.    ![image](https://user-images.githubusercontent.com/5098227/150085190-3313c039-304b-415b-8acb-cffce6437776.png)|
 | Create Quad | Text |
 | Create Textured Quad | Text |
 | Create Cube | Text |
