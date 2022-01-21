@@ -4,9 +4,9 @@ This repository is created with a purpose of veryeasy to understand OpenGL imple
 
 | Topic | Description |
 | ----------- | ----------- |
-| Create Window | Standard window creation using GLFW. GL Extensions initialized using GLEW.    ![image](https://user-images.githubusercontent.com/5098227/150085190-3313c039-304b-415b-8acb-cffce6437776.png)|
+| Create Window | ![image](https://user-images.githubusercontent.com/5098227/150085190-3313c039-304b-415b-8acb-cffce6437776.png)|
 | Create Quad | ![image](https://user-images.githubusercontent.com/5098227/150499027-039c9a48-c2d1-4f0c-a765-9217e213c463.png) |
-| Create Textured Quad | Text |
+| Create Textured Quad | ![image](https://user-images.githubusercontent.com/5098227/150506409-1f163185-84f7-43a1-a80b-0341514656bb.png) |
 | Create Cube | Text |
 | Free Roam Camera | Text |
 | Custom Mesh Loading using Assimp | Text |
