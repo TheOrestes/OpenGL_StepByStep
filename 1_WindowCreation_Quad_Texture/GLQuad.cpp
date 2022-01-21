@@ -4,6 +4,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "TextureManager.h"
+#include "Globals.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 GLQuad::GLQuad()
@@ -31,8 +32,8 @@ GLQuad::GLQuad()
 	indices[3] = 0;			indices[4] = 2;			indices[5] = 3;
 
 	// Set default position & scale
-	SetPosition(glm::vec3(0));
-	SetScale(glm::vec3(2));
+	SetPosition(glm::vec3(-1.5f));
+	SetScale(glm::vec3(3));
 	SetRotation(glm::vec3(0, 1, 0), 45.0f);
 
 	// Wireframe?
@@ -94,7 +95,7 @@ void GLQuad::Init()
 void GLQuad::Update(float dt)
 {
 	static float angle = 0.0f;
-	angle += dt;
+	//angle += dt;
 	
 	// create world transformation matrix
 	// So what we are doing is, basically glm::translate/rotate etc matrices take first param
@@ -112,7 +113,7 @@ void GLQuad::Update(float dt)
 	// Create composite ViewProjection matrix
 	//matWorld = glm::rotate(matWorld, 0.1f*dt, glm::vec3(0.0f, 1.0f, 0.0f));
 	matView = glm::lookAt(glm::vec3(0,0,5), glm::vec3(0,0,0), glm::vec3(0,1,0));	
-	matProj = glm::perspective(45.0f, 1.6f, 0.1f, 1000.0f);
+	matProj = glm::perspectiveFovRH(45.0f, (float)gWindowWidth, (float)gWindowHeight, 0.1f, 1000.0f);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

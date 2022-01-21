@@ -148,6 +148,7 @@
     <ClCompile Include="TextureManager.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Globals.h" />
     <ClInclude Include="GLQuad.h" />
     <ClInclude Include="GLSLShader.h" />
     <ClInclude Include="TextureManager.h" />
