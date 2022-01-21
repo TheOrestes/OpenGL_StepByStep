@@ -4,6 +4,7 @@
 #include "GLFW/glfw3.h"
 #include "glm/glm.hpp"
 #include "GLQuad.h"
+#include "Globals.h"
 
 //////////////////////////////////////////////////////////////////////////
 GLFWwindow* window = nullptr;
@@ -23,7 +24,7 @@ void InitGLFW()
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
 	// Create a window!
-	window = glfwCreateWindow(1280, 800, "Hello OpenGL Window", nullptr, nullptr);
+	window = glfwCreateWindow(gWindowWidth, gWindowHeight, "Hello OpenGL Window", nullptr, nullptr);
 
 	if (!window)
 	{
@@ -85,7 +86,6 @@ int main()
 	GLQuad quad;	// random colored Quad!
 
 	quad.Init();
-	quad.SetPosition(glm::vec3(0,0,0));
 	//cube2.Init();
 
 	// Message Loop!
