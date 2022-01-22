@@ -5,6 +5,7 @@
 #include "glm/glm.hpp"
 #include "GLCube.h"
 #include "Camera.h"
+#include "Globals.h"
 
 //////////////////////////////////////////////////////////////////////////
 GLFWwindow* window = nullptr;
@@ -12,12 +13,10 @@ float red = 0.1f;
 float green = 0.1f;
 float blue = 0.1f;
 
-const int gScreenWidth		=	1280;
-const int gScreenHeight		=	800;
 float tick					=	0.016f;
 bool  bFirstMouse			=	true;
-float lastX					=	gScreenWidth / 2.0f;
-float lastY					=	gScreenHeight / 2.0f;
+float lastX					=	gWindowWidth / 2.0f;
+float lastY					=	gWindowHeight / 2.0f;
 
 //////////////////////////////////////////////////////////////////////////
 // 1. Initialize GLFW & Create Window - Opengl context
@@ -31,7 +30,7 @@ void InitGLFW()
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
 	// Create a window!
-	window = glfwCreateWindow(gScreenWidth, gScreenHeight, "Hello OpenGL Window", nullptr, nullptr);
+	window = glfwCreateWindow(gWindowWidth, gWindowHeight, "Hello OpenGL Window", nullptr, nullptr);
 
 	if (!window)
 	{
