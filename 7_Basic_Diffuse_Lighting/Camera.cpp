@@ -1,9 +1,10 @@
 
 #include "Camera.h"
+#include "Globals.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////
 Camera::Camera() : 
-	m_vecPosition(0,5,8),
+	m_vecPosition(0,11,22),
 	m_vecDirection(0,0,1),
 	m_vecRight(1,0,0),
 	m_vecUp(0,1,0),
@@ -11,7 +12,7 @@ Camera::Camera() :
 	m_fYaw(-90.0f),
 	m_fPitch(-5.0f),
 	m_fSpeed(30.0f),
-	m_fSensitivity(0.05f),
+	m_fSensitivity(0.1f),
 	m_fZoom(45.0f)
 {
 	Update();
@@ -106,12 +107,24 @@ void Camera::ProcessMouseScroll(float offset)
 //////////////////////////////////////////////////////////////////////////////////////////
 glm::mat4x4 Camera::getViewMatrix()
 {
-	return glm::lookAt(m_vecPosition, m_vecPosition + m_vecDirection, m_vecUp);
+	m_matView = glm::lookAt(m_vecPosition, m_vecPosition + m_vecDirection, m_vecUp);
+	return m_matView;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
 glm::mat4x4 Camera::getProjectionMatrix()
 {
-	return glm::perspective(m_fZoom, 1.6f, 0.1f, 1000.0f);
+	m_matProjection = glm::perspectiveFovRH(m_fZoom, (float)gWindowWidth, (float)gWindowHeight, 0.1f, 1000.0f);
+	return m_matProjection;
+}
+
+void Camera::SetViewMatrix(const glm::mat4& _matView)
+{
+	m_matView = _matView;
+}
+
+void Camera::SetProjectionMatrix(const glm::mat4& _matProj)
+{
+	m_matProjection = _matProj;
 }
 

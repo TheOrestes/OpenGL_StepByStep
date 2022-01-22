@@ -1,5 +1,6 @@
 
 #include "Camera.h"
+#include "Globals.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////
 Camera::Camera() : 
@@ -11,7 +12,7 @@ Camera::Camera() :
 	m_fYaw(-90.0f),
 	m_fPitch(-5.0f),
 	m_fSpeed(30.0f),
-	m_fSensitivity(0.05f),
+	m_fSensitivity(0.1f),
 	m_fZoom(45.0f)
 {
 	Update();
@@ -113,7 +114,7 @@ glm::mat4x4 Camera::getViewMatrix()
 //////////////////////////////////////////////////////////////////////////////////////////
 glm::mat4x4 Camera::getProjectionMatrix()
 {
-	m_matProjection = glm::perspective(m_fZoom, 1.6f, 0.1f, 1000.0f);
+	m_matProjection = glm::perspectiveFovRH(m_fZoom, (float)gWindowWidth, (float)gWindowHeight, 0.1f, 1000.0f);
 	return m_matProjection;
 }
 

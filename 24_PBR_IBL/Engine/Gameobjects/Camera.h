@@ -26,10 +26,10 @@ public:
 
 	~Camera();
 
-	void			Update();
-	void			ProcessKeyboard(CameraMovement mov, float dt);
-	void			ProcessMouseMovement(float xOffset, float yOffset, bool bConstraintPitch = true);
-	void			ProcessMouseScroll(float offset);
+	void					Update();
+	void					ProcessKeyboard(CameraMovement mov, float dt);
+	void					ProcessMouseMovement(float xOffset, float yOffset, bool bConstraintPitch = true);
+	void					ProcessMouseScroll(float offset);
 
 	glm::mat4x4				getViewMatrix();
 	glm::mat4x4				getProjectionMatrix();
@@ -46,23 +46,23 @@ private:
 	void operator=(const Camera&);
 
 	// Attributes
-	glm::vec3		m_vecPosition;
-	glm::vec3		m_vecDirection;
-	glm::vec3		m_vecRight;
-	glm::vec3		m_vecUp;
+	glm::vec3				m_vecPosition;
+	glm::vec3				m_vecDirection;
+	glm::vec3				m_vecRight;
+	glm::vec3				m_vecUp;
 
-	glm::vec3		m_vecWorldUp;
+	glm::vec3				m_vecWorldUp;
 
 	// Euler Angles
-	float			m_fYaw;
-	float			m_fPitch;
+	float					m_fYaw;
+	float					m_fPitch;
 
 	// Options
-	float			m_fSpeed;
-	float			m_fSensitivity;
-	float			m_fZoom;
+	float					m_fSpeed;
+	float					m_fSensitivity;
+	float					m_fZoom;
 
 	// Matrices
-	glm::mat4		m_matView;
-	glm::mat4		m_matProjection;
+	glm::mat4				m_matView;
+	glm::mat4				m_matProjection;
 };

@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="GLCube.h" />
+    <ClInclude Include="Globals.h" />
     <ClInclude Include="GLSkybox.h" />
     <ClInclude Include="GLSLShader.h" />
     <ClInclude Include="TextureManager.h" />
