@@ -4,6 +4,7 @@
 #include "GLFW/glfw3.h"
 #include "glm/glm.hpp"
 #include "GLCube.h"
+#include "Globals.h"
 
 //////////////////////////////////////////////////////////////////////////
 GLFWwindow* window = nullptr;
@@ -23,7 +24,7 @@ void InitGLFW()
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
 	// Create a window!
-	window = glfwCreateWindow(1280, 800, "Hello OpenGL Window", nullptr, nullptr);
+	window = glfwCreateWindow(gWindowWidth, gWindowHeight, "Hello OpenGL Window", nullptr, nullptr);
 
 	if (!window)
 	{
@@ -83,10 +84,7 @@ int main()
 	glfwSetKeyCallback(window, KeyHandler);
 
 	GLCube cube;  // random color cube
-	//GLCube cube2(glm::vec4(1,1,0,1));
 	cube.Init();
-	cube.SetPosition(glm::vec3(0,0,0));
-	//cube2.Init();
 
 	// Message Loop!
 	while (!glfwWindowShouldClose(window))
@@ -97,10 +95,7 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT |  GL_DEPTH_BUFFER_BIT);
 
 		cube.Update(0.016f);
-		//cube2.Update(0.016f);
-
 		cube.Render();
-		//cube2.Render();
 
 		glfwSwapBuffers(window);
 	}

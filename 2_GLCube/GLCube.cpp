@@ -5,7 +5,7 @@
 
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/type_ptr.hpp"
-
+#include "Globals.h"
 
 //////////////////////////////////////////////////////////////////////////////////////////
 GLCube::GLCube()
@@ -189,14 +189,12 @@ void GLCube::Update(float dt)
 	// Create composite ViewProjection matrix
 	//matWorld = glm::rotate(matWorld, 0.1f*dt, glm::vec3(0.0f, 1.0f, 0.0f));
 	matView = glm::lookAt(glm::vec3(0,0,5), glm::vec3(0,0,0), glm::vec3(0,1,0));	
-	matProj = glm::perspective(45.0f, 1.6f, 0.1f, 1000.0f);
+	matProj = glm::perspectiveFovRH(45.0f, (float)gWindowWidth, (float)gWindowHeight, 0.1f, 1000.0f);
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
 void GLCube::Render()
 {
-
-
 	glBindVertexArray(vao);
 
 	m_pShader->Use();
