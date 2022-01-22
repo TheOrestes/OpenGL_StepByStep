@@ -8,7 +8,7 @@ This repository is created with a purpose of veryeasy to understand OpenGL imple
 | Create Quad | ![image](https://user-images.githubusercontent.com/5098227/150499027-039c9a48-c2d1-4f0c-a765-9217e213c463.png) |
 | Create Textured Quad | ![image](https://user-images.githubusercontent.com/5098227/150506409-1f163185-84f7-43a1-a80b-0341514656bb.png) |
 | Create Cube | ![image](https://user-images.githubusercontent.com/5098227/150633271-68745cd8-2804-45ce-b77c-8ea63a91c8f5.png) |
-| Free Roam Camera | Text |
+| Free Roam Camera | ![image](https://user-images.githubusercontent.com/5098227/150636347-e8db2cac-8e37-4db0-9311-a6ae9396e7a6.png) |
 | Custom Mesh Loading using Assimp | Text |
 | Custom Mesh loading with textures | Text |
 | Custom Mesh loading with multiple textures | Text |
