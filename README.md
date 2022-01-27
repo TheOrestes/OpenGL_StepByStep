@@ -11,7 +11,7 @@ This repository is created with a purpose of veryeasy to understand OpenGL imple
 | Free Roam Camera | ![image](https://user-images.githubusercontent.com/5098227/150636347-e8db2cac-8e37-4db0-9311-a6ae9396e7a6.png) |
 | Skybox Rendering | ![image](https://user-images.githubusercontent.com/5098227/150637009-4f229e24-631e-46df-8b98-3ced7b9415ec.png) |
 | Custom Mesh Loading using Assimp | ![image](https://user-images.githubusercontent.com/5098227/151302871-29d8148e-90e3-4ff6-92b7-2d8d35ff19a0.png) |
-| Custom Mesh loading with textures | Text |
+| Custom Mesh loading with textures | ![image](https://user-images.githubusercontent.com/5098227/151336569-87769798-0c72-440f-83ea-5924e5a94b0d.png) |
 | Custom Mesh loading with multiple textures | Text |
 | Diffuse lighting | Text |
 | Specular lighting | Text |
