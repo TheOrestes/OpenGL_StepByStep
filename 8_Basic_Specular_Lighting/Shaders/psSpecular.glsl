@@ -46,7 +46,7 @@ void main()
 	// Specular
 	vec3 viewDir = normalize(cameraPosition - vs_outPosition);
 	vec3 reflVector = normalize(reflect(lightDirection, vs_outNormal));
-	float RdotV = pow(clamp(dot(reflVector, viewDir), 0, 1), 32);
+	float RdotV = pow(clamp(dot(reflVector, viewDir), 0, 1), 64);
 	Specular = vec4(RdotV, RdotV, RdotV, 1);
 
 	// consider specular only where specular texture allows you to!
