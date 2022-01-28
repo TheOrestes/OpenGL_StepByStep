@@ -160,6 +160,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="GLCube.h" />
     <ClInclude Include="GLLight.h" />
+    <ClInclude Include="Globals.h" />
     <ClInclude Include="GLSkybox.h" />
     <ClInclude Include="GLSLShader.h" />
     <ClInclude Include="LightsManager.h" />
