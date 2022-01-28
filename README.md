@@ -13,7 +13,7 @@ This repository is created with a purpose of veryeasy to understand OpenGL imple
 | Custom Mesh Loading using Assimp | ![image](https://user-images.githubusercontent.com/5098227/151302871-29d8148e-90e3-4ff6-92b7-2d8d35ff19a0.png) |
 | Custom Mesh loading with textures | ![image](https://user-images.githubusercontent.com/5098227/151336569-87769798-0c72-440f-83ea-5924e5a94b0d.png) |
 | Custom Mesh loading with multiple textures | ![image](https://user-images.githubusercontent.com/5098227/151505503-f3f98984-5eb3-4aa1-8c16-4297c4e771fd.png) |
-| Diffuse lighting | Text |
+| Diffuse lighting | ![image](https://user-images.githubusercontent.com/5098227/151507737-e8b3f383-64d2-406e-b71e-f7c57437ccd6.png) |
 | Specular lighting | Text |
 | Environment Mapping | Text |
 | Basic lights management | Text |
