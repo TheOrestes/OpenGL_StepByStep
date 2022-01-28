@@ -140,7 +140,7 @@ int main()
 	glfwSetCursorPosCallback(window, MouseHandler);
 	
 	StaticObjectData data;
-	data.path = "../Assets/models/Barbarian/Barb.fbx";
+	data.path = "../Assets/models/Barbarian/BarbNew.fbx";
 	data.shader = "Texture";
 	data.position = glm::vec3(0,0,0);
 	data.angle = 0.0f;

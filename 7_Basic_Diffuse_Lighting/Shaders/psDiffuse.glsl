@@ -35,11 +35,11 @@ void main()
 	vec4 Diffuse = vec4(0);
 
 	// Final Color components...
-	Ambient	= material.Albedo * texture(texture_diffuse, vs_outUV);
+	Ambient	= texture(texture_diffuse, vs_outUV);
 	
 	// Dot product!
 	float NdotL = clamp(dot(normalize(vs_outNormal), -lightDirection), 0, 1);
 	Diffuse = vec4(NdotL, NdotL, NdotL, 1);
 	
-	outColor = Ambient * Diffuse;
+	outColor = Diffuse;
 }

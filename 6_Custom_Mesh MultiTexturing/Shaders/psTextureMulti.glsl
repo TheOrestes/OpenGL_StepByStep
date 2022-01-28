@@ -31,9 +31,9 @@ void main()
 	vec4 Ambient = vec4(0);
 
 	// Final Color components...
-	//Ambient	= material.Albedo * texture(texture_diffuse, vs_outUV);
+	Ambient	= material.Albedo * texture(texture_diffuse, vs_outUV);
 	//Ambient = texture(texture_specular, vs_outUV);
-	Ambient = texture(texture_normal, vs_outUV);
+	//Ambient = texture(texture_normal, vs_outUV);
 	
 	outColor = Ambient;
 }
