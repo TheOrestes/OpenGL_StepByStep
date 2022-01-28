@@ -14,7 +14,7 @@ This repository is created with a purpose of veryeasy to understand OpenGL imple
 | Custom Mesh loading with textures | ![image](https://user-images.githubusercontent.com/5098227/151336569-87769798-0c72-440f-83ea-5924e5a94b0d.png) |
 | Custom Mesh loading with multiple textures | ![image](https://user-images.githubusercontent.com/5098227/151505503-f3f98984-5eb3-4aa1-8c16-4297c4e771fd.png) |
 | Diffuse lighting | ![image](https://user-images.githubusercontent.com/5098227/151507737-e8b3f383-64d2-406e-b71e-f7c57437ccd6.png) |
-| Specular lighting | Text |
+| Specular lighting | ![image](https://user-images.githubusercontent.com/5098227/151518771-974d399e-1910-4a14-b583-60b717d4c0ad.png) |
 | Environment Mapping | Text |
 | Basic lights management | Text |
 | World Space Normal mapping | Text |
