@@ -16,7 +16,7 @@ This repository is created with a purpose of veryeasy to understand OpenGL imple
 | Diffuse lighting | ![image](https://user-images.githubusercontent.com/5098227/151507737-e8b3f383-64d2-406e-b71e-f7c57437ccd6.png) |
 | Specular lighting | ![image](https://user-images.githubusercontent.com/5098227/151518771-974d399e-1910-4a14-b583-60b717d4c0ad.png) |
 | Environment Mapping | ![image](https://user-images.githubusercontent.com/5098227/151526272-4d1bc947-e2e2-444f-b54a-875303e8e5cc.png) |
-| Basic lights management | Text |
+| Basic lights management | ![image](https://user-images.githubusercontent.com/5098227/151527942-4c9ff540-1e72-4fbc-a3c4-d602583ad3e4.png) |
 | World Space Normal mapping | Text |
 | Tangent Space normal mapping | Text |
 | Framebuffers | Text |
