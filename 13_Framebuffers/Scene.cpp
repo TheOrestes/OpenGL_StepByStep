@@ -47,12 +47,12 @@ void Scene::InitScene()
 {
 	// Initialize Static objects...
 	StaticObjectData data;
-	data.path = "../Assets/models/Anvil.fbx";
+	data.path = "../Assets/models/Barbarian/BarbNew.fbx";
 	data.shader = "NormalMapTS";
 	data.position = glm::vec3(0, 2, 0);
 	data.angle = 0.0f;
 	data.rotation = glm::vec3(0, 1, 0);
-	data.scale = glm::vec3(0.2f);
+	data.scale = glm::vec3(1.0f);
 	m_pStaticObject1 = new StaticObject(data);
 	m_pStaticObject1->Init();
 
