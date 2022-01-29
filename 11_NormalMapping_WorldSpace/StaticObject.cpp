@@ -41,7 +41,7 @@ void StaticObject::Init()
 	vertShaderPath = "Shaders/vs" + m_strShader + ".glsl";
 
 	std::string fragShaderPath;
-	fragShaderPath = "../Assets/Shaders/ps" + m_strShader + ".glsl";
+	fragShaderPath = "Shaders/ps" + m_strShader + ".glsl";
 
 	m_pShader = new GLSLShader(vertShaderPath, fragShaderPath);
 
