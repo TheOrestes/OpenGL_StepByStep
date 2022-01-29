@@ -131,5 +131,5 @@ void main()
 	Reflection *= 0.15;
 
 	// Final Accumulation
-	outColor = Ambient * DiffusePoint + SpecularPoint + Reflection;
+	outColor = Ambient * DiffusePoint + SpecularPoint + Reflection;	
 }

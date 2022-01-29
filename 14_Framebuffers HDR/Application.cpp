@@ -2,6 +2,7 @@
 #include "Scene.h"
 #include "Application.h"
 #include "PostProcess.h"
+#include "Globals.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 Application::Application()
@@ -34,7 +35,7 @@ void Application::Initialize()
 
 	m_pPostFX = new PostProcess();
 	m_pPostFX->SetupScreenQuad();
-	m_pPostFX->CreateColorDepthStencilBuffer(m_iWindowWidth, m_iWindowHeight);
+	m_pPostFX->CreateColorDepthStencilBuffer(gWindowWidth, gWindowHeight);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

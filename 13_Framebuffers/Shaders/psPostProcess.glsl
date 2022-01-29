@@ -163,8 +163,8 @@ void main()
 {
 	// Simple post processing...
 	vec4 screenColor = texture2D(colorBuffer, vs_outTexcoord); 
-	outColor = invertColor(screenColor);
+	//outColor = invertColor(screenColor);
 
 	// Kernel based post processing...
-	//outColor = embossKernel();
+	outColor = screenColor;
 }

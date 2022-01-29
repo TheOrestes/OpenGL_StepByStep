@@ -82,7 +82,7 @@ void PostProcess::CreateColorDepthStencilBuffer(int horizRes, int vertRes)
 	// Create color texture attachment for this fbo
 	glGenTextures(1, &m_colorBuffer);
 	glBindTexture(GL_TEXTURE_2D, m_colorBuffer);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, horizRes, vertRes, 0, GL_RGB, GL_UNSIGNED_BYTE, nullptr);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, horizRes, vertRes, 0, GL_RGB, GL_FLOAT, nullptr);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glBindTexture(GL_TEXTURE_2D, 0);
