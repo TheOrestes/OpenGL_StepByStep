@@ -19,7 +19,7 @@ This repository is created with a purpose of veryeasy to understand OpenGL imple
 | Basic lights management | ![image](https://user-images.githubusercontent.com/5098227/151527942-4c9ff540-1e72-4fbc-a3c4-d602583ad3e4.png) |
 | World Space Normal mapping | ![image](https://user-images.githubusercontent.com/5098227/151652318-ab177180-63d8-4f2e-9c45-490b3ec847ab.png) |
 | Tangent Space normal mapping | ![image](https://user-images.githubusercontent.com/5098227/151653200-6b308610-b10e-48e8-bfce-e52de1d3aef7.png) |
-| Framebuffers | Text |
+| Framebuffers | ![image](https://user-images.githubusercontent.com/5098227/151656929-60b63684-918b-4bd8-8ae7-1f40507dc638.png) |
 | HDR Framebuffers | Text |
 | Simple Bloom effect | Text |
 | Deferred Rendering | Text |
