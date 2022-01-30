@@ -21,7 +21,7 @@ This repository is created with a purpose of veryeasy to understand OpenGL imple
 | Tangent Space normal mapping | ![image](https://user-images.githubusercontent.com/5098227/151653200-6b308610-b10e-48e8-bfce-e52de1d3aef7.png) |
 | Framebuffers | ![image](https://user-images.githubusercontent.com/5098227/151656929-60b63684-918b-4bd8-8ae7-1f40507dc638.png) |
 | HDR Framebuffers | ![image](https://user-images.githubusercontent.com/5098227/151658537-1a922b49-c223-48c2-878e-694b904045f5.png) |
-| Simple Bloom effect | Text |
+| Simple Bloom effect | ![image](https://user-images.githubusercontent.com/5098227/151698982-012e594f-9889-499b-9938-8c471b660fc7.png) |
 | Deferred Rendering | Text |
 | Bloom with Deferred Rendering | Text |
 | Shadow mapping with Deferred Rendering | Text |
