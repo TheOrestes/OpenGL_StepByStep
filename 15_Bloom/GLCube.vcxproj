@@ -186,6 +186,7 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="GLCube.h" />
+    <ClInclude Include="Globals.h" />
     <ClInclude Include="PostProcess.h" />
     <ClInclude Include="GLLight.h" />
     <ClInclude Include="GLQuad.h" />

@@ -2,6 +2,7 @@
 #include "Scene.h"
 #include "Application.h"
 #include "PostProcess.h"
+#include "Globals.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 Application::Application()
@@ -36,10 +37,10 @@ void Application::Initialize()
 	m_pPostFX->SetupScreenQuad();
 
 	// Setup buffers for Geometry pass!
-	m_pPostFX->CreateColorDepthStencilBuffer(m_iWindowWidth, m_iWindowHeight);
+	m_pPostFX->CreateColorDepthStencilBuffer(gWindowWidth, gWindowHeight);
 
 	// Setup buffers for bloom (Color + Brightness)
-	m_pPostFX->CreateColorBrightnessBuffer(m_iWindowWidth, m_iWindowHeight);
+	m_pPostFX->CreateColorBrightnessBuffer(gWindowWidth, gWindowHeight);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
