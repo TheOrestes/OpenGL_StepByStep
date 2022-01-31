@@ -47,27 +47,27 @@ void Scene::InitScene()
 {
 	// Initialize Static objects...
 	StaticObjectData data;
-	data.path = "../Assets/models/Drone.fbx";
+	data.path = "../Assets/models/Barbarian/BarbNew.fbx";
 	data.shader = "NormalMapWSDeferred";
-	data.position = glm::vec3(0, 10, 0);
+	data.position = glm::vec3(0, 0, 0);
 	data.angle = 0.0f;
 	data.rotation = glm::vec3(0, 1, 0);
-	data.scale = glm::vec3(8.0f);
+	data.scale = glm::vec3(1.0f);
 	m_pStaticObject1 = new StaticObject(data);
 	m_pStaticObject1->Init();
 
 	// Load point lights
-	m_pRedPointLight = new PointLightObject(glm::vec4(1, 1, 1, 1));
+	m_pRedPointLight = new PointLightObject(glm::vec4(1, 0, 0, 1));
 	m_pRedPointLight->SetLightIntensity(0.15f);
 	m_pRedPointLight->SetLightPosition(glm::vec3(2, 5, 5));
 	LightsManager::getInstance()->GatherPointLights(m_pRedPointLight);
 
-	m_pGreenPointLight = new PointLightObject(glm::vec4(1, 1, 1, 1));
+	m_pGreenPointLight = new PointLightObject(glm::vec4(0, 1, 0, 1));
 	m_pGreenPointLight->SetLightIntensity(0.15f);
 	m_pGreenPointLight->SetLightPosition(glm::vec3(10, 15, 0));
 	LightsManager::getInstance()->GatherPointLights(m_pGreenPointLight);
 
-	m_pBluePointLight = new PointLightObject(glm::vec4(1, 1, 1, 1));
+	m_pBluePointLight = new PointLightObject(glm::vec4(0, 0, 1, 1));
 	m_pBluePointLight->SetLightIntensity(0.15f);
 	m_pBluePointLight->SetLightPosition(glm::vec3(-5, 20, 5));
 	LightsManager::getInstance()->GatherPointLights(m_pBluePointLight);
