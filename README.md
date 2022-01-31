@@ -22,7 +22,7 @@ This repository is created with a purpose of veryeasy to understand OpenGL imple
 | Framebuffers | ![image](https://user-images.githubusercontent.com/5098227/151656929-60b63684-918b-4bd8-8ae7-1f40507dc638.png) |
 | HDR Framebuffers | ![image](https://user-images.githubusercontent.com/5098227/151658537-1a922b49-c223-48c2-878e-694b904045f5.png) |
 | Simple Bloom effect | ![image](https://user-images.githubusercontent.com/5098227/151698982-012e594f-9889-499b-9938-8c471b660fc7.png) |
-| Deferred Rendering | Text |
+| Deferred Rendering | ![image](https://user-images.githubusercontent.com/5098227/151744474-80d9cb19-2eea-4363-8624-1bf4c441cc21.png)|
 | Bloom with Deferred Rendering | Text |
 | Shadow mapping with Deferred Rendering | Text |
 | Debug views | Text |
