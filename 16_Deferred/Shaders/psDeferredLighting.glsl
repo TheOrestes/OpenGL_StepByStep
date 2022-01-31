@@ -92,7 +92,7 @@ void main()
 	vec4 Reflection = vec4(0);
 	vec3 viewReflection = normalize(reflect(viewDir, Normal));
 	Reflection = texture(texture_skybox, viewReflection);
-	Reflection *= 1.0f;
+	Reflection *= 0.25f;
 
 	outColor = Albedo + DiffusePoint + SpecularPoint * Specular + Reflection * Specular;
 }

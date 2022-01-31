@@ -2,6 +2,7 @@
 #include "Scene.h"
 #include "Application.h"
 #include "PostProcess.h"
+#include "Globals.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 Application::Application()
@@ -36,10 +37,10 @@ void Application::Initialize()
 	m_pPostFX->SetupScreenQuad();
 
 	// Setup buffers for geometry pass!
-	m_pPostFX->CreateColorDepthStencilBuffer(m_iWindowWidth, m_iWindowHeight);
+	m_pPostFX->CreateColorDepthStencilBuffer(gWindowWidth, gWindowHeight);
 
 	// Setup buffers for Deferred rendering
-	m_pPostFX->CreateDeferredBuffers(m_iWindowWidth, m_iWindowHeight);
+	m_pPostFX->CreateDeferredBuffers(gWindowWidth, gWindowHeight);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
