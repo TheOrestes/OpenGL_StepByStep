@@ -2,6 +2,7 @@
 #include "Scene.h"
 #include "Application.h"
 #include "PostProcess.h"
+#include "Globals.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 Application::Application()
@@ -36,13 +37,13 @@ void Application::Initialize()
 	m_pPostFX->SetupScreenQuad();
 
 	// Setup buffers for Deferred rendering
-	m_pPostFX->CreateDeferredBuffers(m_iWindowWidth, m_iWindowHeight);
+	m_pPostFX->CreateDeferredBuffers(gWindowWidth, gWindowHeight);
 
 	// Setup buffers for Shadow mapping
-	m_pPostFX->CreateShadowMappingBuffers(m_iWindowWidth, m_iWindowHeight);
+	m_pPostFX->CreateShadowMappingBuffers(1024, 1024);
 
 	// Setup buffers for Bloom
-	m_pPostFX->CreateBloomBuffers(m_iWindowWidth, m_iWindowHeight);
+	m_pPostFX->CreateBloomBuffers(gWindowWidth, gWindowHeight);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

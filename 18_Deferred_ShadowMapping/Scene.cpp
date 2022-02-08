@@ -55,57 +55,46 @@ void Scene::InitScene()
 {
 	// Initialize Static objects...
 	StaticObjectData data;
-	data.path = "../Assets/models/Anvil.fbx";
+	data.path = "../Assets/models/Barbarian/BarbNew.fbx";
 	data.shader = "NormalMapWSDeferred";
-	data.position = glm::vec3(0, 1, 0);
+	data.position = glm::vec3(0, 2, 0);
 	data.angle = 0.0f;
 	data.rotation = glm::vec3(0, 1, 0);
-	data.scale = glm::vec3(0.15f);
+	data.scale = glm::vec3(1.0f);
 	m_pStaticObject1 = new StaticObject(data);
 	m_pStaticObject1->Init();
 
 	// plane
 	StaticObjectData dataPlane;
-	dataPlane.path = "../Assets/models/ShadowPlane.fbx";
+	dataPlane.path = "../Assets/models/Planes/Plane_Oak.fbx";
 	dataPlane.shader = "NormalMapWSDeferred";
 	dataPlane.position = glm::vec3(0, 0, 0);
 	dataPlane.angle = 0.0f;
 	dataPlane.rotation = glm::vec3(0, 1, 0);
-	dataPlane.scale = glm::vec3(10.0f);
+	dataPlane.scale = glm::vec3(20.0f);
 	m_pShadowObject = new StaticObject(dataPlane);
 	m_pShadowObject->Init();
-
-	StaticObjectData dataDrone;
-	dataDrone.path = "../Assets/models/Drone.fbx";
-	dataDrone.shader = "NormalMapWSDeferred";
-	dataDrone.position = glm::vec3(-10, 4, 0);
-	dataDrone.angle = 0.0f;
-	dataDrone.rotation = glm::vec3(0, 1, 0);
-	dataDrone.scale = glm::vec3(5.0f);
-	m_pStaticObject2 = new StaticObject(dataDrone);
-	m_pStaticObject2->Init();
-
 
 	// Load point lights
 	m_pRedPointLight = new PointLightObject(glm::vec4(1, 0, 0, 1));
 	m_pRedPointLight->SetLightIntensity(0.15f);
 	m_pRedPointLight->SetLightPosition(glm::vec3(2, 5, 5));
-	LightsManager::getInstance()->GatherPointLights(m_pRedPointLight);
+	//LightsManager::getInstance()->GatherPointLights(m_pRedPointLight);
 
 	m_pGreenPointLight = new PointLightObject(glm::vec4(0, 1, 0, 1));
 	m_pGreenPointLight->SetLightIntensity(0.15f);
 	m_pGreenPointLight->SetLightPosition(glm::vec3(10, 15, 0));
-	LightsManager::getInstance()->GatherPointLights(m_pGreenPointLight);
+	//LightsManager::getInstance()->GatherPointLights(m_pGreenPointLight);
 
 	m_pBluePointLight = new PointLightObject(glm::vec4(0, 0, 1, 1));
 	m_pBluePointLight->SetLightIntensity(0.15f);
 	m_pBluePointLight->SetLightPosition(glm::vec3(-5, 20, 5));
-	LightsManager::getInstance()->GatherPointLights(m_pBluePointLight);
+	//LightsManager::getInstance()->GatherPointLights(m_pBluePointLight);
 
 	// Load directional lights
 	m_pMainDirectionalLight = new DirectionalLightObject(glm::vec4(1, 1, 1, 1));
-	m_pMainDirectionalLight->SetLightDirection(glm::vec3(1, -1, -1));
-	m_pMainDirectionalLight->SetLightIntensity(0.25f);
+	m_pMainDirectionalLight->SetLightDirection(glm::vec3(0.5f, -1, -0.707f));
+	m_pMainDirectionalLight->SetLightIntensity(0.1f);
 	LightsManager::getInstance()->GatherDirectionalLights(m_pMainDirectionalLight);
 
 	// Load Skybox
@@ -129,13 +118,11 @@ void Scene::Render()
 	LightsManager::getInstance()->RenderLights();
 	m_pStaticObject1->Render();
 	m_pShadowObject->Render();
-	m_pStaticObject2->Render();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void Scene::RenderShadowMap()
 {
 	m_pStaticObject1->RenderShadowMap();
-	m_pStaticObject2->RenderShadowMap();
 	m_pShadowObject->RenderShadowMap();
 }
