@@ -71,7 +71,7 @@ float readShadowMap(vec3 Position, vec3 Normal, vec3 viewDir)
 	float shadow = 0.0f;
 	float bias = max(0.05f * (1.0f - dot(Normal, dirLights[0].direction)), 0.005f);
 	if(closestDepth < currentDepth - bias)
-		shadow = 0.5f;
+		shadow = 0.8f;
 	else 
 		shadow = 0.0f;
 
