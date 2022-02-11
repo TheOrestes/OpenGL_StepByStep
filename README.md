@@ -25,7 +25,7 @@ This repository is created with a purpose of veryeasy to understand OpenGL imple
 | Deferred Rendering | ![image](https://user-images.githubusercontent.com/5098227/151744474-80d9cb19-2eea-4363-8624-1bf4c441cc21.png)|
 | Bloom with Deferred Rendering | ![image](https://user-images.githubusercontent.com/5098227/151750736-e9143d56-4010-42bc-9f3f-c75f6cd57f50.png) |
 | Shadow mapping with Deferred Rendering | ![image](https://user-images.githubusercontent.com/5098227/152962001-0fbc8905-7a26-40b4-920d-fd58074bf161.png) |
-| Debug views | Text |
+| Debug views | ![image](https://user-images.githubusercontent.com/5098227/153569300-ff651bf5-734b-41c3-b449-308f869de264.png) |
 | HDRI with Deferred Rendering | Text |
 | Wireframe Rendering | Text |
 | IMGUI Integration | Text |
