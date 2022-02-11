@@ -168,7 +168,7 @@ void main()
 	
 		// specular
 		reflVectorDir = normalize(reflect(LightDir, Normal));
-		RdotVDir = pow(clamp(dot(reflVectorDir, viewDir), 0, 1), 32);
+		RdotVDir = pow(clamp(dot(reflVectorDir, viewDir), 0, 1), 128);
 	
 		// accumulate...
 		SpecularDirectional += dirLights[i].color * RdotVDir;
@@ -179,7 +179,7 @@ void main()
 	vec4 Reflection = vec4(0);
 	vec3 viewReflection = normalize(reflect(viewDir, Normal));
 	Reflection = texture(texture_skybox, viewReflection);
-	Reflection *= 1.0f;
+	Reflection *= 0.2f;
 
 	// Shadow
 	float Shadow = readShadowMap(Position, Normal, viewDir);
@@ -189,5 +189,5 @@ void main()
 	//outColor = Albedo + ((DiffusePoint + DiffuseDirectional) + (SpecularPoint * Specular + SpecularDirectional * Specular)) + Reflection * Specular;
 
 	// Always add Emission color to bright buffer!
-	brightColor = Emission * 3.0f;
+	brightColor = Emission;
 }

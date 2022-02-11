@@ -78,7 +78,7 @@ void main()
 	//	gAlbedo = vec3(0,1,0);
 	//else
 		
-	gAlbedo = mix(vec3(0,0.75f,0), Ambient.rgb, edgeFactor());
+	gAlbedo = mix(vec3(0.8f,1.0f,0.0f), Ambient.rgb, edgeFactor());
 
 	// ! Write into Emissive buffer
 	gEmission = emissiveColor.rgb;
