@@ -68,5 +68,5 @@ void main()
 	gAlbedo = Ambient.rgb;
 
 	// ! Write into Emissive buffer
-	gEmission = emissiveColor.rgb;
+	gEmission = 25.0f * emissiveColor.rgb;
 }

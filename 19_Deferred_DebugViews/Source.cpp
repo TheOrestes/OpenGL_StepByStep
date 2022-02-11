@@ -4,6 +4,7 @@
 #include "GLFW/glfw3.h"
 #include "Camera.h"
 #include "Application.h"
+#include "Globals.h"
 
 //////////////////////////////////////////////////////////////////////////
 float tick = 0.016f;
@@ -29,7 +30,7 @@ GLFWwindow* InitGLFW(Application* pApp)
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 	
 	// Create a window!
-	GLFWwindow* window = glfwCreateWindow(pApp->GetWindowWidth(), pApp->GetWindowHeight(), "Hello OpenGL Window", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(gWindowWidth, gWindowHeight, "Hello OpenGL Window", nullptr, nullptr);
 
 	if (!window)
 	{

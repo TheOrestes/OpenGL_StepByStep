@@ -76,7 +76,7 @@ void StaticObject::Kill()
 void StaticObject::Update( float dt )
 {
 	static float angle = 0;
-	angle += dt;
+	//angle += 0.5f * dt;
 
 	m_fAngle = angle;
 
