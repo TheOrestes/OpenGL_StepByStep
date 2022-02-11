@@ -34,8 +34,8 @@ DirectionalLightObject::~DirectionalLightObject()
 //////////////////////////////////////////////////////////////////////////////////////////
 void DirectionalLightObject::Init()
 {
-	float fNearPlane = -10.0f;
-	float fFarPlane = 200.0f;
+	float fNearPlane = 1.0f;
+	float fFarPlane = 50.0f;
 	float fBounds = 100.0f;
 
 	m_matLightViewToProjectionMatrix = glm::ortho(-fBounds, fBounds, -fBounds, fBounds, fNearPlane, fFarPlane);
@@ -51,14 +51,13 @@ void DirectionalLightObject::Kill()
 void DirectionalLightObject::Update( float dt )
 {
 	static float angle = 0;
-	angle += 0.0002f * dt;
+	
+	// Set the light position far away in the opposite direction of light!
+	// This is done since directional light has no position, but we need position to construct
+	// the view matrix anyways!
 
-	glm::mat4 rotMatrix(1);
-
-	rotMatrix = glm::rotate(rotMatrix, angle, glm::vec3(0.0f, 1.0f, 0.0f));
-	glm::vec3 currLightDirection = glm::vec3(rotMatrix * glm::vec4(m_vecLightDirection, 1.0f));
-
-	m_matWorldToLightViewMatrix = glm::lookAt(-currLightDirection, glm::vec3(0.0, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	glm::vec3 lightPosition = -m_vecLightDirection * 20.0f;
+	m_matWorldToLightViewMatrix = glm::lookAt(lightPosition, glm::vec3(0.0, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////

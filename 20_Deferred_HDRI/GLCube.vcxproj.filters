@@ -250,5 +250,17 @@
     <None Include="Shaders\psDeferredDebug.glsl">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="Shaders\HDRI2Cubemap.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\HDRI2Cubemap.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\HDRISkybox.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\HDRISkybox.vert">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -22,7 +22,4 @@ private:
 	StaticObject*		m_pShadowObject;
 
 	DirectionalLightObject* m_pMainDirectionalLight;
-	PointLightObject*	m_pRedPointLight;
-	PointLightObject*	m_pGreenPointLight;
-	PointLightObject*	m_pBluePointLight;
 };

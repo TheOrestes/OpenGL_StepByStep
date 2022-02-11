@@ -33,7 +33,7 @@ void HDRSkybox::Initialize()
 	m_pCaptureShader = new GLSLShader("Shaders/HDRI2Cubemap.vert", "Shaders/HDRI2Cubemap.frag");
 	m_pRenderShader = new GLSLShader("Shaders/HDRISkybox.vert", "Shaders/HDRISkybox.frag");
 
-	m_tbo = TextureManager::getInstannce().Load2DTextureFromFile("uffizi.hdr", "../Assets/HDRI");
+	m_tbo = TextureManager::getInstannce().Load2DTextureFromFile("leadenhall_market_2k.hdr", "../Assets/HDRI");
 
 	InitCaptureCube();
 	InitCaptureCubemap();

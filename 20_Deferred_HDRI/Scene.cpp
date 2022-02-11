@@ -11,9 +11,6 @@
 Scene::Scene()
 {
 	m_pStaticObject1 = nullptr;
-	m_pRedPointLight = nullptr;
-	m_pGreenPointLight = nullptr;
-	m_pBluePointLight = nullptr;
 	m_pMainDirectionalLight = nullptr;
 }
 
@@ -24,24 +21,6 @@ Scene::~Scene()
 	{
 		delete m_pStaticObject1;
 		m_pStaticObject1 = nullptr;
-	}
-
-	if (m_pRedPointLight)
-	{
-		delete m_pRedPointLight;
-		m_pRedPointLight = nullptr;
-	}
-
-	if (m_pGreenPointLight)
-	{
-		delete m_pGreenPointLight;
-		m_pGreenPointLight = nullptr;
-	}
-
-	if (m_pBluePointLight)
-	{
-		delete m_pBluePointLight;
-		m_pBluePointLight = nullptr;
 	}
 
 	if (m_pMainDirectionalLight)
@@ -56,46 +35,30 @@ void Scene::InitScene()
 {
 	// Initialize Static objects...
 	StaticObjectData data;
-	data.path = "../Assets/models/Spaceship.fbx";
+	data.path = "../Assets/models/Robot/SteamPunk.fbx";
 	data.shader = "NormalMapWSDeferred";
-	data.position = glm::vec3(0, 5, 0);
+	data.position = glm::vec3(0, 2, 0);
 	data.angle = 0.0f;
 	data.rotation = glm::vec3(0, 1, 0);
-	data.scale = glm::vec3(1.5f);
+	data.scale = glm::vec3(1.0f);
 	m_pStaticObject1 = new StaticObject(data);
 	m_pStaticObject1->Init();
 
 	// plane
 	StaticObjectData dataPlane;
-	dataPlane.path = "../Assets/models/ShadowPlane.fbx";
+	dataPlane.path = "../Assets/models/Planes/Plane_Oak.fbx";
 	dataPlane.shader = "NormalMapWSDeferred";
 	dataPlane.position = glm::vec3(0, 0, 0);
 	dataPlane.angle = 0.0f;
 	dataPlane.rotation = glm::vec3(0, 1, 0);
-	dataPlane.scale = glm::vec3(10.0f);
+	dataPlane.scale = glm::vec3(20.0f);
 	m_pShadowObject = new StaticObject(dataPlane);
 	m_pShadowObject->Init();
 
-	// Load point lights
-	m_pRedPointLight = new PointLightObject(glm::vec4(1, 0, 0, 1));
-	m_pRedPointLight->SetLightIntensity(0.15f);
-	m_pRedPointLight->SetLightPosition(glm::vec3(2, 5, 5));
-	LightsManager::getInstance()->GatherPointLights(m_pRedPointLight);
-
-	m_pGreenPointLight = new PointLightObject(glm::vec4(0, 1, 0, 1));
-	m_pGreenPointLight->SetLightIntensity(0.15f);
-	m_pGreenPointLight->SetLightPosition(glm::vec3(10, 15, 0));
-	LightsManager::getInstance()->GatherPointLights(m_pGreenPointLight);
-
-	m_pBluePointLight = new PointLightObject(glm::vec4(0, 0, 1, 1));
-	m_pBluePointLight->SetLightIntensity(0.15f);
-	m_pBluePointLight->SetLightPosition(glm::vec3(-5, 20, 5));
-	LightsManager::getInstance()->GatherPointLights(m_pBluePointLight);
-
 	// Load directional lights
 	m_pMainDirectionalLight = new DirectionalLightObject(glm::vec4(1, 1, 1, 1));
-	m_pMainDirectionalLight->SetLightDirection(glm::vec3(1, -1, -1));
-	m_pMainDirectionalLight->SetLightIntensity(0.25f);
+	m_pMainDirectionalLight->SetLightDirection(glm::vec3(0.5f, -1, -0.707f));
+	m_pMainDirectionalLight->SetLightIntensity(0.1f);
 	LightsManager::getInstance()->GatherDirectionalLights(m_pMainDirectionalLight);
 
 	// Load Skybox

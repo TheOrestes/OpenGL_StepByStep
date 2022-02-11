@@ -8,6 +8,7 @@
 #include "GLSkybox.h"
 #include "HDRSkybox.h"
 #include "GLSLShader.h"
+#include "Globals.h"
 #include "Helper.h"
 #include <iostream>
 
@@ -187,6 +188,9 @@ void PostProcess::CreateDeferredBuffers(int horizRes, int vertRes)
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void PostProcess::CreateShadowMappingBuffers(int horizRes, int vertRes)
 {
+	m_uiShadowDepthBufferWidth = horizRes;
+	m_uiShadowDepthBufferHeight = vertRes;
+
 	// create framebuffer object
 	glGenFramebuffers(1, &m_fboShadow);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_fboShadow);
@@ -194,17 +198,23 @@ void PostProcess::CreateShadowMappingBuffers(int horizRes, int vertRes)
 	// Create color texture attachment for this fbo
 	glGenTextures(1, &m_ShadowDepthBuffer);
 	glBindTexture(GL_TEXTURE_2D, m_ShadowDepthBuffer);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, SHADOWMAP_SIZE, SHADOWMAP_SIZE, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, m_uiShadowDepthBufferWidth, m_uiShadowDepthBufferHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	// attach depth texture buffer to the framebuffer
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_ShadowDepthBuffer, 0);
 
+	// We only need the depth information when rendering the scene from the light\92s perspective so
+	// there is no need for a color buffer.A framebuffer object however is not complete without a color
+	// buffer so we need to explicitly tell OpenGL we\92re not going to render any color data.
 	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
 
 	// Check if correct FBO was created or not ...
 	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -357,7 +367,7 @@ void PostProcess::EndBloomPrepass()
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 void PostProcess::BeginShadowPass()
 {
-	glViewport(0, 0, SHADOWMAP_SIZE, SHADOWMAP_SIZE);
+	glViewport(0, 0, m_uiShadowDepthBufferWidth, m_uiShadowDepthBufferHeight);
 	glBindFramebuffer(GL_FRAMEBUFFER, m_fboShadow);
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -373,7 +383,7 @@ void PostProcess::EndShadowPass()
 	glCullFace(GL_BACK);
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glViewport(0, 0, START_WINDOW_WIDTH, START_WINDOW_HEIGHT);
+	glViewport(0, 0, gWindowWidth, gWindowHeight);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
