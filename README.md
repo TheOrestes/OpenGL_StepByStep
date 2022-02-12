@@ -28,7 +28,7 @@ This repository is created with a purpose of veryeasy to understand OpenGL imple
 | Debug views | ![image](https://user-images.githubusercontent.com/5098227/153569300-ff651bf5-734b-41c3-b449-308f869de264.png) |
 | HDRI Skybox with Deferred Rendering | ![image](https://user-images.githubusercontent.com/5098227/153581518-a0a4160b-8b00-4f4b-a6b8-26a65b916432.png) |
 | Wireframe Rendering | ![image](https://user-images.githubusercontent.com/5098227/153607449-9854fcd8-06ee-48e5-8418-5380047fc0a3.png) |
-| IMGUI Integration | Text |
+| IMGUI Integration | ![image](https://user-images.githubusercontent.com/5098227/153703995-44cf18e7-e22a-4085-bc64-53ad8faa1841.png) |
 | PBR Diffuse | Text |
 | PBR Specular | Text |
 | Compute Shader | Text |
