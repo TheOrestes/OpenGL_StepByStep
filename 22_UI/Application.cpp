@@ -4,6 +4,7 @@
 #include "PostProcess.h"
 #include "UIManager.h"
 #include "Helper.h"
+#include "Globals.h"
 
 #include <iostream>
 
@@ -43,13 +44,13 @@ void Application::Initialize(GLFWwindow* window)
 	m_pPostFX->Initialize();
 
 	// Setup buffers for Deferred rendering
-	m_pPostFX->CreateDeferredBuffers(m_iWindowWidth, m_iWindowHeight);
+	m_pPostFX->CreateDeferredBuffers(gWindowWidth, gWindowHeight);
 
 	// Setup buffers for Shadow mapping
-	m_pPostFX->CreateShadowMappingBuffers(m_iWindowWidth, m_iWindowHeight);
+	m_pPostFX->CreateShadowMappingBuffers(1024, 1024);
 
 	// Setup buffers for Bloom
-	m_pPostFX->CreateBloomBuffers(m_iWindowWidth, m_iWindowHeight);
+	m_pPostFX->CreateBloomBuffers(gWindowWidth, gWindowHeight);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

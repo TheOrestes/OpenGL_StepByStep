@@ -97,7 +97,7 @@ void main()
 	float SpecularMask = NormalBufferColor.a;
 	vec4 Emission = texture2D(emissiveBuffer, vs_outTexcoord);
 	vec4 Specular = vec4(vec3(0), 1);
-	vec4 Albedo = texture2D(albedoBuffer, vs_outTexcoord);
+	vec4 Albedo = 2.5f * texture2D(albedoBuffer, vs_outTexcoord);
 
 	// ------------------------ Point Light Illuminance ------------------- 
 	// Diffuse
@@ -139,7 +139,7 @@ void main()
 	
 		// specular
 		reflVectorPoint = normalize(reflect(LightDir, Normal));
-		RdotVPoint = pow(clamp(dot(reflVectorPoint, viewDir), 0, 1), 32);
+		RdotVPoint = pow(clamp(dot(reflVectorPoint, viewDir), 0, 1), 128);
 	
 		// accumulate...
 		SpecularPoint += vec4(pointLights[i].color,1) * atten * RdotVPoint;
@@ -182,7 +182,7 @@ void main()
 	vec4 Reflection = vec4(0);
 	vec3 viewReflection = normalize(reflect(viewDir, Normal));
 	Reflection = texture(texture_skybox, viewReflection);
-	Reflection *= 1.0f;
+	Reflection *= 0.1f;
 
 	// Shadow
 	float Shadow = readShadowMap(Position, Normal, viewDir);

@@ -87,6 +87,8 @@ private:
 
 	GLuint				m_ShadowDepthBuffer;		// Depth buffer
 	GLuint				m_hShadowDepthBuffer;		// Handle to Depth buffer
+	uint16_t			m_uiShadowDepthBufferWidth;
+	uint16_t			m_uiShadowDepthBufferHeight;
 
 	// Postprocessing
 	GLuint				m_fboPostProcess;			// Framebuffer object for postprocess

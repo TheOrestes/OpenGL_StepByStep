@@ -43,6 +43,7 @@ public:
 	void				SetLightAngleXYZ(const glm::vec3& angleXYZ);
 	inline void			SetLightColor(const glm::vec3& col)			{ m_vecLightColor = col; };
 	inline void			SetLightIntensity(float intensity)			{ m_fIntensity = intensity; }
+	inline void			SetLightDirection(const glm::vec3& dir)		{ m_vecLightDirection = dir; }
 
 	void				SetWorldToLightViewMatrix(const glm::mat4& _lightViewMatrix);
 	void				SetLightViewToProjectionMatrix(const glm::mat4& _lightProjMatrix);
