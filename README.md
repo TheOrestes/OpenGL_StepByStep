@@ -29,8 +29,9 @@ This repository is created with a purpose of veryeasy to understand OpenGL imple
 | HDRI Skybox with Deferred Rendering | ![image](https://user-images.githubusercontent.com/5098227/153581518-a0a4160b-8b00-4f4b-a6b8-26a65b916432.png) |
 | Wireframe Rendering | ![image](https://user-images.githubusercontent.com/5098227/153607449-9854fcd8-06ee-48e5-8418-5380047fc0a3.png) |
 | IMGUI Integration | ![image](https://user-images.githubusercontent.com/5098227/153703995-44cf18e7-e22a-4085-bc64-53ad8faa1841.png) |
-| PBR Diffuse | Text |
-| PBR Specular | Text |
+| PBR + Mask| ![image](https://user-images.githubusercontent.com/5098227/154259284-941eb3b7-2530-4129-8eb8-dd209b1f8434.png) |
+| PBR Diffuse IBL (Irradiance) | Text |
+| PBR Specular IBL | Text |
 | Compute Shader | Text |
 
 References: 
