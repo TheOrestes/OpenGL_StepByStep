@@ -401,7 +401,7 @@ void UIManager::RenderSceneUI(Scene* ptrScene, PostProcess* ptrFX)
 			ptrFX->SetChannelID(channelID);
 		}
 
-		if (ImGui::RadioButton("Indirect Specular", &channelID, 3))
+		if (ImGui::RadioButton("Shadow Depth", &channelID, 3))
 		{
 			ptrFX->SetChannelID(channelID);
 		}

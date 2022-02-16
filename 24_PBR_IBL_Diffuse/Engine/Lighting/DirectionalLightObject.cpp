@@ -41,9 +41,9 @@ DirectionalLightObject::DirectionalLightObject(const glm::vec3& color)
 	m_matLightViewToProjectionMatrix = glm::mat4(1.0f);
 
 	m_pDebugShadowVolume = nullptr;
-	m_fShadowNearPlane = -25.0f;
+	m_fShadowNearPlane = 1.0f;
 	m_fShadowFarPlane = 50.0f;
-	m_fShadowBounds = 35.0f;
+	m_fShadowBounds = 100.0f;
 	m_bShowDebugShadowVolume = false;
 	
 	Init();
@@ -153,9 +153,14 @@ void DirectionalLightObject::SetEulerLightAngles(const glm::vec3& angleXYZ)
 
 	m_vecLightDirection = glm::column(rotateXYZ, 1);
 
-	m_matWorldToLightViewMatrix = glm::lookAt(-glm::vec3(m_vecLightDirection.x, m_vecLightDirection.y, m_vecLightDirection.z), 
-											   glm::vec3(0.0, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	// Set the light position far away in the opposite direction of light!
+	// This is done since directional light has no position, but we need position to construct
+	// the view matrix anyways!
+
+	glm::vec3 lightPosition = -m_vecLightDirection;
+	m_matWorldToLightViewMatrix = glm::lookAt(lightPosition, glm::vec3(0.0, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 }
+
 
 
 

@@ -20,8 +20,6 @@ uniform sampler2D objectIDBuffer;
 uniform sampler2D shadowDepthBuffer;
 
 uniform samplerCube texture_irradiance;
-uniform samplerCube texture_prefiltSpecular;
-uniform sampler2D	texture_brdfLUT;
 
 // Camera related
 uniform vec3 cameraPosition;
@@ -81,6 +79,7 @@ vec3 LinearizeColor(vec3 color)
 //---------------------------------------------------------------------------------------------------------------------
 // Read from Shadow Map
 //---------------------------------------------------------------------------------------------------------------------
+float closestDepth = 0;
 float readShadowMap(vec3 Position, vec3 Normal, vec3 viewDir)
 {
 	vec4 lightSpacePosition = matLightViewToProjection * matWorldToLigthView * vec4(Position, 1.0f);
@@ -88,7 +87,7 @@ float readShadowMap(vec3 Position, vec3 Normal, vec3 viewDir)
 	vec3 projCoords = lightSpacePosition.xyz / lightSpacePosition.w;
 	projCoords = projCoords * 0.5f + 0.5f;
 
-	float closestDepth = texture2D(shadowDepthBuffer, projCoords.xy).r;
+	closestDepth = texture2D(shadowDepthBuffer, projCoords.xy).r;
 
 	float currentDepth = projCoords.z;
 
@@ -268,13 +267,24 @@ void main()
 	vec3 Normal = NormalBufferColor.rgb;
 	float Height = NormalBufferColor.a;
 	vec3 Emission = texture2D(emissiveBuffer, vs_outTexcoord).rgb;
-	vec3 Albedo = (texture2D(albedoBuffer, vs_outTexcoord).rgb);
+	vec3 Albedo = 2.0f * (texture2D(albedoBuffer, vs_outTexcoord).rgb);
 	vec3 Mask = texture2D(maskBuffer, vs_outTexcoord).rgb;
 	vec3 Skybox = texture2D(skyboxBuffer, vs_outTexcoord).rgb;
-
+	vec3 shadowDepth = vec3(texture2D(shadowDepthBuffer, vs_outTexcoord).r);
 	vec3 ObjectID = texture2D(objectIDBuffer, vs_outTexcoord).rgb;
 
 	float GeometryMask = Mask.b;
+
+	// Calculate Camera view direction & reflection vector!
+	vec3 viewDir = normalize(cameraPosition - Position);
+	vec3 viewReflection = normalize(reflect(-viewDir, Normal));
+
+	// Shadow
+	float Shadow = readShadowMap(Position, Normal, viewDir);
+	vec3 ShadowColor = vec3(1-Shadow);
+
+	// consider shadow contribution!
+	Albedo *= ShadowColor;
 
 	// Extract for readability!
 	float Roughness = Mask.r;
@@ -288,14 +298,6 @@ void main()
 	PointLightIlluminance(Position, Normal, Albedo.rgb, Roughness, Metallic, Lo_Point);
 
 	vec3 Lo_Direct = Lo_Dir + Lo_Point;
-
-	// Calculate Camera view direction & reflection vector!
-	vec3 viewDir = normalize(cameraPosition - Position);
-	vec3 viewReflection = normalize(reflect(-viewDir, Normal));
-
-	// Shadow
-	float Shadow = readShadowMap(Position, Normal, viewDir);
-	vec3 ShadowColor = vec3(Shadow);
 
 	// Occlusion
 	vec3 Occlusion = vec3(Occl);
@@ -311,16 +313,8 @@ void main()
 		//---------- Indirect Diffuse
 	vec3 Irradiance = vec3(texture(texture_irradiance, Normal));
 	vec3 IndirectDiffuse = Kd * Irradiance * (Albedo / PI);
-
-	//--------- Indirect Specular
-	const float MAX_REFLECTION_LOD = 4.0f;
-
-	// choose which mip-map level to look-up based on roughness value of a material...
-	vec3 prefilteredSpecColor = textureLod(texture_prefiltSpecular, viewReflection, Roughness * MAX_REFLECTION_LOD).rgb;
-	vec2 envBRDF = texture(texture_brdfLUT, vec2(max(dot(Normal, viewDir), 0.0f), Roughness)).rg;
-	vec3 IndirectSpecular = prefilteredSpecColor * ((Ks * envBRDF.x) + envBRDF.y);
-
-	vec3 Lo_Indirect = (IndirectDiffuse + IndirectSpecular) * Occlusion;
+	
+	vec3 Lo_Indirect = (IndirectDiffuse) * Occlusion;
 	
 	vec3 Lo = vec3(0);
 
@@ -329,7 +323,7 @@ void main()
 	vec3 greenChannel = vec3(0,1,0);	// Skybox
 
 	if(dot(redChannel, ObjectID) == 1)
-		Lo = Lo_Direct + Lo_Indirect;
+		Lo = Lo_Direct + Lo_Indirect ;
 	else if(dot(greenChannel, ObjectID) == 1)
 		Lo = Skybox;
 
@@ -349,7 +343,7 @@ void main()
 	else if(channelID == 2)
 		outColor = vec4(IndirectDiffuse, 1);
 	else if(channelID == 3)
-		outColor = vec4(IndirectSpecular, 1);
+		outColor = vec4(shadowDepth, 1);
 	else if(channelID == 4)
 		outColor = vec4(Albedo, 1);
 	else if(channelID == 5)

@@ -82,6 +82,8 @@ private:
 	GLuint				m_fboShadow;				// Framebuffer object for shadow mapping
 	GLuint				m_rboShadow;				// Renderbuffer object for shadow mapping
 
+	uint16_t			m_uiShadowDepthBufferWidth;
+	uint16_t			m_uiShadowDepthBufferHeight;
 	GLuint				m_ShadowDepthBuffer;		// Depth buffer
 	GLuint				m_hShadowDepthBuffer;		// Handle to Depth buffer
 

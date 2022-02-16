@@ -38,7 +38,7 @@ void Scene::InitScene()
 	data.name = "SteamPunk";
 	data.path = "../Assets/models/Robot/SteamPunk.fbx";
 	data.shader = "NormalMapWSDeferred";
-	data.position = glm::vec3(0, 5, 0);
+	data.position = glm::vec3(0, 0, 0);
 	data.angle = 0.0f;
 	data.rotation = glm::vec3(0, 1, 0);
 	data.scale = glm::vec3(1.0f);

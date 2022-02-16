@@ -358,5 +358,8 @@
     <ClInclude Include="imgui\imstb_truetype.h">
       <Filter>imgui</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\Main\Globals.h">
+      <Filter>Engine\Main</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

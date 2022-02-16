@@ -25,23 +25,14 @@ public:
 	void		BindIrrandianceSkybox();
 	void		UnbindIrrandianceSkybox();
 
-	void		BindPrefilteredSpecularMap();
-	void		UnbindPrefilteredSpecularMap();
-
-	void		BindBrdfLUTMap();
-	void		UnbindBrdfLUTMap();
-
 private:
 	HDRSkybox();
 	HDRSkybox(const HDRSkybox&);
 	void operator=(const HDRSkybox&);
 
 	void		InitCaptureCube();
-	void		InitLUTQuad();
 	void		InitCaptureCubemap();
 	void		InitIrradianceCubemap();
-	void		InitPrefilteredSpecularCubemap();
-	void		InitSpecularBrdfLUT();
 	void		RenderCubemap();
 	void		RenderQuad();
 
@@ -58,13 +49,9 @@ private:
 	GLuint		m_captureRBO;			// RBO for capturing cubemap
 	GLuint		m_captureTBO;			// TBO for cubemap
 	GLuint		m_IrradianceTBO;		// TBO for irradinace map
-	GLuint		m_PrefilterSpecmapTBO;	// TBO for pre-filtered specmap 
-	GLuint		m_BrdfLUTmapTBO;		// TBO for brdf LUT map
 
 	int			m_iCubemapSize;			// capture cubemap size
-	int			m_iPrefiltCubemapSize;
 	int			m_iIrradiancemapSize;
-	int			m_iBrdfLUTmapSize;
 
 	GLuint		m_Quad_vao;				// VAO for quad
 	GLuint		m_Quad_vbo;				// VBO for quad
@@ -89,6 +76,4 @@ private:
 	GLSLShader* m_pRenderShader;		// Ptr to render shader (Cubemap as skybox)
 	GLSLShader* m_pCaptureShader;		// Ptr to capture shader (HDRI --> Cubemap)
 	GLSLShader* m_pIrradianceShader;	// Ptr to Irradiance shader (Cubemap --> Irradiance map)
-	GLSLShader* m_pPrefiltSpecShader;	// Ptr to Prefilter Specmap shader (cubemap --> Prefilter spec map)
-	GLSLShader* m_pBrdfLUTShader;		// Ptr to Specular BRDF LUT generator
 };
