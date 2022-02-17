@@ -1,6 +1,6 @@
 ## Incremental OpenGL Codebase
 
-This repository is created with a purpose of veryeasy to understand OpenGL implementation.
+This repository is created with a purpose of very easy to understand OpenGL implementation. There are better ways to organize this code, no way this code/style should be treated as good practices. Aim is to have incremental codebase which clearly highlights incremental feature updates & some way to keeping things organized. 
 
 | Topic | Description |
 | ----------- | ----------- |
