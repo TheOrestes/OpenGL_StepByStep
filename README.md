@@ -30,8 +30,7 @@ This repository is created with a purpose of veryeasy to understand OpenGL imple
 | Wireframe Rendering | ![image](https://user-images.githubusercontent.com/5098227/153607449-9854fcd8-06ee-48e5-8418-5380047fc0a3.png) |
 | IMGUI Integration | ![image](https://user-images.githubusercontent.com/5098227/153703995-44cf18e7-e22a-4085-bc64-53ad8faa1841.png) |
 | PBR + Mask| ![image](https://user-images.githubusercontent.com/5098227/154259284-941eb3b7-2530-4129-8eb8-dd209b1f8434.png) |
-| PBR Diffuse IBL (Irradiance) | ![image](https://user-images.githubusercontent.com/5098227/154328099-cd47b193-3983-4e56-9aa8-0f368289dc8f.png)
- |
+| PBR Diffuse IBL (Irradiance) | ![image](https://user-images.githubusercontent.com/5098227/154328099-cd47b193-3983-4e56-9aa8-0f368289dc8f.png) |
 | PBR Specular IBL | Text |
 | Compute Shader | Text |
 
