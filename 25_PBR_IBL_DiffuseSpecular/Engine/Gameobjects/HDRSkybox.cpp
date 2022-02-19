@@ -1,6 +1,6 @@
 #include "HDRSkybox.h"
 #include "Camera.h"
-
+#include "../Main/Globals.h"
 #include "../Main/Helper.h"
 #include "../Rendering/GLSLShader.h"
 #include "../Rendering/TextureManager.h"
@@ -52,7 +52,7 @@ void HDRSkybox::Initialize()
 	m_pPrefiltSpecShader = new GLSLShader("Shaders/PrefilterSpecmap.vert", "Shaders/PrefilterSpecmap.frag");
 	m_pBrdfLUTShader = new GLSLShader("Shaders/BRDFLut.vert", "Shaders/BRDFLut.frag");
 
-	m_tbo = TextureManager::getInstannce().Load2DTextureFromFile("wooden_lounge_2k.hdr", "../Assets/HDRI");
+	m_tbo = TextureManager::getInstannce().Load2DTextureFromFile("uffizi.hdr", "../Assets/HDRI");
 
 	// create cube for capturing cubemap
 	InitCaptureCube();
@@ -251,7 +251,7 @@ void HDRSkybox::InitCaptureCubemap()
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
 	// Restore original viewport dimensions!
-	glViewport(0, 0, START_WINDOW_WIDTH, START_WINDOW_HEIGHT);
+	glViewport(0, 0, gWindowWidth, gWindowHeight);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -310,7 +310,7 @@ void HDRSkybox::InitIrradianceCubemap()
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	// Restore original viewport dimensions!
-	glViewport(0, 0, START_WINDOW_WIDTH, START_WINDOW_HEIGHT);
+	glViewport(0, 0, gWindowWidth, gWindowHeight);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -377,7 +377,7 @@ void HDRSkybox::InitPrefilteredSpecularCubemap()
 
 	glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glViewport(0, 0, START_WINDOW_WIDTH, START_WINDOW_HEIGHT);
+	glViewport(0, 0, gWindowWidth, gWindowHeight);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -404,7 +404,7 @@ void HDRSkybox::InitSpecularBrdfLUT()
 	RenderQuad();
 
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	glViewport(0, 0, START_WINDOW_WIDTH, START_WINDOW_HEIGHT);
+	glViewport(0, 0, gWindowWidth, gWindowHeight);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

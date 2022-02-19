@@ -95,7 +95,7 @@ float readShadowMap(vec3 Position, vec3 Normal, vec3 viewDir)
 	float shadow = 0.0f;
 	float bias = max(0.05f * (1.0f - dot(Normal, dirLights[0].direction)), 0.005f);
 	if(closestDepth < currentDepth - bias)
-		shadow = 0.5f;
+		shadow = 0.85f;				// Shadow strength
 	else 
 		shadow = 0.0f;
 
@@ -268,13 +268,24 @@ void main()
 	vec3 Normal = NormalBufferColor.rgb;
 	float Height = NormalBufferColor.a;
 	vec3 Emission = texture2D(emissiveBuffer, vs_outTexcoord).rgb;
-	vec3 Albedo = (texture2D(albedoBuffer, vs_outTexcoord).rgb);
+	vec3 Albedo = 2.0f * (texture2D(albedoBuffer, vs_outTexcoord).rgb);
 	vec3 Mask = texture2D(maskBuffer, vs_outTexcoord).rgb;
 	vec3 Skybox = texture2D(skyboxBuffer, vs_outTexcoord).rgb;
-
+	vec3 shadowDepth = vec3(texture2D(shadowDepthBuffer, vs_outTexcoord).r);
 	vec3 ObjectID = texture2D(objectIDBuffer, vs_outTexcoord).rgb;
 
 	float GeometryMask = Mask.b;
+
+	// Calculate Camera view direction & reflection vector!
+	vec3 viewDir = normalize(cameraPosition - Position);
+	vec3 viewReflection = normalize(reflect(-viewDir, Normal));
+
+	// Shadow
+	float Shadow = readShadowMap(Position, Normal, viewDir);
+	vec3 ShadowColor = vec3(1-Shadow);
+
+	// consider shadow contribution!
+	Albedo *= ShadowColor;
 
 	// Extract for readability!
 	float Roughness = Mask.r;
@@ -288,14 +299,6 @@ void main()
 	PointLightIlluminance(Position, Normal, Albedo.rgb, Roughness, Metallic, Lo_Point);
 
 	vec3 Lo_Direct = Lo_Dir + Lo_Point;
-
-	// Calculate Camera view direction & reflection vector!
-	vec3 viewDir = normalize(cameraPosition - Position);
-	vec3 viewReflection = normalize(reflect(-viewDir, Normal));
-
-	// Shadow
-	float Shadow = readShadowMap(Position, Normal, viewDir);
-	vec3 ShadowColor = vec3(Shadow);
 
 	// Occlusion
 	vec3 Occlusion = vec3(Occl);
@@ -349,7 +352,7 @@ void main()
 	else if(channelID == 2)
 		outColor = vec4(IndirectDiffuse, 1);
 	else if(channelID == 3)
-		outColor = vec4(IndirectSpecular, 1);
+		outColor = vec4(shadowDepth, 1);
 	else if(channelID == 4)
 		outColor = vec4(Albedo, 1);
 	else if(channelID == 5)

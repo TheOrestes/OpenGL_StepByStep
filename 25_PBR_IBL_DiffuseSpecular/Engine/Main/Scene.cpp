@@ -38,7 +38,7 @@ void Scene::InitScene()
 	data.name = "SteamPunk";
 	data.path = "../Assets/models/Robot/SteamPunk.fbx";
 	data.shader = "NormalMapWSDeferred";
-	data.position = glm::vec3(0, 5, 0);
+	data.position = glm::vec3(4.8f, 0, 0);
 	data.angle = 0.0f;
 	data.rotation = glm::vec3(0, 1, 0);
 	data.scale = glm::vec3(1.0f);
@@ -46,10 +46,22 @@ void Scene::InitScene()
 
 	StaticObjectManager::getInstance().GatherStaticObject(objMesh);
 
+	StaticObjectData dataPiano;
+	dataPiano.name = "Piano";
+	dataPiano.path = "../Assets/models/Piano/Piano.fbx";
+	dataPiano.shader = "NormalMapWSDeferred";
+	dataPiano.position = glm::vec3(-9.5f, 9.5f, 2);
+	dataPiano.angle = 57.0f;
+	dataPiano.rotation = glm::vec3(1.1f, 0.7f, -0.4f);
+	dataPiano.scale = glm::vec3(0.8f);
+	StaticObject* pianoMesh = new StaticObject(dataPiano);
+
+	StaticObjectManager::getInstance().GatherStaticObject(pianoMesh);
+
 	// plane
 	StaticObjectData dataPlane;
 	dataPlane.name = "ShadowPlane";
-	dataPlane.path = "../Assets/models/Planes/Plane_Oak.fbx";
+	dataPlane.path = "../Assets/models/Planes/Plane_Bathroom.fbx";
 	dataPlane.shader = "NormalMapWSDeferred";
 	dataPlane.position = glm::vec3(0, 0, 0);
 	dataPlane.angle = 0.0f;
@@ -77,7 +89,7 @@ void Scene::InitScene()
 
 	// Load directional lights
 	m_pMainDirectionalLight = new DirectionalLightObject(glm::vec4(1, 1, 1, 1));
-	m_pMainDirectionalLight->SetEulerLightAngles(glm::vec3(60.0f, 0, 0));
+	m_pMainDirectionalLight->SetEulerLightAngles(glm::vec3(-155.0f, 0, 0));
 	m_pMainDirectionalLight->m_fLightIntensity = 3.0f;
 	LightsManager::getInstance()->GatherDirectionalLights(m_pMainDirectionalLight);
 

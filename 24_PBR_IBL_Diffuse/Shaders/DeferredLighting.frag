@@ -79,7 +79,6 @@ vec3 LinearizeColor(vec3 color)
 //---------------------------------------------------------------------------------------------------------------------
 // Read from Shadow Map
 //---------------------------------------------------------------------------------------------------------------------
-float closestDepth = 0;
 float readShadowMap(vec3 Position, vec3 Normal, vec3 viewDir)
 {
 	vec4 lightSpacePosition = matLightViewToProjection * matWorldToLigthView * vec4(Position, 1.0f);
@@ -87,7 +86,7 @@ float readShadowMap(vec3 Position, vec3 Normal, vec3 viewDir)
 	vec3 projCoords = lightSpacePosition.xyz / lightSpacePosition.w;
 	projCoords = projCoords * 0.5f + 0.5f;
 
-	closestDepth = texture2D(shadowDepthBuffer, projCoords.xy).r;
+	float closestDepth = texture2D(shadowDepthBuffer, projCoords.xy).r;
 
 	float currentDepth = projCoords.z;
 

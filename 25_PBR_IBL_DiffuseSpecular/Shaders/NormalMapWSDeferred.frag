@@ -111,7 +111,10 @@ void main()
 	vec3 Normal = hasNormal ? normalize(vs_outTBN * texNormal) : vs_outNormal;
 
 	if(hasMask)
-		Mask = vec3(texture(texture_mask, vs_outUV));
+	{
+		vec3 maskColor = vec3(texture(texture_mask, vs_outUV));
+		Mask = vec3(material.Roughness * maskColor.r, material.Metallic * maskColor.g, material.Occlusion * maskColor.b);
+	}
 	else
 		Mask = vec3(material.Roughness, material.Metallic, material.Occlusion);
 
