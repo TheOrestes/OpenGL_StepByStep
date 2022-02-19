@@ -2,6 +2,14 @@
 
 This repository is created with a purpose of very easy to understand OpenGL implementation. There are better ways to organize this code, no way this code/style should be treated as good practices. Aim is to have incremental codebase which clearly highlights incremental feature updates & some way to keeping things organized. 
 
+Here's the final output:
+
+![image](https://user-images.githubusercontent.com/5098227/154793719-bbe19bbf-d470-47ce-82a6-9a236e1d0416.png)
+
+Some of the features: https://www.youtube.com/watch?v=DwSYo4xOgGw
+
+Step by step images:
+
 | Topic | Description |
 | ----------- | ----------- |
 | Create Window | ![image](https://user-images.githubusercontent.com/5098227/150085190-3313c039-304b-415b-8acb-cffce6437776.png)|
@@ -31,7 +39,7 @@ This repository is created with a purpose of very easy to understand OpenGL impl
 | IMGUI Integration | ![image](https://user-images.githubusercontent.com/5098227/153703995-44cf18e7-e22a-4085-bc64-53ad8faa1841.png) |
 | PBR + Mask| ![image](https://user-images.githubusercontent.com/5098227/154259284-941eb3b7-2530-4129-8eb8-dd209b1f8434.png) |
 | PBR Diffuse IBL (Irradiance) | ![image](https://user-images.githubusercontent.com/5098227/154328099-cd47b193-3983-4e56-9aa8-0f368289dc8f.png) |
-| PBR Specular IBL | Text |
+| PBR Specular IBL (Split-Sum Approximation) | ![image](https://user-images.githubusercontent.com/5098227/154792782-4f5ee71e-8e7a-4530-aa69-414ecf3b55b3.png) |
 | Compute Shader | Text |
 
 References: 
