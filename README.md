@@ -40,7 +40,6 @@ Step by step images:
 | [PBR + Mask](https://github.com/TheOrestes/OpenGL_StepByStep/tree/master/26_PBR)| ![image](https://user-images.githubusercontent.com/5098227/154259284-941eb3b7-2530-4129-8eb8-dd209b1f8434.png) |
 | [PBR Diffuse IBL](https://github.com/TheOrestes/OpenGL_StepByStep/tree/master/27_PBR_IBL_Diffuse) | ![image](https://user-images.githubusercontent.com/5098227/154328099-cd47b193-3983-4e56-9aa8-0f368289dc8f.png) |
 | [PBR Specular IBL](https://github.com/TheOrestes/OpenGL_StepByStep/tree/master/28_PBR_IBL_DiffuseSpecular) | ![image](https://user-images.githubusercontent.com/5098227/154792782-4f5ee71e-8e7a-4530-aa69-414ecf3b55b3.png) |
-| [Compute Shader](https://github.com/TheOrestes/OpenGL_StepByStep/tree/master/29_Compute) | Text |
 
 References: 
 1. https://learnopengl.com/
