@@ -41,7 +41,12 @@ Step by step images:
 | [PBR Diffuse IBL](https://github.com/TheOrestes/OpenGL_StepByStep/tree/master/27_PBR_IBL_Diffuse) | ![image](https://user-images.githubusercontent.com/5098227/154328099-cd47b193-3983-4e56-9aa8-0f368289dc8f.png) |
 | [PBR Specular IBL](https://github.com/TheOrestes/OpenGL_StepByStep/tree/master/28_PBR_IBL_DiffuseSpecular) | ![image](https://user-images.githubusercontent.com/5098227/154792782-4f5ee71e-8e7a-4530-aa69-414ecf3b55b3.png) |
 
-References: 
+## Getting Started
+Clone the repository & download dependencies,assets & runtime libraries from the link. Extract the folders & put them in the Root folder to get started.
+
+#### [Download](https://drive.google.com/drive/folders/1S9yKas-RO6eRfeZS8eM_xfMZbe5UQ1uR?usp=sharing)
+ 
+## References: 
 1. https://learnopengl.com/
 2. http://www.songho.ca/opengl/
 3. https://ogldev.org/
