@@ -1,0 +1,365 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{bb3ec6d4-b48b-4410-8c21-54a4c6da196f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{60e4e9c5-b353-4f34-91b6-957fb0e6d018}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Gameobjects">
+      <UniqueIdentifier>{f47a9459-0b01-480b-ab2e-89b6f63120a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Rendering">
+      <UniqueIdentifier>{002f9d39-d0eb-46f7-ab07-cf137b0b7c3d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Lighting">
+      <UniqueIdentifier>{75e3a0d3-310b-4dff-b020-4e4d723b9ec7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Main">
+      <UniqueIdentifier>{f70c16e4-0575-43f0-bd3d-eb90da3e6c8b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\UI">
+      <UniqueIdentifier>{065bfcbd-ce1f-401c-8167-64e479b61b76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="imgui">
+      <UniqueIdentifier>{0b9e1c75-5f34-4e0b-a4d6-6eb4a8bd72e4}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Shaders\HDRI2Cubemap.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\HDRI2Cubemap.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\HDRISkybox.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\HDRISkybox.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\BasicLighting.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\BasicLighting.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Bloom.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Bloom.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\DeferredDebug.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\DeferredLighting.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\DeferredLighting.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Diffuse.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Diffuse.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Light.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Light.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\LightDeferred.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\LightDeferred.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\NormalMapTS.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\NormalMapTS.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\NormalMapWS.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\NormalMapWS.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\NormalMapWSDeferred.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\NormalMapWSDeferred.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\PostProcess.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\PostProcess.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\ps.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Reflection.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Reflection.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\ShadowPass.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\ShadowPass.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Skybox.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Skybox.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\SkyboxDeferred.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Specular.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Specular.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Texture.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Texture.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\TextureMulti.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\TextureMulti.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\vs.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Color.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Color.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Cubemap2Irradiance.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\Cubemap2Irradiance.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\PrefilterSpecmap.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\PrefilterSpecmap.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\BRDFLut.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\BRDFLut.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\PostFX.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="Shaders\PostFX.vert">
+      <Filter>Shaders</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Engine\Gameobjects\BBoxCube.cpp">
+      <Filter>Engine\Gameobjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Gameobjects\Camera.cpp">
+      <Filter>Engine\Gameobjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Gameobjects\GLCube.cpp">
+      <Filter>Engine\Gameobjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Gameobjects\GLLight.cpp">
+      <Filter>Engine\Gameobjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Gameobjects\GLQuad.cpp">
+      <Filter>Engine\Gameobjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Gameobjects\GLSkybox.cpp">
+      <Filter>Engine\Gameobjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Gameobjects\HDRSkybox.cpp">
+      <Filter>Engine\Gameobjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Gameobjects\StaticObject.cpp">
+      <Filter>Engine\Gameobjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Gameobjects\StaticObjectManager.cpp">
+      <Filter>Engine\Gameobjects</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\UI\UIManager.cpp">
+      <Filter>Engine\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Rendering\GLSLShader.cpp">
+      <Filter>Engine\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Rendering\Mesh.cpp">
+      <Filter>Engine\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Rendering\Model.cpp">
+      <Filter>Engine\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Rendering\PostProcess.cpp">
+      <Filter>Engine\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Rendering\ScreenAlignedQuad.cpp">
+      <Filter>Engine\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Rendering\TextureManager.cpp">
+      <Filter>Engine\Rendering</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Lighting\DirectionalLightObject.cpp">
+      <Filter>Engine\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Lighting\LightsManager.cpp">
+      <Filter>Engine\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Lighting\PointLightObject.cpp">
+      <Filter>Engine\Lighting</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Main\Application.cpp">
+      <Filter>Engine\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Main\Scene.cpp">
+      <Filter>Engine\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Source.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_draw.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_impl_glfw.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_impl_opengl3.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui\imgui_widgets.cpp">
+      <Filter>imgui</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Engine\Gameobjects\BBoxCube.h">
+      <Filter>Engine\Gameobjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Gameobjects\Camera.h">
+      <Filter>Engine\Gameobjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Gameobjects\GLCube.h">
+      <Filter>Engine\Gameobjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Gameobjects\GLLight.h">
+      <Filter>Engine\Gameobjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Gameobjects\GLQuad.h">
+      <Filter>Engine\Gameobjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Gameobjects\GLSkybox.h">
+      <Filter>Engine\Gameobjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Gameobjects\HDRSkybox.h">
+      <Filter>Engine\Gameobjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Gameobjects\Material.h">
+      <Filter>Engine\Gameobjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Gameobjects\StaticObject.h">
+      <Filter>Engine\Gameobjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Gameobjects\StaticObjectManager.h">
+      <Filter>Engine\Gameobjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\UI\UIManager.h">
+      <Filter>Engine\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Rendering\GLSLShader.h">
+      <Filter>Engine\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Rendering\Mesh.h">
+      <Filter>Engine\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Rendering\Model.h">
+      <Filter>Engine\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Rendering\PostProcess.h">
+      <Filter>Engine\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Rendering\ScreenAlignedQuad.h">
+      <Filter>Engine\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Rendering\TextureManager.h">
+      <Filter>Engine\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Rendering\VertexStructures.h">
+      <Filter>Engine\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Lighting\DirectionalLightObject.h">
+      <Filter>Engine\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Lighting\LightsManager.h">
+      <Filter>Engine\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Lighting\PointLightObject.h">
+      <Filter>Engine\Lighting</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Main\Application.h">
+      <Filter>Engine\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Main\Helper.h">
+      <Filter>Engine\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Main\Scene.h">
+      <Filter>Engine\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imconfig.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_impl_glfw.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_impl_opengl3.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imgui_internal.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imstb_rectpack.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imstb_textedit.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui\imstb_truetype.h">
+      <Filter>imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Main\Globals.h">
+      <Filter>Engine\Main</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
